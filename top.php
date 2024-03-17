@@ -32,13 +32,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="container-fluid container">
         <div class="col-12 justify-content-between d-flex align-items-center">
             <div class="m-0">
-                <a href="#" style="display: inline;">
+                <a href="index.php" style="display: inline;">
                     <img src="images/logo/logo_1.png" class="nav_logo">
                 </a>
                 <ul class="m-0" style="display: inline;">
                     <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'about.php') ? 'active-menu' : ''; ?>">About Us</a></li>
-                    <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">Menu</a></li>
-                    <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">Contact Us</a></li>
+                    <li class="m-auto col-md-4"><a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">Menu</a></li>
+                    <li class="m-auto col-md-4"><a href="contactus.php" class="underline-animation <?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">Contact Us</a></li>
                     <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">Blog</a></li>
                 </ul>
             </div>

@@ -5,13 +5,13 @@
 
         <div class="profile"><i class="far fa-user"></i>Username</div>
     </div>
-    <a href="#" class="<?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
+    <a href="index.php" class="<?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-home-lg"></i>
         </div>
         <span>Home</span>
     </a>
-    <a href="#" class="<?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">
+    <a href="menu.php" class="<?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-utensils"></i>
         </div>
@@ -23,7 +23,7 @@
         </div>
         <span>Blog</span>
     </a>
-    <a href="#" class="<?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">
+    <a href="contactus.php" class="<?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-envelope"></i>
         </div>
