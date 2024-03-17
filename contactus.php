@@ -17,7 +17,8 @@
             include 'top.php';
             include 'sidebar.php'
         ;?>
-        <section>
+
+        <section class="contact-banner">
             <img src="banner background/3.png" id="clouds">
             <img src="banner background/4.png" id="text">
             <img src="banner background/2.png" id="mountain">
@@ -61,8 +62,8 @@
                         <div class="form">
                             <div class="inputbox w50">
                                 <label for="name">Your Full Name:</label>
-                                <input type="text" id="name" placeholder="e.g. Eric Lim Ming" required>
-                                <small class="error-input">Your name is required.</small>
+                                <input type="text" name="name" id="name" placeholder="e.g. Eric Lim Ming" required>
+                                <small class="error-input hidden-error">Your name is required.</small>
                             </div>
                             <div class="inputbox w50">
                                 <label for="phone">Phone Number:</label>
@@ -97,15 +98,18 @@
                     </form>
                 </div>
             </div>
-            
-            <div class="map">
-                <h3>Google Map</h3>
-
+            <div class="maparea">
+                <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
+                2s4%2C%2044%2C%20Jalan%20Desa%2C%20Taman%20Desa%2C%2058100%20Kuala%20Lumpur%2C%20Wilayah%20Persekutuan%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1710597219405!5m2!1sen!2smy" 
+                style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                
             </div>
         </div>
+        
 
         <?php include 'footer.php'; ?>
-        
+
         <script>
             let clouds = document.getElementById('clouds');
             let text = document.getElementById('text');
@@ -120,6 +124,18 @@
                 jungle.style.top = value * 0 +  'px';
             })
 
+            const isValidEmail(email){
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+            };
+
+            const isValidPhone(phone){
+            const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+            return re.test(String(phone).toLowerCase());
+            };
+
+            //const name = document.querySelector('input[name="name"]');
+
             const Contactform = document.getElementById('Contactform');
             const name = document.getElementById('name');
             const phno = document.getElementById('phno');
@@ -128,7 +144,6 @@
             
             Contactform.addEventListener('submit', e => {
                 e.preventDefault();
-
                 validateInputs();
             });
 
@@ -137,15 +152,35 @@
                 const errorDisplay = inputcontrol.querySelector('.error-input');
 
                 errorDisplay.innertext = message;
-                inputcontrol.classList.add('success');
-                inputcontrol.classList.remove('error');
+                inputcontrol.classList.add('error');
+                inputcontrol.classList.remove('hidden');
             }
+            const setsuccess = element => {
+                const inputcontrol = element.parentElement;
+                const errorDisplay = inputcontrol.querySelector('.error-input');
 
+                errorDisplay.innertext = '';
+                inputcontrol.classList.remove('error');
+                inputcontrol.classList.add('hidden');
+            }
             const validateInputs = () => {
+                /*if(!name.value){
+                    name.nextElementSibling.classList.add("invalid");
+                    name.nextElementSibling.classList.remove("hidden");
+                }*/
+                const namevalue = name.value.trim();
+                const phnovalue = phno.value.trim();
                 const emailvalue = email.value.trim();
+                const msgvalue = msg.value.trim();
 
                 if(emailvalue === ''){
                     seterror(email,'Email is required');
+                }
+                else if(!isValidEmail(emailvalue)){
+                    seterror(email,'Provide a valid email address.');
+                }
+                else{
+                    setsuccess(email);
                 }
             }
         </script>

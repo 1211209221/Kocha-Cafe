@@ -202,9 +202,11 @@ html
     background-color: rgb(233 182 154);
     color: #fff;
 }
+.error{
+    border-color: red;
+}
 .error-input{
-    color: red;
-    
+    color: red; 
 }
 .hidden-error{
     display: none;
@@ -231,7 +233,7 @@ html
 }
 .maparea iframe:hover{
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.215);
-    transition: 1s;
+    transition: 0.5s;
 }
 
 
