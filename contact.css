@@ -114,6 +114,11 @@ html
     font-size: 16px;
     color: #5e5e5e;
 }
+.info-text p a{
+    text-decoration: none;
+    color: #5e5e5e;
+}
+
 .form-box .contactForm{
     position: absolute;
     padding: 50px 50px;
@@ -202,15 +207,20 @@ html
     background-color: rgb(233 182 154);
     color: #fff;
 }
-.error{
-    border-color: red;
+.inputbox .error input,
+.inputbox .error textarea{
+    border-bottom:1px solid red;
 }
-.error-input{
+.inputbox:not(.error) input:focus,
+.inputbox:not(.error) textarea:focus{
+    border-bottom: 2px solid rgb(190, 190, 185);
+}
+.inputbox .error-input{
     color: red; 
+    padding: 3px;
+    font-size: 11px
 }
-.hidden-error{
-    display: none;
-}
+
 .maparea{
     display: flex;
     flex-direction: column;
@@ -318,7 +328,7 @@ html
         font-weight: 450;
         text-align: justify;
     }
-    .form-box{
+    .contact-form .form-box{
         margin: 0;
         min-width: 300px;
     }

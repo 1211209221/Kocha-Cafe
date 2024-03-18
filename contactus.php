@@ -8,7 +8,8 @@
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
-    
+        <script src="gototop.js"></script>
+        <script src="contactvalidation.js"></script>
     </head>
 
     <body>
@@ -17,6 +18,8 @@
             include 'top.php';
             include 'sidebar.php'
         ;?>
+
+        <?php include 'gototopbtn.php'; ?>
 
         <section class="contact-banner">
             <img src="banner background/3.png" id="clouds">
@@ -45,49 +48,45 @@
                         <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
                         <div class="info-text">
                             <h5>Phone</h5>
-                            <p>+6017 412 4250</p>
+                            <p><a href = "tel:+6017 412 4250">+6017 412 4250</a></p>
                         </div>
                     </div>
                     <div class="box">
                         <div class="info-icon"><i class="fas fa-envelope"></i></div>
                         <div class="info-text">
                             <h5>Email</h5>
-                            <p>info@kochacafe.com</p>
+                            <p><a href="mailto:info@kochacafe.com">info@kochacafe.com</a></p>
                         </div>
                     </div>
                 </div>
                 <div class="contactForm">
-                    <form id="Contactform" action="/">
+                    <form id="Contactform" >
                         <h4>SEND MESSAGE</h4>
                         <div class="form">
-                            <div class="inputbox w50">
+                            <div class="inputbox w50 error">
                                 <label for="name">Your Full Name:</label>
-                                <input type="text" name="name" id="name" placeholder="e.g. Eric Lim Ming" required>
-                                <small class="error-input hidden-error">Your name is required.</small>
+                                <input type="text" name="name" class="name" placeholder="e.g. Eric Lim Ming" required>
+                                
                             </div>
-                            <div class="inputbox w50">
+                            <div class="inputbox w50 error">
                                 <label for="phone">Phone Number:</label>
-                                <input type="tel" id="phno" placeholder="e.g. +6012345678" required>
-                                <small class="error-input"></small>
+                                <input type="tel" name="phno" class="phno" placeholder="e.g. +6012345678" required>
                             </div>
-                            <div class="inputbox w50">
+                            <div class="inputbox w50 error">
                                 <label for="email">Email Address:</label>
-                                <input type="email" id="email" placeholder="e.g. eric123@gmail.com" required>
-                                <small class="error-input"></small>
+                                <input type="email" name="email" class="email" placeholder="e.g. eric123@gmail.com" required>
                             </div>
-                            <div class="inputbox w50">
+                            <div class="inputbox w50 error">
                                 <label for="subject">Subject:</label>
-                                <input type="text" id="subject" placeholder="e.g. Feedback" required>
-                                <small class="error-input"></small>
+                                <input type="text" name="subject" class="subject" placeholder="e.g. Feedback" required>
                             </div>
                             <div class="inputbox w50">
                                 <label for="file">File: <span>(optional)</span></label>
                                 <input type="file">
-                                <small class="error-input"></small>
                             </div>
-                            <div class="inputbox w80">
+                            <div class="inputbox w80 error">
                                 <label for="message">Message:</label>
-                                <textarea id="msg" placeholder="Write your message here..." rows="4" required></textarea>
+                                <textarea name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
                                 <small class="error-input"></small>
                             </div>
                             <div class="inputbox w80">
@@ -124,65 +123,7 @@
                 jungle.style.top = value * 0 +  'px';
             })
 
-            const isValidEmail(email){
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
-            };
-
-            const isValidPhone(phone){
-            const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-            return re.test(String(phone).toLowerCase());
-            };
-
-            //const name = document.querySelector('input[name="name"]');
-
-            const Contactform = document.getElementById('Contactform');
-            const name = document.getElementById('name');
-            const phno = document.getElementById('phno');
-            const email = document.getElementById('email');
-            const msg = document.getElementById('msg');
             
-            Contactform.addEventListener('submit', e => {
-                e.preventDefault();
-                validateInputs();
-            });
-
-            const seterror = (element, message) => {
-                const inputcontrol = element.parentElement;
-                const errorDisplay = inputcontrol.querySelector('.error-input');
-
-                errorDisplay.innertext = message;
-                inputcontrol.classList.add('error');
-                inputcontrol.classList.remove('hidden');
-            }
-            const setsuccess = element => {
-                const inputcontrol = element.parentElement;
-                const errorDisplay = inputcontrol.querySelector('.error-input');
-
-                errorDisplay.innertext = '';
-                inputcontrol.classList.remove('error');
-                inputcontrol.classList.add('hidden');
-            }
-            const validateInputs = () => {
-                /*if(!name.value){
-                    name.nextElementSibling.classList.add("invalid");
-                    name.nextElementSibling.classList.remove("hidden");
-                }*/
-                const namevalue = name.value.trim();
-                const phnovalue = phno.value.trim();
-                const emailvalue = email.value.trim();
-                const msgvalue = msg.value.trim();
-
-                if(emailvalue === ''){
-                    seterror(email,'Email is required');
-                }
-                else if(!isValidEmail(emailvalue)){
-                    seterror(email,'Provide a valid email address.');
-                }
-                else{
-                    setsuccess(email);
-                }
-            }
         </script>
     </body>
     
