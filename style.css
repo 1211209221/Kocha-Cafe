@@ -963,6 +963,40 @@ a{
 	justify-content: center;
 }
 
+/*---------------------------------------------------*/
+/*for go to top btn*/
+#progress{
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	height: 50px;
+	width: 50px;
+	display: none;
+	place-items: center;
+	border-radius: 50%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	z-index: 100;
+	opacity: 50%;
+}
+#progress:hover{
+	opacity: 1;
+	transform: scale(1.035);
+	transition: 0.5s;
+}
+#up-icon{
+	display: block;
+	height: calc(100% - 14px);
+	width: calc(100% - 14px);
+	background-color: #fff;
+	border-radius: 50%;
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	font-size: 24px;
+	color: #36676A;
+}
+
 /*Responsive*/
 
 @media (max-width: 992px){
@@ -1093,6 +1127,10 @@ a{
 	}
 	body {
 	    padding-bottom: 60px !important;
+	}
+	#progress{
+		bottom: 80px;
+		right: 15px;
 	}
 }
 
