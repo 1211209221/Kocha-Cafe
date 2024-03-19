@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="contactForm">
-                    <form id="Contactform" >
+                    <form id="Contactform" action="mail.php" method="POST" enctype="multipart/form-data">
                         <h4>SEND MESSAGE</h4>
                         <div class="form">
                             <div class="inputbox w50 error">
@@ -82,7 +82,7 @@
                             </div>
                             <div class="inputbox w50">
                                 <label for="file">File: <span>(optional)</span></label>
-                                <input type="file">
+                                <input type="file" name="attachment">
                             </div>
                             <div class="inputbox w80 error">
                                 <label for="message">Message:</label>
