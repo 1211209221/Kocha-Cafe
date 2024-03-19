@@ -397,7 +397,7 @@
             <div class="container-fluid container">
                 <div class="col-12 m-auto">
                     <div class="breadcrumbs">
-                        <a>Home</a> / <a class="active">Menu</a>
+                        <a href="index.php">Home</a> > <a class="active">Menu</a>
                     </div>
                     <form id="menuForm" action="menu.php" method="post" onsubmit="return generateSQL();">
                     <div class="row d-flex justify-content-between pb-1">
@@ -575,7 +575,7 @@
                                                 $src = "data:$mime_type;base64,$base64";
                                             }
 
-                                            echo '<div class="item_container fade_in">';
+                                            echo '<a class="item_container fade_in" href="item.php?ID=' . $row2['item_ID'] . '">';
                                             if($row2['item_discount'] > 0){
                                                 echo '<div class="discount"> '.$row2['item_discount'].'% DISCOUNT</div>';
                                             }
@@ -603,7 +603,7 @@
                                                     echo '('.number_format($row2['item_rating'],1).')
                                                     </div>
                                                 </div>
-                                            </div>';
+                                            </a>';
                                             $itemsGenerated = 1;
                                         }
                                     }
@@ -639,18 +639,10 @@
                                                     $base64 = base64_encode($image_data);
                                                     $src = "data:$mime_type;base64,$base64";
                                                 }
-
-                                                // foreach ($selectedCategoryIDs as $categoryId) {
-                                                //     $category_count = 0;
-                                                //     if($categoryId === $row["category_ID"]){
-                                                //        $category_count++;
-                                                //     }
-                                                //     echo $category_count;
-                                                // }
-
+                                                
                                                 foreach ($selectedCategoryIDs as $categoryId) {
                                                     if($categoryId === $row["category_ID"]){
-                                                        echo '<div class="item_container fade_in">';
+                                                        echo '<a class="item_container fade_in" href="item.php?ID=' . $row2['item_ID'] . '">';
                                                         if($row2['item_discount'] > 0){
                                                             echo '<div class="discount"> '.$row2['item_discount'].'% DISCOUNT</div>';
                                                         }
@@ -678,7 +670,7 @@
                                                                 echo '('.number_format($row2['item_rating'],1).')
                                                                 </div>
                                                             </div>
-                                                        </div>';
+                                                        </a>';
                                                     }
                                                 }
                                                 $itemsGenerated = 1;
