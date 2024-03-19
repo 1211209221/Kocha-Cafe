@@ -69,9 +69,3 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('scroll', function() {
     addVisibleClass();
 });
-
-
-function redirectToPage(url, itemID) {
-    // Redirect to add.php with item_name as query parameter
-    window.location.href = url + '?ID=' + encodeURIComponent(itemID);
-}
