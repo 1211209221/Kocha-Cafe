@@ -11,12 +11,13 @@
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="script.js"></script>
+        <script src="gototop.js"></script>
     </head>
     <body>
         <?php
             include 'connect.php';
             include 'top.php';
-            include 'sidebar.php';
+            include 'gototopbtn.php';
 
             // // Close connection
             // $conn->close();
@@ -24,6 +25,36 @@
             if (isset($_GET['ID'])) {
                 // Retrieve the value of the ID parameter
                 $item_ID = $_GET['ID'];
+            }
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                if(isset($_POST['submit_review'])) {
+                    // Retrieve form data
+                    $review_rating = $_POST['review_rating'];
+                    $review_title = $_POST['review_title'];
+                    $review_comment = $_POST['review_comment'];
+                    $review_date = date('Y-m-d');
+                    // $cust_ID = $_POST['cust_ID'];
+                    $cust_ID = '1';
+
+                    // Construct the SQL query to insert menu item data
+                    $sql_insert = "INSERT INTO customer_reviews (review_rating, review_title, review_comment, review_date, item_ID, cust_ID) VALUES ('$review_rating', '$review_title', '$review_comment', '$review_date', '$item_ID', '$cust_ID')";
+
+                    // echo $sql_insert;
+
+                    // Execute the SQL query
+                    if ($conn->query($sql_insert) === TRUE) {
+                        header("Location: item.php?ID=".$item_ID);
+                        exit();
+                        // echo "New record created successfully";
+                    } else {
+                        echo "Error: " . $sql_insert . "<br>" . $conn->error;
+                    }
+                } elseif(isset($_POST['ratingForm'])) {
+                  
+                } elseif(isset($_POST['menuForm'])) {
+                  
+                }
             }
 
              function getSubCategories2($category_ID, $conn) {
@@ -91,6 +122,10 @@
                         $base64 = base64_encode($image_data);
                         $src = "data:$mime_type;base64,$base64";
                     }
+            $sql_reviews = "SELECT * FROM customer_reviews WHERE item_ID = $item_ID";
+            $result_reviews = $conn->query($sql_reviews);
+
+            $item_name_review = "";
         ?>
         <script>
             $(document).ready(function() {
@@ -124,11 +159,14 @@
                                         echo'
                                         <img src='.$src.' class="item_image">';
                                     ?>
+
                                 </div>
                             </div>
                             <div class="col-12 col-md-7 mx-auto pb-md-0 pb-4  fade_in"  style="transition: 0.5s;">
                                 <div class="justify-content-between d-flex align-items-center">
                                 <?php
+                                    $item_name_review = $row['item_name'];
+
                                     echo'
                                     <div class="item_title">'.$row['item_name'].'</div>
                                     <a class="item_saved"><i class="far fa-heart"></i></a></div>';
@@ -139,7 +177,7 @@
 
                                     echo '('.number_format($row['item_rating'],1).')
                                     </div>
-                                    <div class="no_ratings">34 Ratings</div>
+                                    <div class="no_ratings">'.$result_reviews->num_rows.' Ratings</div>
                                     <div class="no_ratings">'.$row['item_sold'].' Sold</div>
                                     <div class="item_price">';
 
@@ -284,35 +322,261 @@
                 }
             }
         ?>
-        <div class="reviews">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var sql_reviews = "SELECT * FROM customer_reviews WHERE item_ID = $item_ID ";
+
+                var selectStars = document.querySelector('select[name="ratings_stars"]');
+                var selectComments = document.querySelector('select[name="ratings_comments"]');
+                var filterStateInput = document.getElementById('filterStateInput');
+                var ratingForm = document.getElementById('ratingForm'); // Get the form element
+
+               // Load saved filter state from localStorage, if any
+                var savedFilterState = localStorage.getItem('filterState');
+                if (savedFilterState) {
+                    var filterState = JSON.parse(savedFilterState);
+                    selectStars.value = filterState.starsSelected;
+                    selectComments.value = filterState.commentsSelected;
+                }
+
+                selectStars.addEventListener('change', function() {
+                    if (selectStars.value !== "0") {
+                        sql_reviews += " AND review_rating = " + selectStars.value;
+                    }
+                    saveFilterState(); // Save filter state to localStorage
+                    ratingForm.submit(); // Automatically submit the form
+                });
+
+                selectComments.addEventListener('change', function() {
+                    if (selectComments.value === "0") {
+                        sql_reviews += "";
+                    } else if (selectComments.value === "1") {
+                        sql_reviews += " AND review_comment != ''";
+                    } else if (selectComments.value === "2") {
+                        sql_reviews += " AND review_comment = ''";
+                    }
+                    saveFilterState(); // Save filter state to localStorage
+                    ratingForm.submit(); // Automatically submit the form
+                });
+
+                function saveFilterState() {
+                    var filterState = {
+                        starsSelected: selectStars.value,
+                        commentsSelected: selectComments.value
+                    };
+                    localStorage.setItem('filterState', JSON.stringify(filterState));
+                }
+
+                if (!(selectStars.value == "" || selectComments.value == "")){
+                    scrollToElement();
+                }
+
+                if (selectStars.value == ""){
+                    selectStars.value = "0";
+                }
+                if (selectComments.value == ""){
+                    selectComments.value = "0";
+                }
+
+                function scrollToElement() {
+                    var element = document.getElementById('reviews_section');
+                    if (element) {
+                        var offset = element.getBoundingClientRect().top;
+                        window.scrollTo({
+                            top: offset - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var stars = document.querySelectorAll('.rate_stars .fa-star');
+
+                stars.forEach(function(star) {
+                    star.addEventListener('mouseenter', function() {
+                        var index = Array.from(stars).indexOf(star);
+                        for (var i = 0; i <= index; i++) {
+                            stars[i].classList.add('hovered');
+                        }
+                    });
+
+                    star.addEventListener('click', function() {
+                        stars.forEach(function(star) {
+                            star.classList.remove('clicked');
+                        });
+
+                        var index = Array.from(stars).indexOf(star);
+                        for (var i = 0; i <= index; i++) {
+                            stars[i].classList.add('clicked');
+                        }
+                    });
+
+                    star.addEventListener('mouseleave', function() {
+                        stars.forEach(function(star) {
+                            star.classList.remove('hovered');
+                        });
+                    });
+                });
+            });
+
+            function insertStar() {
+                // Retrieve the ID of the clicked star
+                var starId = event.target.id;
+
+                // Set the value of the review_rating input field to the star number
+                document.getElementById('review_rating').value = starId;
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var button_reviews = document.querySelectorAll('.review_button');
+                var cancel_reviews = document.querySelectorAll('[name="cancel_review"]');
+                var review_writes = document.querySelectorAll('.write_review .container');
+                var darken_review = document.querySelectorAll('.review_darken');
+
+                button_reviews.forEach(function(button_review, index) {
+                    button_review.addEventListener('click', function() {
+                        review_writes[index].classList.add('active');
+                        darken_review[index].classList.add('appear');
+                    });
+                });
+
+                cancel_reviews.forEach(function(cancel_review, index) {
+                    cancel_review.addEventListener('click', function() {
+                        review_writes[index].classList.remove('active');
+                        darken_review[index].classList.remove('appear');
+                    });
+                });
+            });
+        </script>
+        <div class="reviews" id="reviews_section">
             <div class="container-fluid container">
                 <div class="col-12 m-auto">
-                    <span class="reviews_title">Reviews</span>
-                    <div class="overall_ratings">
-                    <?php
-                        $sql = "SELECT * FROM menu_items WHERE item_ID = $item_ID LIMIT 1";
+                    <span class="reviews_title">Customer Reviews</span>
+                    <hr>
+                    <div class="reviews_top">
+                        <div class="overall_ratings">
+                        <?php
+                            // Check if filter options are set in POST request
+                            if(isset($_POST['ratings_stars']) && isset($_POST['ratings_comments'])) {
+                                $stars = $_POST['ratings_stars'];
+                                $comments = $_POST['ratings_comments'];
 
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo '<div class="value">'.number_format($row['item_rating'],1).'</div><div class="stars">';
-                                ratingToStars($row['item_rating']);
-                                echo '</div><div class="no_ratings">3 Reviews</div><div class="stars">';
+                                // Construct SQL query based on filter options
+                                if($stars !== "0") {
+                                    $sql_reviews .= " AND review_rating = $stars";
+                                }
+                                if($comments === "1") {
+                                    $sql_reviews .= " AND review_comment != ''";
+                                } elseif($comments === "2") {
+                                    $sql_reviews .= " AND review_comment = ''";
+                                }
                             }
-                        }
-                    ?>
+
+                            $result_reviews = $conn->query($sql_reviews);
+
+                            // $overall_rating = 0;
+                            $sql = "SELECT * FROM menu_items WHERE item_ID = $item_ID LIMIT 1";
+
+                            $result = $conn->query($sql);
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<div class="value">'.number_format($row['item_rating'],1).'</div><div class="stars">';
+                                    // echo '<div class="value">'.number_format($row['item_rating'],1).'</div><div class="stars">';
+                                    ratingToStars($row['item_rating']);
+                                    echo '</div><div class="no_ratings">'.$result_reviews->num_rows.' Reviews</div>';
+                                }
+                            }
+                        ?>
+                        </div>
+                        <form id="reviewForm" action="item.php?ID=<?php echo $item_ID; ?>" method="post">
+                            <div class="write_review">
+                                <div class="container">
+                                <?php
+                                    echo'<div class="title">Rate and Review</div>';
+                                    echo'<img src='.$src.' class="item_image">';
+                                    echo'<div class="name">'.$item_name_review.'</div>';
+                                    echo'<span class="rate_stars">
+                                        <a class="far fa-star" id="1" onclick="insertStar();"></a>
+                                        <a class="far fa-star" id="2" onclick="insertStar();"></a>
+                                        <a class="far fa-star" id="3" onclick="insertStar();"></a>
+                                        <a class="far fa-star" id="4" onclick="insertStar();"></a>
+                                        <a class="far fa-star" id="5" onclick="insertStar();"></a>
+                                    </span>';
+                                    echo'<input type="text" name="review_rating" id="review_rating" required><input type="text" name="review_title" id="review_title" placeholder="Review title..." required>';
+                                    echo'<textarea name="review_comment" id="review_comment" placeholder="Review Contents..." required></textarea>';
+                                    echo'<div class="buttons">
+                                        <div name="cancel_review" id="cancel_review">Cancel</div>
+                                        <input type="submit" name="submit_review" id="submit_review">
+                                    </div>';
+                                ?>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="ratings_filter">
+                        <form id="ratingForm" action="item.php?ID=<?php echo $item_ID; ?>" method="post">
+                            <div class="review_button">Write Review</div>
+                            <div>
+                                <select name="ratings_stars" id="ratings_stars">
+                                    <option value="0">All ratings</option>
+                                    <option value="1">1 Star</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="5">5 Stars</option>
+                                </select>
+                                <select name="ratings_comments" id="ratings_comments">
+                                    <option value="0">All reviews</option>
+                                    <option value="1">With comment</option>
+                                    <option value="2">No comment</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="filterState" id="filterStateInput">
+                            <button type="submit" name="submit_filter" id="submit_filter" class="submit_filter" style="display: none;">Apply Filters</button>
+                        </form>
+                    </div>
                     </div>
                     <div class="display_reviews">
-                        <div class="review_container"></div>
-                        <div class="review_container"></div>
-                        <div class="review_container"></div>
-                        <div class="review_container"></div>
-                        <div class="review_container"></div>
+                        <?php
+                            if ($result_reviews->num_rows > 0) {
+                                while ($row_reviews = $result_reviews->fetch_assoc()) {
+                                    echo '<div class="review_container fade_in"><div class="top_container"><img src="images/icons/user.png"><div><span>'.$row_reviews['review_title'].'</span><div class="container"><div class="review_stars">';
+                                    ratingToStars($row_reviews['review_rating']);
+                                    echo '</div>
+                                    <div class="review_date">'.$row_reviews['review_date'].'</div></div></div></div>';
+                                    if(!empty($row_reviews['review_comment'])){
+                                        echo '<div class="bottom_container">"'.$row_reviews['review_comment'].'"</div>';
+                                    }
+
+                                    $sql_review_user = "SELECT cust_username FROM customer WHERE cust_ID = {$row_reviews['cust_ID']} LIMIT 1";
+
+                                    $result_review_user = $conn->query($sql_review_user);
+                                    if ($result_review_user->num_rows > 0) {
+                                        while ($row_review_user = $result_review_user->fetch_assoc()) {
+                                            echo '<div class="username">-'.$row_review_user['cust_username'].'</div>';
+                                        }
+                                    }
+                                    echo '</div>';
+                                    // $overall_rating += $row_reviews['review_rating'];
+                                }
+                            }
+                            else{
+                                echo '<div class="no_reviews"><div>No Reviews.</div></div>';
+                            }
+                            // echo number_format($overall_rating/$result_reviews->num_rows,1);
+                        ?>
+                    </div>
+                    <hr>
+                    <div>
+                        cscs
                     </div>
                 </div>
             </div>
         </div>
-        
-        <?php include 'footer.php'; ?>
+        <div class="review_darken"></div>
+        <?php
+            include 'sidebar.php';
+            include 'footer.php';
+        ?>
     </body>
 </html>
