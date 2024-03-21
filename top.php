@@ -78,13 +78,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <div class="buttons">
                             <button class="login" onclick="window.location.href = \'login.php\';"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>
                             <button class="signup" onclick="window.location.href = \'registration.php\';">Sign up</button>
-                        </div>
-                        <span onclick="openNav()">
-                            <i class="fas fa-bars"></i>
-                        </span>';
+                        </div>';
                 }                
             ?>
-
+                <span onclick="openNav()">
+                    <i class="fas fa-bars"></i>
+                </span>
             </div>
         </div>
     </div>
