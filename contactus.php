@@ -1,5 +1,3 @@
-<?php include 'mail.php';?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,10 +16,10 @@
         <?php
             include 'connect.php';
             include 'top.php';
-            include 'sidebar.php'
+            include 'sidebar.php';
+            include 'mail.php';
+            include 'gototopbtn.php'
         ;?>
-
-        <?php include 'gototopbtn.php'; ?>
 
         <section class="contact-banner">
             <img src="banner background/3.png" id="clouds">
@@ -101,7 +99,6 @@
             </div>
 
             <!--alert messaage for contact form-->
-            <?php echo $alert; ?>
 
             <div class="maparea">
                 <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>

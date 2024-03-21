@@ -63,29 +63,30 @@ if(isset($_POST['submit'])) {
         <span>Something went wrong! Please try again. &#128550; </span>
         </div>' . $mail->ErrorInfo;
     }
-    echo $alert; // Output the alert message
+    //echo $alert; // Output the alert message
 
     //below part is for saving those info in database
     //already connected to the databse so directly insert the info
 
-    $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message) VALUES ('$name', '$phno', '$email', '$subject', '$message')";
+    $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message) VALUES 
+    ('$name', '$phno', '$email', '$subject', '$message')";
     $result = mysqli_query($conn, $sql);
 
     if($result){
         //retreive id
         $cfid = mysqli_insert_id($conn);
 
-        if(isset($_FILES['attachment'])){
+        if(isset($_FILES['attachment']) && $_FILES['attachment']['error'] == UPLOAD_ERR_OK){
             $filename = $_FILES['attachment']['name'];
             $filetype = $_FILES['attachment']['type'];
             $filesize = $_FILES['attachment']['size'];
             $uploaddate = date("Y-m-d H:i:s");
     
             //now store file
-            $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
-            mysqli_query($conn,$sqlfile);
+            $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
+            ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
         }
     }
     
 }
-?>;
+?>
