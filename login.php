@@ -12,7 +12,7 @@ if (isset($_SESSION["user"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login-register-style.css">
 </head>
 <body>
     <div class="container">
@@ -20,15 +20,14 @@ if (isset($_SESSION["user"])) {
         <?php
         if (isset($_POST["login"])) {
            $email = $_POST["email"];
-           $password = $_POST["password"];
-            require_once "database.php";
-            $sql = "SELECT * FROM users WHERE email = '$email'";
+            require_once "connect.php";
+            $sql = "SELECT * FROM customer WHERE cust_email = '$email'";
             $result = mysqli_query($conn, $sql);
             $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
             if ($user) {
-                if (password_verify($password, $user["password"])) {
+                if (password_verify($_POST["password"], $user["cust_pass"])) {
                     session_start();
-                    $_SESSION["user"] = "yes";
+                    $_SESSION["user"] = $user["cust_ID"];
                     header("Location: index.php");
                     die();
                 }else{
