@@ -1,3 +1,5 @@
+<?php include 'mail.php';?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -90,13 +92,17 @@
                                 <small class="error-input"></small>
                             </div>
                             <div class="inputbox w80">
-                                <input type="submit" value="Submit">
+                                <input type="submit" name="submit" value="Submit">
                                 
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+
+            <!--alert messaage for contact form-->
+            <?php echo $alert; ?>
+
             <div class="maparea">
                 <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
@@ -124,6 +130,11 @@
             })
 
             
+        </script>
+        <script>
+            if(window.history.replaceState){
+                window.history.replaceState(null,null,window.location.href);
+            }
         </script>
     </body>
     
