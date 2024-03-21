@@ -1,4 +1,15 @@
 <?php
+session_start();
+// Check if the "user" key is set in the session
+if(isset($_SESSION["user"])) {
+    $cust_ID = $_SESSION["user"];
+    $sql = "SELECT * FROM customer WHERE cust_ID = '$cust_ID'";
+    $result = mysqli_query($conn, $sql);
+    $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+} else {
+    // If "user" key is not set, set $user to an empty array
+    $user = array();
+}
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <div class="top_banner">
@@ -43,28 +54,37 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </ul>
             </div>
             
+
             <div class="m-0" style="width: 300px; text-align: right;">
-                <div class="icons">
-                    <a href="#" class="<?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-user"><span style="padding-left: 5px;">Username</span></i>
-                    </a>
-                    <a href="#" class="<?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-shopping-cart"></i>
-                    </a>
-                    <a href="#" class="<?php echo ($current_page == 'wishlist.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-heart"></i>
-                    </a>
-                    <a href="#" class="<?php echo ($current_page == 'notifications.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-bell"></i>
-                    </a>
-                </div>
-                <!-- <div class="buttons">
-                    <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>
-                    <button class="signup">Sign up</button>
-                </div> -->
-                <a onclick="openNav()">
-                    <i class="fas fa-bars"></i>
-                </a>
+            <?php
+             if (is_array($user) && !empty($user)) {
+                echo '<div class="icons">
+                        <a href="#" class="' . ($current_page == 'profile.php' ? 'active-menu' : '') . '">
+                            <i class="fas fa-user"><span style="padding-left: 5px;">' . $user["cust_username"] . '</span></i>
+                        </a>
+                        <a href="#" class="' . ($current_page == 'cart.php' ? 'active-menu' : '') . '">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                        <a href="#" class="' . ($current_page == 'wishlist.php' ? 'active-menu' : '') . '">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <a href="#" class="' . ($current_page == 'notifications.php' ? 'active-menu' : '') . '">
+                            <i class="fas fa-bell"></i>
+                        </a>
+                        <a href="logout.php" class="btn btn-warning">Logout</a>
+                    </div>';
+                } else {
+                    echo '
+                        <div class="buttons">
+                            <button class="login" onclick="window.location.href = \'login.php\';"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>
+                            <button class="signup" onclick="window.location.href = \'registration.php\';">Sign up</button>
+                        </div>
+                        <span onclick="openNav()">
+                            <i class="fas fa-bars"></i>
+                        </span>';
+                }                
+            ?>
+
             </div>
         </div>
     </div>
