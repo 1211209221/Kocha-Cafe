@@ -23,15 +23,13 @@
 
         <div class="container-fluid container">
             <div class="col-12 m-auto">
-                <section class="contact-banner">
-                    <img src="banner background/3.png" id="clouds">
-                    <img src="banner background/4.png" id="text">
-                    <img src="banner background/2.png" id="mountain">
-                    <img src="banner background/1.png" id="jungle">
-                </section>
+                
                 <div class="breadcrumbs">
                         <a href="index.php">Home</a> > <a class="active">Contact Us</a>
                     </div>
+                <section class="contact-banner">
+                    
+                </section>
                 <div class="contact-form">
                     <h3>Welcome to Reach Us &#129303;</h3> 
                     <p>Here at <b>Kocha Cafe</b>, we always appreciate your feedback to improve our products and services. <br>If you are experiencing any problems or have questions, suggestions or other comments about our products and services, kindly contact us. 
