@@ -11,43 +11,43 @@
         </div>
         <span>Home</span>
     </a>
-    <a href="menu.php" class="<?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">
+    <a href="menu.php" class="<?php echo ($current_page == 'menu.php' || $current_page == 'item.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-utensils"></i>
         </div>
         <span>Menu</span>
     </a>
-    <a href="#" class="<?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-comment"></i>
-        </div>
-        <span>Blog</span>
-    </a>
-    <a href="contactus.php" class="<?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-envelope"></i>
-        </div>
-        <span>Contact Us</span>
-    </a>
-    <a href="#" class="<?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-user"></i>
-        </div>
-        <span>Profile</span>
-    </a>
-    <a href="#" class="<?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
+    <a href="cart.php" class="<?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-shopping-cart"></i>
         </div>
         <span>Cart</span>
     </a>
-    <a href="#" class="<?php echo ($current_page == 'wishlist.php') ? 'active-menu' : ''; ?>">
+    <a href="profile.php" class="<?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
+        <div>
+            <i class="fas fa-user"></i>
+        </div>
+        <span>Profile</span>
+    </a>
+    <a href="contactus.php" class="<?php echo ($current_page == 'contactus.php') ? 'active-menu' : ''; ?>">
+        <div>
+            <i class="fas fa-envelope"></i>
+        </div>
+        <span>Contact Us</span>
+    </a>
+    <a href="blog.php" class="<?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">
+        <div>
+            <i class="fas fa-comment"></i>
+        </div>
+        <span>Blog</span>
+    </a>
+    <a href="wishlist.php" class="<?php echo ($current_page == 'wishlist.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-heart"></i>
         </div>
         <span>Wishlist</span>
     </a>
-    <a href="#" class="<?php echo ($current_page == 'notifications.php') ? 'active-menu' : ''; ?>">
+    <a href="notifications.php" class="<?php echo ($current_page == 'notifications.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-bell"></i>
         </div>

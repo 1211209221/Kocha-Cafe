@@ -73,27 +73,27 @@
         <div class="container-fluid container" style="padding-top: 3px !important;">
             <div class="col-12 m-auto icon-container">
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
+                    <a href="index.php" class="underline-animation <?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
                         <i class="fas fa-home-lg"></i>
                         <span>Home</span>
                     </a>
                 </div>
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">
+                    <a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php' || $current_page == 'item.php') ? 'active-menu' : ''; ?>">
                         <i class="fas fa-utensils"></i>
                         <span>Menu</span>
                     </a>
                 </div>
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-comment-alt-lines"></i>
-                        <span>Blog</span>
+                    <a class="underline-animation <?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
                     </a>
                 </div>
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'contact.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-envelope"></i>
-                        <span>Contact</span>
+                    <a class="underline-animation <?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
                     </a>
                 </div>
             </div>

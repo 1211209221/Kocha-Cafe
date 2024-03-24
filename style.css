@@ -146,8 +146,10 @@ a{
     transform: translateY(-3px);
 }
 
-.navbar a.active-menu i{
-	color: #E2857B;
+.navbar_socials a i:hover{
+	color: #50A596;
+	transform: scale(1.15);
+	transform: translateY(-3px);
 }
 
 .navbar a:hover{
@@ -258,7 +260,7 @@ a{
     display: inline-block;
     position: relative;
     text-decoration: none;
-    color: #E2857B;
+    color: black;
 }
 
 .underline-animation::before {
@@ -291,6 +293,14 @@ a{
 .navbar .fa-bars{
 	font-size: 25px;
 	display: none;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.navbar .fa-bars:hover{
+	color: #E2857B;
+	transform: scale(1.15);
+	transform: translateY(-3px);
 }
 
 .footer .desktop{
@@ -418,13 +428,14 @@ a{
 
 .mobile .icon a i{
 	display: inline-block;
-	font-size: 20px;
+	font-size: 22px;
 	transition: color 0.15s, transform 0.15s;
 }
 
 .mobile .icon a span{
 	display: inline-block;
 	font-size: 12px;
+	font-weight: 500;
 }
 
 .mobile .icon a:hover span,.mobile .icon a.active-menu span {
@@ -434,6 +445,10 @@ a{
 .mobile .icon a:hover i, .mobile .icon a.active-menu i{
 	color: #E2857B;
     transform: translateY(-3px);
+}
+
+.mobile .icon a:hover, .mobile .icon a.active-menu a{
+	text-decoration: none;
 }
 
 .sidenav {
@@ -1845,6 +1860,13 @@ a{
 	    top: -18px;
 	    right: -5px;
 	    font-size: 30px;
+	}
+	.navbar .login{
+		display: none;
+	}
+
+	.navbar .signup{
+		display: none;
 	}
 }
 
