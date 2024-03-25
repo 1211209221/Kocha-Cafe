@@ -24,13 +24,13 @@
         <?php
         include '../../../connect.php';
 
-        $sql = "SELECT * FROM menu_items";
+        $sql = "SELECT * FROM menu_items WHERE trash = 0";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
 
-                $sql2 = "SELECT * FROM menu_images WHERE image_ID = {$row['item_ID']} LIMIT 1";
+                $sql2 = "SELECT * FROM menu_images WHERE image_ID = {$row['item_ID']} AND trash = 0 LIMIT 1";
                 $result2 = $conn->query($sql2);
                 while ($row2 = $result2->fetch_assoc()) {
                     $image_data = $row2["data"];
@@ -49,7 +49,7 @@
                 $valid_category_ids = array(); // Define an array to store valid category IDs
 
                 foreach ($category_array as $category) {
-                    $sql3 = "SELECT category_name FROM menu_categories WHERE category_ID = {$category} LIMIT 1";
+                    $sql3 = "SELECT category_name FROM menu_categories WHERE category_ID = {$category} AND trash = 0 LIMIT 1";
                     $result3 = $conn->query($sql3);
 
                     if ($result3 && $result3->num_rows > 0) {
@@ -78,7 +78,7 @@
                 $valid_options_ids = array(); // Define an array to store valid category IDs
 
                 foreach ($options_array as $option) {
-                    $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} LIMIT 1";
+                    $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
                     $result4 = $conn->query($sql4);
 
                     if ($result4 && $result4->num_rows > 0) {

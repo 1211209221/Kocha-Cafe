@@ -11,6 +11,11 @@
         width: 60px;
     }
 </style>
+<script>
+    function confirmAction(message) {
+        return confirm("Are you sure you want to " + message + "?");
+    }
+</script>
 <?php
 include '../../../connect.php';
 
@@ -180,7 +185,7 @@ if(isset($_POST['trashOption'])) {
 function deleteCust($custom_ID, $conn) {
 
     // Delete query
-    $sql2 = "DELETE FROM menu_customization WHERE custom_ID=?";
+    $sql2 = "UPDATE menu_customization SET trash = 1 WHERE custom_ID=?";
     $stmt2 = mysqli_prepare($conn, $sql2);
     mysqli_stmt_bind_param($stmt2, 'i', $custom_ID);
 
@@ -199,14 +204,14 @@ if(isset($_POST['trashCustom'])) {
 }
 echo "<form method='post' action='".$_SERVER['PHP_SELF']."'>";
 // Display form
-$sql = "SELECT * FROM menu_customization";
+$sql = "SELECT * FROM menu_customization WHERE trash = 0";
 $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo "<input type='hidden' name='custom_ID[]' value='" . $row['custom_ID'] . "'>";
-        echo "<input type='text' name='custom_name[]' value='" . $row['custom_name'] . "' maxlength='15'>";
+        echo "<input type='text' name='custom_name[]' value='" . $row['custom_name'] . "' maxlength='15' onkeypress='return event.keyCode != 13;'>";
         echo "<input type='hidden' name='custom_options[]' value='" . $row['custom_options'] . "'>";
-        echo "<button type='submit' name='trashCustom' value='" . $row['custom_ID'] . "'>x</button>";
+        echo "<button type='submit' name='trashCustom' value='" . $row['custom_ID'] . "' onclick=\"return confirmAction('delete this customization');\">x</button>";
         echo "<br>";
 
         // Check if custom_options is not null and not empty
@@ -224,9 +229,10 @@ if ($result->num_rows > 0) {
             list($optionName, $optionPrice) = explode(",", trim($option, "()"));
             // Remove quotations from option name
             $optionName = trim($optionName, '"');
-            echo "<input type='text' name='option_name[" . $row['custom_ID'] . "][]' value='" . $optionName . "' class='option_name' maxlength='15'>";
-            echo "<input type='number' name='option_price[" . $row['custom_ID'] . "][]' step='0.10' value='" . $optionPrice . "' class='option_price'>";
-            echo "<button type='submit' name='trashOption' value='" . $row['custom_ID'] . "-" . $optionIndex . "'>x</button>";
+            echo "<input type='text' name='option_name[" . $row['custom_ID'] . "][]' value='" . $optionName . "' class='option_name' maxlength='15' onkeypress='return event.keyCode != 13;'>";
+            echo "<input type='number' min='0' name='option_price[" . $row['custom_ID'] . "][]' step='0.10' value='" . $optionPrice . "' class='option_price' onkeypress='return event.keyCode != 13;'>";
+            echo "<button type='submit' name='trashOption' value='" . $row['custom_ID'] . "-" . $optionIndex . "' onclick=\"return confirmAction('delete this option');\">x</button>";
+
             echo "<br>";
         }
              echo "</div>";
@@ -237,5 +243,5 @@ if ($result->num_rows > 0) {
 } else {
     echo "No items found";
 }
-echo "<input type='submit' name='add' value='Add'><input type='submit' name='update' value='Update'></form>";
+echo "<input type='submit' name='add' value='Add'><input type='submit' name='update' value='Update' onclick=\"return confirmAction('make these changes');\"></form>";
 ?>

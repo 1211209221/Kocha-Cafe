@@ -8,8 +8,11 @@
         width: 41px;
     }
 </style>
-
-
+<script>
+    function confirmAction(message) {
+        return confirm("Are you sure you want to " + message + "?");
+    }
+</script>
 <?php
 // Include the connection file
 include '../../../connect.php';
@@ -87,7 +90,7 @@ if(isset($_POST['set_primary'])) {
 // Define deleteCategories function outside of the if block
 function deleteCategories($category_ID, $conn) {
 
-    $sql = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID'";
+    $sql = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID' AND trash = 0";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         // Fetch rows
@@ -97,7 +100,7 @@ function deleteCategories($category_ID, $conn) {
         }
     }
     // Delete query
-    $sql2 = "DELETE FROM menu_categories WHERE category_ID=?";
+    $sql2 = "UPDATE menu_categories SET trash = 1 WHERE category_ID=?";
     $stmt2 = mysqli_prepare($conn, $sql2);
     mysqli_stmt_bind_param($stmt2, 'i', $category_ID);
 
@@ -135,7 +138,7 @@ if(isset($_POST['add'])) {
 }
 
 // Query to select all entries from the database
-$sql = "SELECT * FROM menu_categories"; // Replace 'your_table_name' with your actual table name
+$sql = "SELECT * FROM menu_categories WHERE trash = 0";
 
 // Execute the query
 $result = mysqli_query($conn, $sql);
@@ -147,19 +150,19 @@ if (mysqli_num_rows($result) > 0) {
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <?php
     function displayCategories($parentCategory, $conn, $level = 0) {
-        $sql = "SELECT * FROM menu_categories WHERE category_parent = '$parentCategory'";
+        $sql = "SELECT * FROM menu_categories WHERE category_parent = '$parentCategory' AND trash = 0";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             echo "<div style='margin-left: ".($level * 20)."px;'>"; // Adjust the margin based on the level
             while ($row = $result->fetch_assoc()) {
                 echo "<input type='hidden' name='category_ID[]' value='" . $row['category_ID'] . "'>";
-                echo "<input type='text' name='category_name[]' value='" . $row['category_name'] . "' maxlength='20'>";
+                echo "<input type='text' name='category_name[]' value='" . $row['category_name'] . "' maxlength='20' onkeypress='return event.keyCode != 13;'>";
                 echo "<input type='hidden' name='category_parent[]' value='" . $row['category_parent'] . "'>";
                 echo "<select name='category_display[]'>";
                 echo "<option value='0'" . ($row['category_display'] == 0 ? ' selected' : '') . ">No</option>";
                 echo "<option value='1'" . ($row['category_display'] == 1 ? ' selected' : '') . ">Yes</option>";
                 echo "</select>";
-                echo "<button type='submit' name='trash' value='" . $row['category_ID'] . "'>x</button>
+                echo "<button type='submit' name='trash' value='" . $row['category_ID'] . "' onclick=\"return confirmAction('delete this sub category');\">x</button>
                 <br>";
                 displayCategories($row['category_ID'], $conn, $level); // Increment the level for nested categories
             }
@@ -167,7 +170,7 @@ if (mysqli_num_rows($result) > 0) {
         }
     }
 
-    $sql = "SELECT * FROM menu_categories WHERE category_parent = ''";
+    $sql = "SELECT * FROM menu_categories WHERE category_parent = '' AND trash = 0";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -175,13 +178,13 @@ if (mysqli_num_rows($result) > 0) {
                 echo '<i class="fas fa-star"></i>';
             }
             echo "<input type='hidden' name='category_ID[]' value='" . $row['category_ID'] . "'>";
-            echo "<input type='text' name='category_name[]' value='" . $row['category_name'] . "' maxlength='15'>";
+            echo "<input type='text' name='category_name[]' value='" . $row['category_name'] . "' maxlength='15' onkeypress='return event.keyCode != 13;'>";
             echo "<input type='hidden' name='category_parent[]' value='" . $row['category_parent'] . "'>";
             echo "<select name='category_display[]'>";
             echo "<option value='0'" . ($row['category_display'] == 0 ? ' selected' : '') . ">No</option>";
             echo "<option value='1'" . ($row['category_display'] == 1 ? ' selected' : '') . ">Yes</option>";
             echo "</select>";
-            echo "<button type='submit' name='trash' value='" . $row['category_ID'] . "'>x</button>
+            echo "<button type='submit' name='trash' value='" . $row['category_ID'] . "' onclick=\"return confirmAction('delete this category');\">x</button>
             <br>";
             displayCategories($row['category_ID'], $conn, 1); // Start with level 1 for top-level categories
         }
@@ -189,7 +192,7 @@ if (mysqli_num_rows($result) > 0) {
         echo "No items found";
     }
 ?>
-        <input type="submit" name="update" value="Update">
+        <input type="submit" name="update" value="Update" onclick='return confirmAction("make these changes");'>
     </form>
 <?php
 } else {
@@ -204,7 +207,7 @@ if (mysqli_num_rows($result) > 0) {
         <option value="">None (main category)</option>
         <?php
             // Query to fetch parent categories from the database
-            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories ORDER BY category_name ASC";
+            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE trash = 0 ORDER BY category_name ASC";
             $parent_categories_result = $conn->query($parent_categories_sql);
 
             // Display options for parent categories
@@ -220,7 +223,7 @@ if (mysqli_num_rows($result) > 0) {
 </form>
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <?php
-    $sql = "SELECT * FROM menu_categories WHERE category_parent = 0";
+    $sql = "SELECT * FROM menu_categories WHERE category_parent = 0 AND trash = 0";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         echo "<select name='category_primary'>";

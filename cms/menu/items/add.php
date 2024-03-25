@@ -183,7 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                     ?>
                 </div>
-                <input type="text" name="item_options" id="item_options" value="<?php echo implode(',', $selectedOptionIDs); ?>" style=" opacity: 0; height: 0; width: 100px; top: -10px; position: relative;" required>
+                <input type="text" name="item_options" id="item_options" value="<?php echo implode(',', $selectedOptionIDs); ?>" style=" opacity: 0; height: 0; width: 100px; top: -10px; position: relative;">
                 <script>
                     var selectedOptionIDs = <?php echo json_encode($selectedOptionIDs); ?>;
 
@@ -230,11 +230,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </script>
                 <br>
         <label for="item_price">Item Price:</label>
-        <input type="number" name="item_price" id="item_price" step="any" required><br>
+        <input type="number" min='0' name="item_price" id="item_price" step="any" required><br>
         <label for="item_description">Item Description:</label><br>
         <textarea name="item_description" id="item_description" rows="4" cols="50" required></textarea><br>
         <label for="item_discount">Item Discount:</label>
-        <input type="number" name="item_discount" id="item_discount" value="0" required><br>
+        <input type="number" min='0' name="item_discount" id="item_discount" value="0" required><br>
         <label for="item_availability">Item Availability:</label>
         <select name="item_availability" id="item_availability">
             <option value="1">Available</option>

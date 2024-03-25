@@ -19,7 +19,7 @@
             include 'sidebar.php';
             include 'gototopbtn.php';
 
-            $sql2 = "SELECT * FROM menu_items WHERE 1=1";
+            $sql2 = "SELECT * FROM menu_items WHERE 1=1 AND trash = 0";
 
             // // Close connection
             // $conn->close();
@@ -48,7 +48,7 @@
 
 
             function generateSQL() {
-                var sql_menu = "SELECT * FROM menu_items WHERE ";
+                var sql_menu = "SELECT * FROM menu_items WHERE trash = 0 AND ";
 
                 // Checkboxes
                 var discountCheckbox = document.querySelector('input[name="discount"]');
@@ -115,7 +115,7 @@
                 sql_menu += "(" + inClause + ")";
             } else {
                 // If no checkboxes are checked, select all menu items
-                sql_menu += "1=1";
+                sql_menu += "1=1 AND trash = 0";
             }
 
             // Append discount condition if the discount checkbox is checked
@@ -172,7 +172,7 @@
 
             <?php
                 function filterSubCategories($selectedCategories, $conn, $categorySQL) {
-                    $sql_sub_cate = "SELECT * FROM menu_categories WHERE category_parent = 0";
+                    $sql_sub_cate = "SELECT * FROM menu_categories WHERE category_parent = 0 AND trash = 0";
                     $result_sub_cate = $conn->query($sql_sub_cate);
 
                     $category_results = array(); // Initialize array to store results for each category
@@ -190,7 +190,7 @@
                                 $categorySQL.=   " FIND_IN_SET('$category_ID', item_category)";
 
 
-                                $sql_primary_cate = "SELECT category_ID FROM menu_categories WHERE category_primary = 1";
+                                $sql_primary_cate = "SELECT category_ID FROM menu_categories WHERE category_primary = 1 AND trash = 0";
                                 $result_primary_cate = $conn->query($sql_primary_cate);
                                 if ($result_primary_cate->num_rows > 0) {
                                     while ($row_primary_cate = $result_primary_cate->fetch_assoc()) {
@@ -218,7 +218,7 @@
                 // Function to get all sub-categories recursively
                 function getSubCategories2($category_ID, $conn) {
                     $sub_categories = array(); // Initialize array to store sub-categories
-                    $sql_sub = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID'";
+                    $sql_sub = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID' AND trash = 0";
                     $result_sub = $conn->query($sql_sub);
                     
                     if ($result_sub->num_rows > 0) {
@@ -258,7 +258,7 @@
                         $whereClause .= "($categorySQL)";
                     }
                      else {
-                        $whereClause .= "1=1";
+                        $whereClause .= "trash = 0 AND 1=1";
                     }
                     if ($filterState['availabilityChecked']) {
                         $whereClause .= " AND item_availability != 0";
@@ -279,6 +279,7 @@
                     if (!empty($filterState['searchedKeyword'])){
                         $whereClause .= " AND item_name LIKE '%{$filterState['searchedKeyword']}%'";
                     }
+                    $whereClause .= " AND trash = 0";
                     if (!empty($filterState['valueSelected'])&&($filterState['valueSelected']=="priceHighToLow")){
                         $whereClause .= " ORDER BY item_price*((100-item_discount)*0.01) DESC";
                     }
@@ -293,7 +294,7 @@
                     $sql2 = "SELECT * FROM menu_items" . $whereClause;
                 } else {
                     // If no filter state is stored, select all menu items
-                    $sql2 = "SELECT * FROM menu_items WHERE 1=1";
+                    $sql2 = "SELECT * FROM menu_items WHERE 1=1 AND trash = 0";
                 }
 
                 if (preg_match('/WHERE\s*\(\s*\)/i', $sql2)) {
@@ -417,7 +418,7 @@
                                 <hr>
                                 <?php
                                     function getSubCategories($category_ID, $conn, $category_parent) {
-                                        $sql_sub = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID'";
+                                        $sql_sub = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID' AND trash = 0";
                                         $result_sub = $conn->query($sql_sub);
                                         
                                         if ($result_sub->num_rows > 0) {
@@ -434,7 +435,7 @@
                                                 
                                                 // Check if this category has subcategories
                                                 $sub_category_ID = $row_sub['category_ID'];
-                                                $sql_has_sub = "SELECT * FROM menu_categories WHERE category_parent = '$sub_category_ID'";
+                                                $sql_has_sub = "SELECT * FROM menu_categories WHERE category_parent = '$sub_category_ID' AND trash = 0";
                                                 $result_has_sub = $conn->query($sql_has_sub);
                                                 
                                                 if ($result_has_sub->num_rows > 0) {
@@ -448,7 +449,7 @@
                                         }
                                     }
 
-                                    $sql_cate = "SELECT * FROM menu_categories WHERE category_parent = 0 ORDER BY category_primary DESC";
+                                    $sql_cate = "SELECT * FROM menu_categories WHERE category_parent = 0 and trash = 0 ORDER BY category_primary DESC";
                                     $result_cate = $conn->query($sql_cate);
 
                                     if ($result_cate->num_rows > 0) {
@@ -550,7 +551,7 @@
                                     }
                                 }
 
-                                $sql = "SELECT * FROM menu_categories WHERE category_display = 1";
+                                $sql = "SELECT * FROM menu_categories WHERE category_display = 1 AND trash = 0";
                                 $result = $conn->query($sql);
 
                                 echo '<div class="series">';
@@ -568,7 +569,7 @@
                                                 $selectedCategoryIDs = explode(',', $row2['item_category']);
                                             }
 
-                                            $sql3 = "SELECT * FROM menu_images WHERE image_ID = {$row2['item_ID']} LIMIT 1";
+                                            $sql3 = "SELECT * FROM menu_images WHERE image_ID = {$row2['item_ID']} AND trash = 0 LIMIT 1";
                                             $result3 = $conn->query($sql3);
                                             while ($row3 = $result3->fetch_assoc()) {
                                                 $image_data = $row3["data"];
@@ -617,6 +618,7 @@
                                         else{
                                             // Remove ORDER BY and everything after it
                                             $sql2 = preg_replace('/\s+ORDER\s+BY\s+.*$/i', '', $sql2);
+                                           // Replace the first occurrence of FIND_IN_SET
 
                                             $result2 = $conn->query($sql2);
                                             $num_menu_items = $sql2 . " AND (FIND_IN_SET('{$row['category_ID']}', item_category))";
@@ -633,7 +635,7 @@
                                                     $selectedCategoryIDs = explode(',', $row2['item_category']);
                                                 }
 
-                                                $sql3 = "SELECT * FROM menu_images WHERE image_ID = {$row2['item_ID']} LIMIT 1";
+                                                $sql3 = "SELECT * FROM menu_images WHERE image_ID = {$row2['item_ID']} and trash = 0 LIMIT 1";
                                                 $result3 = $conn->query($sql3);
                                                 while ($row3 = $result3->fetch_assoc()) {
                                                     $image_data = $row3["data"];
@@ -683,7 +685,7 @@
 
                                 echo'</div>';
                                 if ($itemsGenerated == 0) {
-                                    echo '<div class="no_items">No menu items.</div>';
+                                    echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items.</div>';
                                 }
                                 echo'</div>';
                             ?>

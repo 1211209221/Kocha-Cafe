@@ -9,6 +9,7 @@ if(isset($_SESSION["user"])) {
 } else {
     // If "user" key is not set, set $user to an empty array
     $user = array();
+    $cust_ID = 0;
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
@@ -65,13 +66,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <a href="#" class="' . ($current_page == 'cart.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-shopping-cart"></i>
                         </a>
-                        <a href="#" class="' . ($current_page == 'wishlist.php' ? 'active-menu' : '') . '">
+                        <a href="wishlist.php" class="' . ($current_page == 'wishlist.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-heart"></i>
                         </a>
                         <a href="#" class="' . ($current_page == 'notifications.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-bell"></i>
                         </a>
-                        <a href="logout.php" class="btn btn-warning">Logout</a>
+                        <a href="logout.php"><i class="fas fa-sign-out-alt"></i></a>
                     </div>';
                 } else {
                     echo '
