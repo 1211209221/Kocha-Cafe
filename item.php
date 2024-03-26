@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Title</title>
-
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+        <link rel="icon" href="images/logo/logo_icon.png">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="script.js"></script>
         <script src="gototop.js"></script>
+        <?php
+            include 'connect.php';
+
+            if (isset($_GET['ID'])) {
+                $item_ID = $_GET['ID'];
+            }
+            $sql_getItemName = "SELECT item_name FROM menu_items WHERE item_ID = $item_ID AND trash = 0 LIMIT 1";
+            
+            $result_getItemName = $conn->query($sql_getItemName);
+            if ($result_getItemName->num_rows > 0) {
+                 while ($row_getItemName = $result_getItemName->fetch_assoc()) {
+                    echo '<title>'.$row_getItemName['item_name'].' | Kocha Café</title>';
+                 }
+            }
+            // // Close connection
+            // $conn->close();
+    
+        ?>
     </head>
     <body>
         <?php
-            include 'connect.php';
             include 'top.php';
             include 'gototopbtn.php';
 
-            // // Close connection
-            // $conn->close();
-
-            if (isset($_GET['ID'])) {
-                // Retrieve the value of the ID parameter
-                $item_ID = $_GET['ID'];
-            }
-
             $sql_getWishlist = "SELECT cust_wishlist FROM customer WHERE cust_ID = $cust_ID AND trash = 0 LIMIT 1";
+
             $found_wishlisted_item = 0;
             $updated_wishlist = ''; // Variable to store the updated wishlist
             $result_getWishlist = $conn->query($sql_getWishlist);
@@ -63,7 +72,54 @@
                     } else {
                         echo "Error: " . $sql_insert . "<br>" . $conn->error;
                     }
-                } elseif(isset($_POST['menuForm'])) {
+                } elseif(isset($_POST['add_button'])) {
+                    $item_cart = "";
+                    $sql_cart_check = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID";
+
+                    $result_cart_check = $conn->query($sql_cart_check);
+                    if ($result_cart_check->num_rows > 0) {
+                        while ($row_cart_check = $result_cart_check->fetch_assoc()) {
+                            $cust_cart_value = $row_cart_check['cust_cart'];
+                            if(!empty($cust_cart_value)){
+                                $item_cart = $cust_cart_value . ",";
+                            }
+                        }
+                    }
+
+                    if(!empty($_POST['item_customization_ID'])){
+                        $item_customization_IDs = $_POST['item_customization_ID'];
+                        $item_customization_values = $_POST['item_customization_value'];
+                    }
+                    
+                    $item_quantity = $_POST['item_quantity'];
+                    $item_request = $_POST['item_request'];
+
+                    $item_cart .= "{(".$item_ID."),(".$item_quantity."),(".$item_request."),(";
+
+                    if(!empty($_POST['item_customization_ID'])){
+                        for($i = 0; $i < count($item_customization_values); $i++) {
+                            $item_customization_value = $item_customization_values[$i];
+                            $item_customization_ID = $item_customization_IDs[$i];
+
+                            $item_cart .= "[".$item_customization_ID .",". $item_customization_value ."]";
+
+                            if(isset($item_customization_IDs[$i + 1])) {
+                                $item_cart .= ",";
+                            }
+                        }
+                    }
+                    $item_cart .= ")}";
+
+                    $sql_cart = "UPDATE customer SET cust_cart = '$item_cart' WHERE cust_ID = $cust_ID";
+
+                    // Execute the SQL query
+                    if ($conn->query($sql_cart) === TRUE) {
+                        header("Location: item.php?ID=".$item_ID);
+                        exit();
+                        // echo "New record created successfully";
+                    } else {
+                        echo "Error: " . $sql_cart . "<br>" . $conn->error;
+                    }
                   
                 } else if(isset($_POST['submit_wishlist'])) {
                     if(empty($user)){
@@ -237,7 +293,7 @@
                                     echo '<div class="price">RM '.$row['item_price'].'</div>';
                                 }
                                 echo '</div>';
-                                echo '<form id="menuForm" action="menu.php" method="post">';
+                                echo '<form id="addForm" method="post">';
                                 echo '<div class="item_details">';
 
                                 $sql_sub_cate = "SELECT * FROM menu_categories WHERE category_parent = 0  AND trash = 0 ";
@@ -310,8 +366,9 @@
 
                                         echo '<div class="item_attribute options">
                                         <div class="item_attribute_container">'. $row3['custom_name'].'</div>
-                                        <select class="option_choices">
-                                        <option id="select_default" value="Select..." selected disabled>Select...</option>';
+                                        <input type="hidden" name="item_customization_ID[]" value='. $row3['custom_ID'] . '>
+                                        <select name="item_customization_value[]" class="option_choices" required>
+                                        <option id="select_default" value="" selected disabled>Select...</option>';
 
                                         // Extracting option choice and price using regular expressions
                                         preg_match_all('/\("([^"]+)",([\d.]+)\)/', $custom_options_string, $matches, PREG_SET_ORDER);
@@ -321,7 +378,7 @@
                                             $option_choice = $match[1];
                                             $option_price = $match[2];
 
-                                            echo "<option> $option_choice (+RM $option_price)</option>";
+                                            echo "<option value='$option_choice'> $option_choice (+RM $option_price)</option>";
                                         }
 
                                         echo '
@@ -338,7 +395,7 @@
                                         }
                                        else{
                                             echo '<span class="minus">-</span>';
-                                            echo '<input type="text" value="1"/>';
+                                            echo '<input name="item_quantity" id="item_quantity" type="text" value="1"/>';
                                             echo '<span class="plus">+</span>';
                                        }
                                         
@@ -347,15 +404,15 @@
                                 echo '<div class="item_attribute options">
                                     <div class="item_attribute_container">Extra Requests</div>';
                                     if($row['item_availability'] == 0){
-                                        echo '<textarea class="disabled"></textarea>';
+                                        echo '<input name="item_request" id="item_request" class="disabled"></textarea>';
                                     }
                                     else{
-                                        echo '<textarea></textarea>';
+                                        echo '<textarea name="item_request" id="item_request"></textarea>';
                                     }
-                                 echo '</div>';
+                                echo '</div>';
                                 echo '</div>';
                             ?>
-                            <input type="button" value="Add to Cart" class="cart_button <?php if($row['item_availability'] == 0){ echo 'disabled'; } ?>">
+                            <input type="submit" name="add_button" id="add_button" value="Add to Cart" class="cart_button <?php if($row['item_availability'] == 0){ echo 'disabled'; } ?>">
                             </form>
                         </div>
                     </div>

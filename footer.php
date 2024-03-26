@@ -74,25 +74,25 @@
             <div class="col-12 m-auto icon-container">
                 <div class="icon">
                     <a href="index.php" class="underline-animation <?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-home-lg"></i>
+                        <i class="far fa-home-lg"></i>
                         <span>Home</span>
                     </a>
                 </div>
                 <div class="icon">
                     <a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php' || $current_page == 'item.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-utensils"></i>
+                        <i class="far fa-utensils"></i>
                         <span>Menu</span>
                     </a>
                 </div>
                 <div class="icon">
                     <a class="underline-animation <?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="far fa-shopping-cart"></i>
                         <span>Cart</span>
                     </a>
                 </div>
                 <div class="icon">
                     <a class="underline-animation <?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
-                        <i class="fas fa-user"></i>
+                        <i class="far fa-user"></i>
                         <span>Profile</span>
                     </a>
                 </div>
