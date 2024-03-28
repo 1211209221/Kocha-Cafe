@@ -27,8 +27,23 @@
                 <div class="breadcrumbs">
                         <a href="index.php">Home</a> > <a class="active">Contact Us</a>
                     </div>
-                <section class="contact-banner">
-                    
+                    <section class="contact-banner">
+                    <img src="banner background/1.png" id = "leftimg">
+                    <img src="banner background/2.png" id = "rightimg">
+                    <div class="banner-text">
+                        <h2>CONTACT US &#128238;</h2>
+                        <div class="wrap-text">
+                            <p>If you have any </p>
+                            <ul class="dynamic-text">
+                                <li><span>feedback.</span></li>
+                                <li><span>questions.</span></li>
+                                <li><span>suggestions.</span></li>
+                                <li><span>comments.</span></li>
+                            </ul>
+                        </div>
+                        <p class="line-2"><i class="far fa-hand-point-right"></i> Any other inquiries are also welcome! We will strive to respond to you <u>within 24 hours</u> .</p>
+                        <p class="line-2"><i class="far fa-hand-point-right"></i> If you think we did a great job we'd also love to hear from you.</p>
+                    </div>
                 </section>
                 <div class="contact-form">
                     <h3>Welcome to Reach Us &#129303;</h3> 
@@ -62,7 +77,7 @@
                             </div>
                         </div>
                         <div class="contactForm">
-                            <form id="Contactform" action="mail.php" method="POST" enctype="multipart/form-data">
+                            <form id = "Contactform" action ="mail.php" method ="POST" enctype ="multipart/form-data">
                                 <h4>SEND MESSAGE</h4>
                                 <div class="form">
                                     <div class="inputbox w50 error">
