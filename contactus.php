@@ -11,6 +11,7 @@
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="gototop.js"></script>
         <script src="contactvalidation.js"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
 
     <body>
@@ -47,11 +48,6 @@
                     </div>
                 </section>
                 <div class="contact-form">
-                    <h3>Welcome to Reach Us &#129303;</h3> 
-                    <p>Here at <b>Kocha Cafe</b>, we always appreciate your feedback to improve our products and services. <br>If you are experiencing any problems or have questions, suggestions or other comments about our products and services, kindly contact us. 
-                        <br>If you think we did a great job we'd also love to hear from you.</p>
-                    <br>
-
                     <div class="form-box">
                         <div class="contact-info">
                             <h4>CONTACT INFO</h4>
@@ -86,15 +82,15 @@
                                         <input type="text" name="name" class="name" placeholder="e.g. Eric Lim Ming" required>
                                         
                                     </div>
-                                    <div class="inputbox w50 error">
+                                    <div class="inputbox w50">
                                         <label for="phone">Phone Number:</label>
                                         <input type="tel" name="phno" class="phno" placeholder="e.g. +6012345678" required>
                                     </div>
-                                    <div class="inputbox w50 error">
+                                    <div class="inputbox w50">
                                         <label for="email">Email Address:</label>
                                         <input type="email" name="email" class="email" placeholder="e.g. eric123@gmail.com" required>
                                     </div>
-                                    <div class="inputbox w50 error">
+                                    <div class="inputbox w50">
                                         <label for="subject">Subject:</label>
                                         <input type="text" name="subject" class="subject" placeholder="e.g. Feedback" required>
                                     </div>
@@ -102,15 +98,18 @@
                                         <label for="file">File: <span>(optional)</span></label>
                                         <input type="file" name="attachment">
                                     </div>
-                                    <div class="inputbox w80 error">
+                                    <div class="inputbox w80">
                                         <label for="message">Message:</label>
                                         <textarea name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
                                         <small class="error-input"></small>
                                     </div>
-                                    <div class="inputbox w80">
+                                    <div id="dicrecaptcha" class="g-recaptcha w50" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                    </div>
+                                    <div class="inputbox w50">
                                         <input type="submit" name="submit" value="Submit">
                                         
                                     </div>
+                                    
                                 </div>
                             </form>
                         </div>
