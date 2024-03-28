@@ -49,7 +49,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
                 <ul class="m-0" style="display: inline;">
                     <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'about.php') ? 'active-menu' : ''; ?>">About Us</a></li>
-                    <li class="m-auto col-md-4"><a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php') ? 'active-menu' : ''; ?>">Menu</a></li>
+                    <li class="m-auto col-md-4"><a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php' || $current_page == 'item.php') ? 'active-menu' : ''; ?>">Menu</a></li>
                     <li class="m-auto col-md-4"><a href="contactus.php" class="underline-animation <?php echo ($current_page == 'contactus.php') ? 'active-menu' : ''; ?>">Contact Us</a></li>
                     <li class="m-auto col-md-4"><a href="#" class="underline-animation <?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">Blog</a></li>
                 </ul>
@@ -64,7 +64,23 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="fas fa-user"><span style="padding-left: 5px;">' . $user["cust_username"] . '</span></i>
                         </a>
                         <a href="cart.php" class="' . ($current_page == 'cart.php' ? 'active-menu' : '') . '">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-shopping-cart">';
+
+                            $sql_get_cart_no = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                                    $result_get_cart_no = $conn->query($sql_get_cart_no);
+                                    if ($result_get_cart_no->num_rows > 0) {
+                                        while ($row_get_cart_no = $result_get_cart_no->fetch_assoc()) {
+                                            $items[] = "";
+                                            $items = explode("},{", $row_get_cart_no['cust_cart']);
+                                            $items = array_filter($items, 'strlen');
+
+                                            if ((count($items)) > 0){
+                                                echo '<div class="notification_circle">'.(count($items)).'</div>';
+                                            }
+                                        }
+                                    }
+
+                            echo'</i>
                         </a>
                         <a href="wishlist.php" class="' . ($current_page == 'wishlist.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-heart"></i>

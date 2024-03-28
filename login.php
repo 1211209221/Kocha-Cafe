@@ -13,6 +13,7 @@ if (isset($_SESSION["user"])) {
     <title>Login | Kocha Café</title>
     <link rel="icon" href="images/logo/logo_icon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
     <link rel="stylesheet" href="login-register-style.css">
 </head>
 <body>
