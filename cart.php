@@ -143,8 +143,8 @@
 
                     // Execute the SQL query
                     if ($conn->query($sql_cart) === TRUE) {
-                        // header("Location: cart.php");
-                        // exit();
+                        header("Location: cart.php");
+                        exit();
                         // echo "New record created successfully";
                     } else {
                         echo "Error: " . $sql_cart . "<br>" . $conn->error;
@@ -365,6 +365,31 @@
                     locationEditDiv.classList.remove('appear');
                 }
             }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                const checkoutButton = document.querySelector('.checkout_button');
+                const cancelButon = document.querySelector('.cancel_button');
+                const sideContainer = document.querySelector('.side_container');
+
+                checkoutButton.addEventListener('click', function() {
+                    // Add the class 'reveal' to the side container
+                    sideContainer.classList.add('reveal');
+                    
+                    // Add class to body to prevent scrolling
+                    document.body.classList.add('no-scroll');
+                    
+                    // Scroll to the top
+                    window.scrollTo(0, 0);
+                });
+
+                cancelButon.addEventListener('click', function() {
+                    // Remove the class 'reveal' from the side container
+                    sideContainer.classList.remove('reveal');
+                    
+                    // Remove class from body to enable scrolling
+                    document.body.classList.remove('no-scroll');
+                });
+            });
         </script>
         <div class="cart">
             <div class="container-fluid container">
@@ -374,9 +399,9 @@
                     </div>
                     <form id="cartForm" method="post">
                         <div class="row d-flex justify-content-between pb-1">
-                            <div class="col-12 col-lg-8">
-                                    <div class="cart_header">
-                                        <span class="p-0 d-flex justify-content-start align-items-center"><i class="far fa-shopping-bag pr-2"></i>Your Cart</span>
+                            <div class="col-12 col-lg-8 pb-4 pb-sm-5">
+                                <div class="cart_header">
+                                    <span class="p-0 d-flex justify-content-start align-items-center"><i class="far fa-shopping-cart pr-2"></i>Shopping Cart</span>
                                     <?php
                                     $sql_get_cart = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
                                     $result_get_cart = $conn->query($sql_get_cart);
@@ -424,7 +449,7 @@
                                                             echo '
                                                             <div class="item_container">
                                                                 <div class="item_top">
-                                                                    <div class=" col-7 d-flex flex-row p-0">
+                                                                    <div class=" col-sm-7 col-10 d-flex flex-row p-0">
                                                                         <img src='.$src.' class="item_image">
                                                                         <div class="d-flex align-items-center">
                                                                             <div class="details">
@@ -504,6 +529,8 @@
                                         }
                                     ?>
                                 </div>
+                                <hr>
+                                <div class="checkout_button"> Check Out</div>
                             </div>
                             <?php
                                 $sql_payment = "SELECT * FROM customer WHERE cust_ID = $cust_ID  AND trash = 0 LIMIT 1";
@@ -511,7 +538,8 @@
 
                                 if ($result_payment->num_rows > 0) {
                                     while ($row_payment = $result_payment->fetch_assoc()) {
-                                        echo '<div class="col-0 col-lg-4 mx-auto">
+                                        echo '<div class="col-0 col-lg-4 pb-sm-5 pb-0 mx-auto cart_side">
+                                        <div class="side_container">
                                             <div class="payment_container">
                                                 <div class="payment_header">
                                                     <i class="far fa-money-check-edit"></i><span>Payment & Address</span>
@@ -583,7 +611,7 @@
                                             <div class="order_summary_container">
                                                 <div class="justify-content-between d-flex align-items-center">
                                                     <div class="order_summary_header">
-                                                        <i class="far fa-shopping-cart"></i><span>Order Summary</span>
+                                                        <i class="far fa-clipboard-list-check"></i><span>Order Summary</span>
                                                     </div>
                                                     <div id="cart_no"></div>
                                                 </div>
@@ -608,7 +636,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <input type="submit" class="submit_order">                             
+                                            <input type="submit" class="submit_order">
+                                            <div class="cancel_button">Cancel</div>                             
+                                        </div>
                                         </div>';
                                     }
                                 }

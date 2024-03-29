@@ -86,7 +86,23 @@
                 </div>
                 <div class="icon">
                     <a href="cart.php" class="underline-animation <?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
-                        <i class="far fa-shopping-cart"></i>
+                        <i class="far fa-shopping-cart">
+                            <?php 
+                                $sql_get_cart_no = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                                $result_get_cart_no = $conn->query($sql_get_cart_no);
+                                if ($result_get_cart_no->num_rows > 0) {
+                                    while ($row_get_cart_no = $result_get_cart_no->fetch_assoc()) {
+                                        $items[] = "";
+                                        $items = explode("},{", $row_get_cart_no['cust_cart']);
+                                        $items = array_filter($items, 'strlen');
+
+                                        if ((count($items)) > 0){
+                                            echo '<div class="notification_circle">'.(count($items)).'</div>';
+                                        }
+                                    }
+                                }
+                            ?>
+                        </i>
                         <span>Cart</span>
                     </a>
                 </div>
