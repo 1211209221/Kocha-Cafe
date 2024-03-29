@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
+                    <a href="cart.php" class="underline-animation <?php echo ($current_page == 'cart.php') ? 'active-menu' : ''; ?>">
                         <i class="far fa-shopping-cart"></i>
                         <span>Cart</span>
                     </a>

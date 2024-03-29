@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="script.js"></script>
@@ -261,17 +262,14 @@
                                 <div class="item_title">'.$row['item_name'].'</div>
                                 <form id="wishlistForm" method="post">';
 
-                                echo'<button type="submit" name="submit_wishlist" id="submit_wishlist" class="submit_wishlist">';
-
                                     if($found_wishlisted_item == 1){
-                                        echo '<a class="item_saved saved" id="item_saved"><i class="far fa-heart"></i></a>';
+                                        echo '<button type="submit" name="submit_wishlist" id="submit_wishlist" class="submit_wishlist saved_button"><a class="item_saved saved" id="item_saved"><i class="far fa-heart"></i></a></button>';
                                     }
                                     else{
-                                        echo '<a class="item_saved" id="item_saved"><i class="far fa-heart"></i></a>';
+                                        echo '<button type="submit" name="submit_wishlist" id="submit_wishlist" class="submit_wishlist"><a class="item_saved" id="item_saved"><i class="far fa-heart"></i></a></button>';
                                     }
 
-                                echo'</button>
-                                </form></div>';
+                                echo'</form></div>';
 
                                 echo '<div class="rating">';
 
@@ -347,7 +345,7 @@
 
                                 echo '<div class="item_attribute">
                                     <div class="item_attribute_container">Description</div>
-                                    <div style="color:black; font-weight: 400;">'.$row['item_description'].'</div>
+                                    <div style="color:black; font-weight: 400; line-height: 1.2; font-size: 18px;">'.$row['item_description'].'</div>
                                 </div>
                                 <hr>
                                 <span class="options">Available Options</span>';
