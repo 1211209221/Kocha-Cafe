@@ -12,6 +12,7 @@
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="script.js"></script>
+        <script src="gototop.js"></script>
     </head>
     <body>
         <?php
@@ -275,7 +276,7 @@
 
                                     echo'</form></div>';
                                     if ($itemsGenerated == 0) {
-                                        echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items.</div>';
+                                        echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items...</div>';
                                     }
                                     echo'</div>';
                                 ?>

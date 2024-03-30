@@ -19,7 +19,11 @@
         <?php
             include 'connect.php';
             include 'top.php';
-            include 'gototopbtn.php';
+
+            if(empty($user)){
+                header("Location: login.php");
+                exit();
+            }
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if(isset($_POST['update_cart'])) {
@@ -141,15 +145,246 @@
                     // Construct the SQL query to insert menu item data
                     $sql_cart = "UPDATE customer SET cust_cart = '$string' WHERE cust_ID = $cust_ID";
 
-                    // Execute the SQL query
+
                     if ($conn->query($sql_cart) === TRUE) {
+                        $_SESSION['saveCart_success'] = true;
                         header("Location: cart.php");
                         exit();
-                        // echo "New record created successfully";
                     } else {
-                        echo "Error: " . $sql_cart . "<br>" . $conn->error;
+                        $_SESSION['saveCart_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        header("Location: cart.php");
+                        exit();
+                    }
+                }else if(isset($_POST['submit_order'])) {
+                    // Retrieve form data
+                    if(!empty($_POST['item_ID'])){
+                        $item_IDs = $_POST['item_ID'];
+                    }else{
+                        $item_IDs = "";
+                    }
+
+                    if(!empty($_POST['item_name'])){
+                        $item_names = $_POST['item_name'];
+                    }else{
+                        $item_names = "";
+                    }
+
+                    if(!empty($_POST['item_price'])){
+                        $item_prices = $_POST['item_price'];
+                    }else{
+                        $item_prices = "";
+                    }
+                    
+                    if(!empty($_POST['quantity_input'])){
+                        $quantity_inputs = $_POST['quantity_input'];
+                    }else{
+                        $quantity_inputs = "";
+                    }
+
+                    if(!empty($_POST['price_sum'])){
+                        $price_sums = $_POST['price_sum'];
+                    }else{
+                        $price_sums = "";
+                    }
+
+                    if(!empty($_POST['item_request'])){
+                        $item_requests = $_POST['item_request'];
+                    }else{
+                        $item_requests = "";
+                    }
+
+                    $verify_item = $_POST['verify_item'];
+                    $verify_item_array = explode(",", $verify_item);
+
+
+                    if(!empty($_POST['item_option_selected'])){
+                        $item_options_selected = $_POST['item_option_selected'];
+                        $item_options_selected = implode("", $item_options_selected);
+                        $options = explode(")(", $item_options_selected);
+                    }
+                    else{
+                        $item_options_selected = "";
+                    }
+                    
+
+                    $additional_price_values = [];
+                    $option_names = [];
+                    $customization_ID = [];
+
+                    
+                    if(!empty($_POST['item_option_selected'])){
+                        foreach ($options as $option) {
+                            $option = trim($option, '()');
+                            list($additional_price_value, $option_name, $customization_ID, $index_number) = explode(',', $option);
+
+                            if (isset($additional_price_values[$index_number])) {
+                                $additional_price_values[$index_number] .= ',' . $additional_price_value;
+                                $option_names[$index_number] .= ',' . $option_name;
+                                $customization_IDs[$index_number] .= ',' . $customization_ID;
+                            } else {
+                                $additional_price_values[$index_number] = $additional_price_value;
+                                $option_names[$index_number] = $option_name;
+                                $customization_IDs[$index_number] = $customization_ID;
+                            }
+                        }
+                    }
+
+                    $string = "";
+                    if(!empty($_POST['price_sum'])){
+
+                        $k = 0;
+                        $max_iterations = 100;
+
+                        for($i = 0; $i < count($price_sums); $i++) {
+                            $item_ID = $item_IDs[$i];
+                            $item_name = $item_names[$i];
+                            $item_price = $item_prices[$i];
+                            $quantity_input = $quantity_inputs[$i];
+                            $price_sum = $price_sums[$i];
+                            $item_request = $item_requests[$i];
+                            $price_sum = str_replace("RM ", "", $price_sum);
+                            $string .= '{(' . $item_ID .'),(' . $item_name .'),(' . $item_price .'),('. $quantity_input.'),(' . $price_sum .'),('. $item_request.'),(';
+
+                                while(in_array($k, $verify_item_array)){
+                                    $k++;
+
+                                    if ($k > $max_iterations) {
+                                        break;
+                                    }
+                                }
+                                
+                            
+                            if (isset($option_names[$k]) && isset($additional_price_values[$k]) && isset($customization_IDs[$k])) {
+                                // Your existing code for accessing the arrays
+                                $option_name = $option_names[$k];
+                                $additional_price_value = $additional_price_values[$k];
+                                $customization_ID = $customization_IDs[$k];
+                            }
+                            else{
+                                $option_name = "";
+                                $additional_price_value = "";
+                                $customization_ID = "";
+                            }
+
+
+                            $option_name = explode(",", trim($option_name, "[]"));
+                            $additional_price_value = explode(",", trim($additional_price_value, "[]"));
+                            $customization_ID = explode(",", trim($customization_ID, "[]"));
+
+                            for($j = 0; $j < count($option_name); $j++) {
+                                $customization_name = "";
+                                $sql_get_customization = "SELECT custom_name FROM menu_customization WHERE custom_ID = '$customization_ID[$j]'  LIMIT 1";
+
+                                $result_get_customization = $conn->query($sql_get_customization);
+                                if ($result_get_customization->num_rows > 0) {
+                                    while ($row_get_customization = $result_get_customization->fetch_assoc()) {
+                                         $customization_name = $row_get_customization['custom_name'];
+                                    }
+                                }
+
+                                $string .= '['. $customization_name.','.$option_name[$j].'],';
+                            }
+                            $string = rtrim($string, ',');
+
+                            $k++;
+
+                            $string .= ')},';
+                        }
+                        $string = rtrim($string, ',');
+                    }else{
+                        $string = '';
+                        $_SESSION['submitOrderEmpty_error'] = true;
+                        header("Location: cart.php");
+                            exit();
+                    }
+
+                    $order_date = date('Y-m-d');
+                    // Construct the SQL query to insert menu item data
+                    $sql_cart = "INSERT INTO customer_orders (order_contents,order_date,cust_ID) VALUES ('$string','$order_date','$cust_ID')";
+
+                    if(!empty($string)){
+                        if ($conn->query($sql_cart) === TRUE) {
+                            $sql_empty_cart = "UPDATE customer SET cust_cart = '' WHERE cust_ID = $cust_ID";
+                            $conn->query($sql_empty_cart);
+                            $_SESSION['submitOrder_success'] = true;
+                            header("Location: cart.php");
+                            exit();
+                        } else {
+                            $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                            header("Location: cart.php");
+                            exit();
+                        }
                     }
                 }
+            }
+
+            if (isset($_SESSION['saveCart_success']) && $_SESSION['saveCart_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Cart successfully updated!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['saveCart_success']);
+            }
+
+            if (isset($_SESSION['saveCart_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to update cart. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['addReview_error'] . '</div>';
+
+                unset($_SESSION['addReview_error']);
+            }
+
+            if (isset($_SESSION['submitOrder_success']) && $_SESSION['submitOrder_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Order successfully submitted!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['submitOrder_success']);
+            }
+
+            if (isset($_SESSION['submitOrder_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to submit order. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['submitOrder_error'] . '</div>';
+
+                unset($_SESSION['submitOrder_error']);
+            }
+
+            if (isset($_SESSION['submitOrderEmpty_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>You have no items in your cart! Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['submitOrderEmpty_error']);
             }
 
             // // Close connection
@@ -354,15 +589,30 @@
                 var paymentMethod = element.classList.contains('credit_card') ? 'credit_card' : 'paypal';
                 var correspondingPaymentDetails = document.querySelector('.payment_details.' + paymentMethod);
                 correspondingPaymentDetails.classList.add('active');
+
+                // Remove 'required' attribute from all inputs
+                var allInputs = document.querySelectorAll('.payment_details input');
+                allInputs.forEach(function(input) {
+                    input.removeAttribute('required');
+                });
+
+                // Add 'required' attribute to inputs in the active payment details container
+                var activeInputs = correspondingPaymentDetails.querySelectorAll('input');
+                activeInputs.forEach(function(input) {
+                    input.setAttribute('required', true);
+                });
             }
 
             function toggleInputVisibility(selectElement) {
+                var inputField = document.querySelector('.location_edit .new_location');
                 var selectedValue = selectElement.value;
                 var locationEditDiv = document.querySelector('.location_edit');
                 if (selectedValue === 'different') {
                     locationEditDiv.classList.add('appear');
+                    inputField.setAttribute("required", "true");
                 } else {
                     locationEditDiv.classList.remove('appear');
+                    inputField.removeAttribute("required");
                 }
             }
 
@@ -389,6 +639,21 @@
                     // Remove class from body to enable scrolling
                     document.body.classList.remove('no-scroll');
                 });
+
+                document.getElementById('update_cart').addEventListener('click', function() {
+                    var cartForm = document.getElementById('cartForm');
+                    var paymentDetailsDivs = document.querySelectorAll('.payment_details input[required]');
+                    var deliveryAddressSelect = document.querySelector('select[required]');
+                    var newLocationInput = document.querySelector('.new_location[required]');
+                    
+                    paymentDetailsDivs.forEach(function(input) {
+                        input.removeAttribute('required');
+                    });
+                    deliveryAddressSelect.removeAttribute('required');
+                    if (newLocationInput) {
+                        newLocationInput.removeAttribute('required');
+                    }
+                });
             });
         </script>
         <div class="cart">
@@ -399,7 +664,7 @@
                     </div>
                     <form id="cartForm" method="post">
                         <div class="row d-flex justify-content-between pb-1">
-                            <div class="col-12 col-lg-8 pb-4 pb-sm-5">
+                            <div class="col-12 col-lg-8">
                                 <div class="cart_header">
                                     <span class="p-0 d-flex justify-content-start align-items-center"><i class="far fa-shopping-cart pr-2"></i>Shopping Cart</span>
                                     <?php
@@ -447,7 +712,7 @@
                                                                 $src = "data:$mime_type;base64,$base64";
                                                             }
                                                             echo '
-                                                            <div class="item_container">
+                                                            <div class="item_container fade_in" style="-index: 12;">
                                                                 <div class="item_top">
                                                                     <div class=" col-sm-7 col-10 d-flex flex-row p-0">
                                                                         <img src='.$src.' class="item_image">
@@ -455,6 +720,8 @@
                                                                             <div class="details">
                                                                                 <input type="hidden" value="'.$j.'" name="row_ID" id="row_ID"/>
                                                                                 <input type="hidden" value="'.$row['item_ID'].'" name="item_ID[]" id="item_ID"/>
+                                                                                <input type="hidden" value="'.$row['item_name'].'" name="item_name[]" id="item_name"/>
+                                                                                <input type="hidden" value="'.$row['item_price'].'" name="item_price[]" id="item_price"/>
                                                                                 <span class="item_name">'.$row['item_name'].'</span>
                                                                                 <div class="d-flex align-items-end">';
                                                                                 if ($row['item_discount'] > 0) {
@@ -524,12 +791,13 @@
                                                             }
                                                         }$j++; 
                                                     }
-                                                }echo '<div class="no_items"><i class="far fa-ghost"></i>No items in your cart.</div>';
+                                                }echo '<div class="no_items"><i class="far fa-ghost"></i>Your cart is empty...</div>';
                                             }
                                         }
                                     ?>
                                 </div>
                                 <hr>
+                                <div class=" pb-xl-4 pb-lg-5 pb-0" style="z-index: 13; position: relative; background-color: white;"></div>
                                 <div class="checkout_button"> Check Out</div>
                             </div>
                             <?php
@@ -538,107 +806,107 @@
 
                                 if ($result_payment->num_rows > 0) {
                                     while ($row_payment = $result_payment->fetch_assoc()) {
-                                        echo '<div class="col-0 col-lg-4 pb-sm-5 pb-0 mx-auto cart_side">
-                                        <div class="side_container">
-                                            <div class="payment_container">
-                                                <div class="payment_header">
-                                                    <i class="far fa-money-check-edit"></i><span>Payment & Address</span>
-                                                </div>
-                                                <hr>
-                                                <div class="payment_method">
-                                                    <div class=" credit_card active" onclick="toggleActive(this)"><i class="fas fa-credit-card"></i>Credit Card</div>
-                                                    <div class=" paypal" onclick="toggleActive(this)"><i class="fab fa-paypal"></i>Paypal</div>
-                                                </div>
-                                                <div class="payment_details credit_card active">
-                                                    <span>Card Holder</span>
-                                                    <input type="text" name="holder_name" id="holder_name" placeholder="Name Surname">
-                                                    <span>Card Number</span>
-                                                    <input type="text" name="card_number" id="card_number" placeholder="1111 1111 1111 1111">
-                                                    <div>
-                                                        <span>Expiry Date</span><span>CVV</span>
-                                                    </div>
-                                                    <div>
-                                                        <input type="text" name="expiry_date" id="expiry_date" placeholder="MM/YY">
-                                                        <input type="text" name="CVV" id="CVV" placeholder="123">
-                                                    </div>
-                                                </div>
-                                                <div class="payment_details paypal">
-                                                    <span>Email</span>
-                                                    <input type="text" name="paypal_email" id="paypal_email" placeholder="Email">
-                                                    <span>Password</span>
-                                                    <input type="text" name="paypal_password" id="paypal_password" placeholder="Password">
-                                                </div>
-                                                <hr>
-                                                <div class="payment_location">
-                                                    <div class="location_select">
-                                                        <i class="fas fa-map-marker-alt"></i>
-                                                        <select onchange="toggleInputVisibility(this)">
-                                                            <option value="" selected disabled>Select delivery address...</option>';
-                                                                $addresses_str = trim($row_payment['cust_address'], "{}");
-                                                                $addresses_array = explode("},{", $addresses_str);
-
-                                                                foreach ($addresses_array as $address) {
-                                                                    echo "<option>". $address . "</option>";
-                                                                }
-                                                            echo '<option value="different">Choose a different address...</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="location_edit">
-                                                        <i class="fas fa-pencil"></i>
-                                                        <input type="text" class="new_location" placeholder="New delivery address...">
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div class="payment_coupon">
-                                                    <div class="coupon_title">
-                                                        <div>
-                                                            <i class="fas fa-ticket-alt"></i><span>Redeem Voucher</span>
-                                                        </div>
-                                                    </div>
-                                                    <input type="text" placeholder="ABC12" name="payment_coupon" id="payment_coupon">
-                                                </div>
-                                                <hr>
-                                                <div class="payment_points">
-                                                    <div class="points_display">
-                                                        <div>
-                                                            <i class="fas fa-usd-circle"></i><span>Redeem Points</span>
-                                                        </div>
-                                                        <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" step="0.10" value="0.00">
-                                                    </div>
-                                                    <div class="description">Conversion rate is RM 1.00 per every 25 points. You currently have '.$row_payment['cust_points'].' points.</div>
-                                                </div>
-                                            </div> 
-                                            <div class="order_summary_container">
-                                                <div class="justify-content-between d-flex align-items-center">
-                                                    <div class="order_summary_header">
-                                                        <i class="far fa-clipboard-list-check"></i><span>Order Summary</span>
-                                                    </div>
-                                                    <div id="cart_no"></div>
-                                                </div>
-                                                <hr>
-                                                <div class="order_summary_details">
-                                                    <div class="d-flex justify-content-between">
-                                                        <span>Subtotal</span>
-                                                        <div class="subtotal"></div>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between">
-                                                        <span>Discount</span>
-                                                        <div class="discounted">-RM 2.00</div>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between">
-                                                        <span>Points</span>
-                                                        <div class="points_converted">-RM 4.00</div>
+                                        echo '<div class="col-0 col-lg-4 pb-lg-5 pb-0 mx-auto cart_side">
+                                            <div class="side_container">
+                                                <div class="payment_container">
+                                                    <div class="payment_header">
+                                                        <i class="far fa-money-check-edit"></i><span>Payment & Address</span>
                                                     </div>
                                                     <hr>
-                                                    <div class="d-flex justify-content-between align-items-end">
-                                                        <span class="grand_total">Grand Total</span>
-                                                        <div class="price_total">RM 64.00</div>
+                                                    <div class="payment_method">
+                                                        <div class=" credit_card active" onclick="toggleActive(this)"><i class="fas fa-credit-card"></i>Credit Card</div>
+                                                        <div class=" paypal" onclick="toggleActive(this)"><i class="fab fa-paypal"></i>Paypal</div>
+                                                    </div>
+                                                    <div class="payment_details credit_card active">
+                                                        <span>Card Holder</span>
+                                                        <input type="text" name="holder_name" id="holder_name" placeholder="Name Surname" onkeypress="return event.keyCode != 13;" required>
+                                                        <span>Card Number</span>
+                                                        <input type="text" name="card_number" id="card_number" placeholder="1111 1111 1111 1111" onkeypress="return event.keyCode != 13;" required>
+                                                        <div>
+                                                            <span>Expiry Date</span><span>CVV</span>
+                                                        </div>
+                                                        <div>
+                                                            <input type="text" name="expiry_date" id="expiry_date" placeholder="MM/YY" onkeypress="return event.keyCode != 13;" required>
+                                                            <input type="text" name="CVV" id="CVV" placeholder="123" onkeypress="return event.keyCode != 13;" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="payment_details paypal">
+                                                        <span>Email</span>
+                                                        <input type="text" name="paypal_email" id="paypal_email" placeholder="Email" onkeypress="return event.keyCode != 13;">
+                                                        <span>Password</span>
+                                                        <input type="text" name="paypal_password" id="paypal_password" placeholder="Password" onkeypress="return event.keyCode != 13;">
+                                                    </div>
+                                                    <hr>
+                                                    <div class="payment_location">
+                                                        <div class="location_select">
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <select onchange="toggleInputVisibility(this)" required>
+                                                                <option value="" selected disabled>Select delivery address...</option>';
+                                                                    $addresses_str = trim($row_payment['cust_address'], "{}");
+                                                                    $addresses_array = explode("},{", $addresses_str);
+
+                                                                    foreach ($addresses_array as $address) {
+                                                                        echo "<option>". $address . "</option>";
+                                                                    }
+                                                                echo '<option value="different">Choose a different address...</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="location_edit">
+                                                            <i class="fas fa-pencil"></i>
+                                                            <input type="text" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="payment_coupon">
+                                                        <div class="coupon_title">
+                                                            <div>
+                                                                <i class="fas fa-ticket-alt"></i><span>Redeem Voucher</span>
+                                                            </div>
+                                                        </div>
+                                                        <input type="text" placeholder="ABC12" name="payment_coupon" id="payment_coupon" onkeypress="return event.keyCode != 13;">
+                                                    </div>
+                                                    <hr>
+                                                    <div class="payment_points">
+                                                        <div class="points_display">
+                                                            <div>
+                                                                <i class="fas fa-usd-circle"></i><span>Redeem Points</span>
+                                                            </div>
+                                                            <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" step="0.10" value="0.00" onkeypress="return event.keyCode != 13;">
+                                                        </div>
+                                                        <div class="description">Conversion rate is RM 1.00 per every 25 points. You currently have '.$row_payment['cust_points'].' points.</div>
+                                                    </div>
+                                                </div> 
+                                                <div class="order_summary_container">
+                                                    <div class="justify-content-between d-flex align-items-center">
+                                                        <div class="order_summary_header">
+                                                            <i class="far fa-clipboard-list-check"></i><span>Order Summary</span>
+                                                        </div>
+                                                        <div id="cart_no"></div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="order_summary_details">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span>Subtotal</span>
+                                                            <div class="subtotal">RM 0.00</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span>Discount</span>
+                                                            <div class="discounted">-RM 2.00</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span>Points</span>
+                                                            <div class="points_converted">-RM 4.00</div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="d-flex justify-content-between align-items-end">
+                                                            <span class="grand_total">Grand Total</span>
+                                                            <div class="price_total">RM 64.00</div>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <input type="submit" name="submit_order" id="submit_order" class="submit_order">
+                                                <div class="cancel_button">Cancel</div> 
                                             </div>
-                                            <input type="submit" class="submit_order">
-                                            <div class="cancel_button">Cancel</div>                             
-                                        </div>
                                         </div>';
                                     }
                                 }
@@ -649,6 +917,7 @@
             </div>
         </div>
         <?php
+            include 'gototopbtn.php';
             include 'sidebar.php';
             include 'footer.php';
         ?>

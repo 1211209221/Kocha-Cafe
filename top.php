@@ -35,7 +35,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
             <div class="navbar_search">
                 <i class="far fa-search"></i>
-                <input placeholder="Search...">
+                <input id="searchInput" placeholder="Search...">
+                <div class="search_results">
+                    <div id="searchResultsContainer" style="border-radius: 8px; display: none; flex-direction: column;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -58,7 +61,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <div class="m-0" style="width: 300px; text-align: right;">
             <?php
-             if (is_array($user) && !empty($user)) {
+            if (is_array($user) && !empty($user)) {
                 echo '<div class="icons">
                         <a href="#" class="' . ($current_page == 'profile.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-user"><span style="padding-left: 5px;">' . $user["cust_username"] . '</span></i>
@@ -98,9 +101,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         </div>';
                 }                
             ?>
-                <span onclick="openNav()">
-                    <i class="fas fa-bars"></i>
-                </span>
+            <span onclick="openNav()"><i class="fas fa-bars"></i></span>
             </div>
         </div>
     </div>

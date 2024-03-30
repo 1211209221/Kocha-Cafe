@@ -116,3 +116,91 @@
         </div>
     </div>
 </footer>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchResultsContainer = document.getElementById('searchResultsContainer');
+
+        const allResultsString = document.getElementById('all_results').value;
+        const allResults = allResultsString.split(',');
+
+        // Function to filter allResults based on input value
+        function filterallResults(inputValue) {
+            return allResults.filter(item => {
+                const [name, itemID, typeID] = item.split('|');
+                return name.toLowerCase().includes(inputValue.toLowerCase());
+            });
+        }
+
+        // Function to render search results
+        function renderResults(results) {
+            searchResultsContainer.innerHTML = ''; // Clear previous results
+            if (results.length === 0) {
+                searchResultsContainer.style.display = 'none'; // Hide container if no results
+                return;
+            }
+            searchResultsContainer.style.display = 'flex'; // Show container
+            
+            // Limiting to first 10 results
+            const maxResults = Math.min(results.length, 10);
+            for (let i = 0; i < maxResults; i++) {
+                const [name, itemID, typeID] = results[i].split('|');
+                const anchorElement = document.createElement('a');
+                anchorElement.classList.add('search_result'); // Adding class to the anchor
+                anchorElement.href = 'item.php?ID=' + itemID;
+
+                // Setting the result category based on typeID
+                let resultCategory = '';
+                if (typeID === '1') {
+                    resultCategory = 'Menu item';
+                } else if (typeID === '') {
+                    resultCategory = 'None';
+                }
+
+                // Setting innerHTML with the result category
+                anchorElement.innerHTML = `<div class="result_container"><i class="far fa-search"></i><div class="result_name"> ${name} </div></div><span>—${resultCategory}</span>`;
+                searchResultsContainer.appendChild(anchorElement);
+            }
+        }
+
+        // Event listener for input
+        searchInput.addEventListener('input', function() {
+            const inputValue = this.value.trim();
+            const filteredallResults = filterallResults(inputValue);
+            renderResults(filteredallResults);
+        });
+
+        // Event listener to show results when clicking on search input
+        searchInput.addEventListener('focus', function() {
+            const inputValue = this.value.trim();
+            const filteredallResults = filterallResults(inputValue);
+            renderResults(filteredallResults);
+        });
+
+        // Event listener to hide results when clicking outside search input
+        document.body.addEventListener('click', function(event) {
+            if (!event.target.matches('#searchInput')) {
+                searchResultsContainer.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<?php
+    $sql_search = "SELECT * FROM menu_items WHERE trash = 0";
+    $result_search = $conn->query($sql_search);
+
+    $string = "";
+
+    if ($result_search->num_rows > 0) {
+        while ($row_search = $result_search->fetch_assoc()) {
+            $string .= "" . $row_search['item_name'] . "|" . $row_search['item_ID'] . "|1,";
+        }
+        // Remove the trailing comma
+        $string = rtrim($string, ",");
+    }
+
+    echo '<div><input type="hidden" id="all_results" value="'.$string.'"></div>';
+?>

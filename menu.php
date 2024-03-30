@@ -408,9 +408,6 @@
                     <div class="row d-flex justify-content-between pb-1">
                         <div class="col-0 col-lg-3 mx-auto">
                             <div id="menuFilters" class="filter_container">
-                                <div class="close_filter">
-                                    <i class="fal fa-times" onclick="closeFilters()"></i>
-                                </div>
                                 <div class="active_filters">
                                     <div class="justify-content-between d-flex">
                                         <span><i class="fas fa-sliders-h"></i></i>Filters</span>
@@ -481,14 +478,15 @@
                                 <div class="price_filter">
                                     <span>Price Range (MYR)</span>
                                     <div class="d-flex justify-content-center py-1">
-                                        <input type="text" name="price_min" placeholder="Min.">
-                                        <div class="px-2">-</div>
-                                        <input type="text" name="price_max" placeholder="Max.">
+                                        <input type="number" name="price_min" min="0" placeholder="Min.">
+                                        <div class="px-2" style="font-size: 22px;">-</div>
+                                        <input type="number" name="price_max" min="0" placeholder="Max.">
                                     </div>
                                 </div>
                                 <hr>
                                  <input type="hidden" name="filterState" id="filterStateInput">
                                 <button type="submit" name="submit_filter" id="submit_filter" class="submit_filter">Apply Filters</button>
+                                <div class="close_filter" onclick="closeFilters()">Cancel</div>
                             </div>
                             <div id="filter_darken" onclick="closeFilters()"></div>
                         </div>
@@ -687,7 +685,7 @@
 
                                 echo'</div>';
                                 if ($itemsGenerated == 0) {
-                                    echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items.</div>';
+                                    echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items...</div>';
                                 }
                                 echo'</div>';
                             ?>

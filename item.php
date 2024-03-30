@@ -34,7 +34,6 @@
     <body>
         <?php
             include 'top.php';
-            include 'gototopbtn.php';
 
             $sql_getWishlist = "SELECT cust_wishlist FROM customer WHERE cust_ID = $cust_ID AND trash = 0 LIMIT 1";
 
@@ -67,13 +66,21 @@
 
                     // Execute the SQL query
                     if ($conn->query($sql_insert) === TRUE) {
+                        $_SESSION['addReview_success'] = true;
                         header("Location: item.php?ID=".$item_ID);
                         exit();
-                        // echo "New record created successfully";
                     } else {
-                        echo "Error: " . $sql_insert . "<br>" . $conn->error;
+                        $_SESSION['addReview_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        header("Location: item.php?ID=".$item_ID);
+                        exit();
                     }
+
                 } elseif(isset($_POST['add_button'])) {
+                    if(empty($user)){
+                        header("Location: login.php");
+                        exit();
+                    }
+                    
                     $item_cart = "";
                     $sql_cart_check = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID";
 
@@ -113,15 +120,16 @@
 
                     $sql_cart = "UPDATE customer SET cust_cart = '$item_cart' WHERE cust_ID = $cust_ID";
 
-                    // Execute the SQL query
                     if ($conn->query($sql_cart) === TRUE) {
+                        $_SESSION['addItem_success'] = true;
                         header("Location: item.php?ID=".$item_ID);
                         exit();
-                        // echo "New record created successfully";
                     } else {
-                        echo "Error: " . $sql_cart . "<br>" . $conn->error;
+                        $_SESSION['addItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        header("Location: item.php?ID=".$item_ID);
+                        exit();
                     }
-                  
+                                      
                 } else if(isset($_POST['submit_wishlist'])) {
                     if(empty($user)){
                         header("Location: login.php");
@@ -144,10 +152,68 @@
                         header("Location: item.php?ID=".$item_ID);
                         exit();
                     } else {
-                        echo "Error updating wishlist: " . $conn->error;
+                        header("Location: item.php?ID=".$item_ID);
+                        exit();
                     }
                 }
             }
+
+            if (isset($_SESSION['addItem_success']) && $_SESSION['addItem_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Successfully added item to cart!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['addItem_success']);
+            }
+
+            if (isset($_SESSION['addItem_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to add item. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['addItem_error'] . '</div>';
+
+                unset($_SESSION['addItem_error']);
+            }
+
+            if (isset($_SESSION['addReview_success']) && $_SESSION['addReview_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Successfully posted! Your comment will be under review. 
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['addReview_success']);
+            }
+
+            if (isset($_SESSION['addReview_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to post. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['addReview_error'] . '</div>';
+
+                unset($_SESSION['addReview_error']);
+            }
+
 
              function getSubCategories2($category_ID, $conn) {
                 $sub_categories = array(); // Initialize array to store sub-categories
@@ -572,6 +638,18 @@
                 // selectStars.value = "";
                 // selectComments.value = "";
             }
+
+            var previousPage = document.referrer;
+            var urlParamsOld = new URLSearchParams(previousPage.split('?')[1]);
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var compare_id = urlParams.get('ID');
+            var compare_idOld = urlParamsOld.get('ID');
+
+            if (compare_id === compare_idOld) {
+            } else {
+                clearFilterState();
+            }
         </script>
         <div class="reviews" id="reviews_section">
             <div class="container-fluid container">
@@ -702,7 +780,7 @@
                                 }
                             }
                             else{
-                                echo '<div class="no_reviews"><div><i class="far fa-ghost"></i>No Reviews.</div></div>';
+                                echo '<div class="no_reviews"><div><i class="far fa-ghost"></i>No reviews found...</div></div>';
                             }
                             // echo number_format($overall_rating/$result_reviews->num_rows,1);
                         ?>
@@ -925,6 +1003,7 @@
         </div>
         <div class="review_darken"></div>
         <?php
+            include 'gototopbtn.php';
             include 'sidebar.php';
             include 'footer.php';
         ?>

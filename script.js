@@ -1,12 +1,3 @@
-// function categoryToggle(x) {
-//     var parentLi = x.parentElement;
-//     var ul = parentLi.querySelector('ul');
-//     if (ul) {
-//         ul.classList.toggle("categoryToggle");
-//     }
-//     x.classList.toggle("fa-angle-up");
-// }
-
 function categoryToggle(x) {
     var parentLi = x.parentElement;
     var ul = parentLi.querySelector('ul');
@@ -68,4 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.addEventListener('scroll', function() {
     addVisibleClass();
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    var toast = document.getElementById('custom_toast');
+    // Set the duration (in milliseconds) for the toast to remain visible
+    var duration = 3000; // 3 seconds
+
+    // Hide the toast after the specified duration
+    setTimeout(function () {
+        toast.classList.add('dissapear');
+        // toast.style.display = 'none';
+    }, duration);
 });

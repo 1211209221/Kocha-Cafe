@@ -1,9 +1,9 @@
 <div id="mySidenav" class="sidenav">
     <div class="buttons">
-        <!-- <button class="signup">Sign up</button>
-        <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button> -->
+        <button class="signup">Sign up</button>
+        <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>
 
-        <div class="profile"><i class="far fa-user"></i>Username</div>
+        <!-- <div class="profile"><i class="far fa-user"></i>Username</div> -->
     </div>
     <a href="index.php" class="<?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">
         <div>
@@ -76,10 +76,13 @@
     function openFilters() {
       document.getElementById("menuFilters").classList.add("shiftRight");
       document.getElementById("filter_darken").classList.add("appear");
+      document.body.classList.add('no-scroll');
+      window.scrollTo(0, 0);
     }
 
     function closeFilters() {
         document.getElementById("menuFilters").classList.remove("shiftRight");
         document.getElementById("filter_darken").classList.remove("appear");
+        document.body.classList.remove('no-scroll');
 }
 </script>
