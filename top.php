@@ -33,7 +33,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <i class="fab fa-whatsapp"></i>
                 </a>
             </div>
-            <div class="navbar_search">
+            <div id="navbar_search" class="navbar_search">
                 <i class="far fa-search"></i>
                 <input id="searchInput" placeholder="Search...">
                 <div class="search_results">

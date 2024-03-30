@@ -157,7 +157,7 @@ input:focus, select:focus, textarea:focus{
 .top_banner{
 	background-color: #282D2B;
 	padding: 10px 0px;
-	/*z-index: 100;*/
+	z-index: 101;
 	position: relative;
 }
 
