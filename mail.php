@@ -31,39 +31,50 @@ if(isset($_POST['submit'])) {
         $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         
         $recipient = "kochacafe8@gmail.com";
-
-        $mail->addReplyTo($recipient,'Kocha Cafe');
         $mail->setFrom($email, $name);
-        echo $email;
-
+        $mail->addReplyTo($recipient,'Kocha Cafe');
         $mail->addAddress($recipient,'Kocha Cafe');
-        echo $recipient;
         
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = "<h2>This is a message received from $name</h2><hr>
                         <h3>Email: $email <br>Phone Number: $phno <br>Message: $message</h3>";
 
-        if(isset($_FILES['attachment']) && $_FILES['attachment']['error'] == UPLOAD_ERR_OK) {
-            $tmp_name = $_FILES['attachment']['tmp_name'];
-            $filename = $_FILES['attachment']['name'];
-            $filetype = $_FILES['attachment']['type'];
+        //check whether got attachment
+        if(isset($_FILES['attachment']) && !empty($_FILES['attachment']['tmp_name']) && $_FILES['attachment']['error'] == 0) {
+            //for multiple attachment
+            if(is_array($_FILES['attachment']['tmp_name'])) {
+                foreach($_FILES['attachment']['tmp_name'] as $key => $value) {
+                    $tmp_name = $_FILES['attachment']['tmp_name'][$key];
+                    $filename = $_FILES['attachment']['name'][$key];
+                    $filetype = $_FILES['attachment']['type'][$key];
+                    $filesize = $_FILES['attachment']['size'][$key];
 
-            $content = file_get_contents($tmp_name);
+                    $content = file_get_contents($tmp_name);
 
-            $mail->addStringAttachment($content, $filename, 'base64', $filetype);
+                    $mail->addStringAttachment($content, $filename, 'base64', $filetype);
+                }
+            } else {
+                // for single attachment
+                $tmp_name = $_FILES['attachment']['tmp_name'];
+                $filename = $_FILES['attachment']['name'];
+                $filetype = $_FILES['attachment']['type'];
+                $filesize = $_FILES['attachment']['size'];
+
+                $content = file_get_contents($tmp_name);
+
+                $mail->addStringAttachment($content, $filename, 'base64', $filetype);
+            }
         }
         $mail->send();
-        $alert = '<div class="alert-success">
-        <span>Your message is sent successfully! &#128238; </span>
-        </div>';
+        
+        $hint=good;
     }
     catch(Exception $e){
-        $alert = '<div class="alert-failed">
-        <span>Something went wrong! Please try again. &#128550; </span>
-        </div>' . $mail->ErrorInfo;
+        $hint = wrongmail;
+        $mail->ErrorInfo;
     }
-    //echo $alert; // Output the alert message
+
 
     //below part is for saving those info in database
     //already connected to the databse so directly insert the info
@@ -72,20 +83,56 @@ if(isset($_POST['submit'])) {
     ('$name', '$phno', '$email', '$subject', '$message')";
     $result = mysqli_query($conn, $sql);
 
-    if($result){
+    if($result && $hint == "good") {
         //retreive id
         $cfid = mysqli_insert_id($conn);
 
-        if(isset($_FILES['attachment']) && $_FILES['attachment']['error'] == UPLOAD_ERR_OK){
-            $filename = $_FILES['attachment']['name'];
-            $filetype = $_FILES['attachment']['type'];
-            $filesize = $_FILES['attachment']['size'];
-            $uploaddate = date("Y-m-d H:i:s");
-    
-            //now store file
-            $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
-            ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
-        }
+        //now store file
+        //check whether got attachment
+        if(isset($_FILES['attachment']) && !empty($_FILES['attachment']['tmp_name']) && $_FILES['attachment']['error'] == 0){
+
+            if((is_array($_FILES['attachment']['tmp_name']) && isset($_FILES['attachment']['tmp_name']))) {
+                //for multiple attachment
+                foreach($_FILES['attachment']['tmp_name'] as $key => $value) {
+                    $uploaddate = date("Y-m-d H:i:s");
+
+                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
+                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                    mysqli_query($conn, $sqlfile);
+                }
+            else
+            {
+                // for single attachment
+                $uploaddate = date("Y-m-d H:i:s");
+
+                $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
+                ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                mysqli_query($conn, $sqlfile);
+            }
+            
+        } 
+    }
+    else {
+        echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to send. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+    }
+
+    if($hint == "good")
+    {
+        echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Your message is sent succssfully!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
     }
     
 }
