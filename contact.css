@@ -207,6 +207,8 @@ html
 .form-box .contactForm .form .inputbox{
     position: relative;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 .form-box .contactForm .form .inputbox input,
 .form-box .contactForm .form .inputbox textarea{
@@ -264,18 +266,17 @@ html
     background-color: rgb(233 182 154);
     color: #fff;
 }
-.inputbox .error input,
-.inputbox .error textarea{
-    border-bottom:1px solid red;
-}
-.inputbox:not(.error) input:focus,
-.inputbox:not(.error) textarea:focus{
-    border-bottom: 2px solid rgb(190, 190, 185);
-}
+
 .inputbox .error-input{
     color: red; 
     padding: 3px;
-    font-size: 11px
+    font-size: 11px;
+    background-color: #fff;
+    border-radius: 5px;
+    width: fit-content;
+}
+.error{
+    border-bottom: 1px solid red;
 }
 
 .maparea{
