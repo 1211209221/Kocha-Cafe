@@ -71,8 +71,15 @@ if(isset($_POST['submit'])) {
         $hint=good;
     }
     catch(Exception $e){
-        $hint = wrongmail;
-        $mail->ErrorInfo;
+        $errormail = $mail->ErrorInfo;
+        echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to send. $errormail Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
     }
 
 
@@ -100,8 +107,7 @@ if(isset($_POST['submit'])) {
                     ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
                     mysqli_query($conn, $sqlfile);
                 }
-            else
-            {
+            }else{
                 // for single attachment
                 $uploaddate = date("Y-m-d H:i:s");
 
