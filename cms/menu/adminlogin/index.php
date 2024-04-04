@@ -3,7 +3,7 @@
 $host="localhost";
 $user="root";
 $password="";
-$db="user";
+$db="kocha_cafe";
 
 session_start();
 
@@ -14,7 +14,6 @@ if($data===false)
 {
 	die("connection error");
 }
-
 
 if($_SERVER["REQUEST_METHOD"]=="POST")
 {
