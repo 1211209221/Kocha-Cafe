@@ -11,7 +11,7 @@
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="gototop.js"></script>
-        <script src="contactvalidation.js"></script>
+        <script src="contactvalidation.js" defer></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
 
@@ -75,36 +75,41 @@
                             </div>
                         </div>
                         <div class="contactForm">
-                            <form id = "Contactform" action ="mail.php" method ="POST" enctype ="multipart/form-data">
+                            <form id = "Contactform" action ="mail.php" autocomplete="off" method ="POST" enctype ="multipart/form-data">
                                 <h4>SEND MESSAGE</h4>
                                 <div class="form">
-                                    <div class="inputbox w50 error">
+                                    <div class="inputbox w50">
                                         <label for="name">Your Full Name:</label>
-                                        <input type="text" name="name" class="name" placeholder="e.g. Eric Lim Ming" required>
+                                        <input type="text" id="name" name="name" class="name" placeholder="e.g. Eric Lim Ming" required>
+                                        <small class="error-input"></small>
                                         
                                     </div>
                                     <div class="inputbox w50">
-                                        <label for="phone">Phone Number:</label>
-                                        <input type="tel" name="phno" class="phno" placeholder="e.g. +6012345678" required>
+                                        <label for="phno">Phone Number:</label>
+                                        <input type="tel" id="phno" name="phno" class="phno" placeholder="e.g. +6012345678" required>
+                                        <small class="error-input"></small>
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="email">Email Address:</label>
-                                        <input type="email" name="email" class="email" placeholder="e.g. eric123@gmail.com" required>
+                                        <input type="email" id="email" name="email" class="email" placeholder="e.g. eric123@gmail.com" required>
+                                        <small class="error-input"></small>
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="subject">Subject:</label>
-                                        <input type="text" name="subject" class="subject" placeholder="e.g. Feedback" required>
+                                        <input type="text" id="subject" name="subject" class="subject" placeholder="e.g. Feedback" required>
+                                        <small class="error-input"></small>
                                     </div>
                                     <div class="inputbox w50">
-                                        <label for="file">File: <span>(optional)</span></label>
-                                        <input type="file" name="attachment">
+                                        <label for="attachment">File: <span>(optional)</span></label>
+                                        <input type="file" id="attachment" name="attachment">
+                                        <small class="error-input"></small>
                                     </div>
                                     <div class="inputbox w80">
                                         <label for="message">Message:</label>
-                                        <textarea name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
+                                        <textarea id="message" name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
                                         <small class="error-input"></small>
                                     </div>
-                                    <div id="dicrecaptcha" class="g-recaptcha w50" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                    <div class="g-recaptcha w50" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                     </div>
                                     <div class="inputbox w50">
                                         <input type="submit" name="submit" value="Submit">
@@ -133,22 +138,7 @@
 
         <?php include 'footer.php'; ?>
 
-        <script>
-            let clouds = document.getElementById('clouds');
-            let text = document.getElementById('text');
-            let mountain = document.getElementById('mountain');
-            let jungle = document.getElementById('jungle');
-
-            window.addEventListener('scroll',function(){
-                let value = window.scrollY;
-                clouds.style.left = value * 0.25 +  'px';
-                text.style.top= value * 1.05 +  'px';
-                mountain.style.top = value * 0.30 +  'px';
-                jungle.style.top = value * 0 +  'px';
-            })
-
-            
-        </script>
+        
         <script>
             if(window.history.replaceState){
                 window.history.replaceState(null,null,window.location.href);
