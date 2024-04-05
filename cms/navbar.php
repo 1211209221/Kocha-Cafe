@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 1)">
+            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 1)">
                 <div>
                     <i class="fas fa-utensils"></i>
                 </div>
@@ -59,13 +59,13 @@
                         }
                     ?>
                 </a>
-                <a href="#.php" class="subPage <?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+                <a href="categories.php" class="subPage <?php echo ($current_page == 'categories.php') ? 'active-menu' : ''; ?>">
                     <div>
                         <i class="fas fa-border-all"></i>
                     </div>
                     <span>Item Categories</span>
                 </a>
-                <a href="#.php" class="subPage <?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+                <a href="customization.php" class="subPage <?php echo ($current_page == 'customization.php') ? 'active-menu' : ''; ?>">
                     <div>
                         <i class="fas fa-sliders-v-square"></i>
                     </div>

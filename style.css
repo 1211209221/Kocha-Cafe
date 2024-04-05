@@ -3074,8 +3074,11 @@ span.openNav:hover{
 .all_items .table tr{
     padding: 3px 0px;
 }
-.all_items .table tr.unavailable{
-    background-color: #ffe3e3 !important;
+.all_items .table tr.unavailable:nth-child(odd){
+    background-color: #cad2d2 !important;
+}
+.all_items .table tr.unavailable:nth-child(even){
+    background-color: #c0c7c7 !important;
 }
 .all_items .table tr.unavailable img{
     filter: saturate(0);
@@ -3102,7 +3105,7 @@ span.openNav:hover{
     color: #5a9498;
 }
 .all_items .table i.fas.fa-times{
-    color: #E2857B;
+    color: #e77468;
 }
 .all_items .t_no{
     width: 3%;
@@ -3135,6 +3138,9 @@ span.openNav:hover{
     width: 8%;
     text-align: center;
 }
+.all_items .table td.t_action div{
+    overflow: visible;
+}
 .all_items .t_action{
     width: 7%;
     text-align: center;
@@ -3163,7 +3169,18 @@ span.openNav:hover{
     left: 1px;
     position: relative;
 }
-.all_items .table .t_action div {
+.all_items .table tbody tr.delete:nth-child(even){
+    background-color: #fbc8c8 !important;
+    transition: 0.15s !important;
+}
+.all_items .table tbody tr.delete:nth-child(odd){
+    background-color: #ffd5d5 !important;
+    transition: 0.15s !important;
+}
+.all_items .table tbody tr.delete td, .all_items .table tbody tr.delete td i{
+    color: #ed796d !important;
+}
+.all_items .table .tr div {
     overflow: unset;
 }
 .all_items .add_button{
@@ -3179,13 +3196,29 @@ span.openNav:hover{
     align-items: center;
     display: flex;
 }
-.all_items .add_button i{
-    padding-right: 7px;
-    font-size: 15px;
+.all_items .delete_button{
+    padding: 4px 10px;
+    width: fit-content;
+    background-color: #E2857B;
+    color: white;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 17px;
+    transition: 0.15s;
+    text-decoration: none;
+    align-items: center;
+    display: flex;
+    margin-right: 5px;
+    outline: none;
+    border: none;
 }
-.all_items .add_button a{
+.all_items .add_button a, .all_items .delete_button a{
     text-decoration: none;
     color: white;
+}
+.all_items .delete_button:hover{
+    background-color: #c77067;
+    transform: scale(1.03);
 }
 .all_items .add_button:hover{
     background-color: #36676A;
@@ -3872,6 +3905,10 @@ span.openNav:hover{
     position: absolute;
     top: -55px !important;
 }
+.all_items .no_items{
+	text-align: center;
+    height: 300px;
+}
 /*@keyframes spin {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(-180deg); }
@@ -3952,6 +3989,9 @@ span.openNav:hover{
 	.edit_items .reviews .display_reviews .review_container {
 	    flex: 0 0 100%;
 	    max-width: 100%;
+	}
+	.all_items .item_search label span{
+		display: none;
 	}
 }
 @media (max-width: 992px){
@@ -4710,6 +4750,11 @@ span.openNav:hover{
 		background-color: white;
 		height: 150px;
 	}
+	.all_items .trash-form{
+		display: flex;
+	    justify-content: end;
+	    width: 100%;
+	}
 }
 
 @media (max-width: 575px){
@@ -4818,6 +4863,10 @@ span.openNav:hover{
         padding: 3px 6px 1px 6px;
         font-size: 14px;
     }
+    .all_items .delete_button {
+        padding: 3px 6px 1px 6px;
+        font-size: 14px;
+    }
     .breadcrumbs a, .breadcrumbs{
         font-size: 17px;
     }
@@ -4833,6 +4882,9 @@ span.openNav:hover{
     .all_items .no_results_page {
         font-size: 16px;
     }
+    .all_items .item_search label{
+        font-size: 15px;
+    }
 	.edit_items .item_edit_form {
 	     justify-content: unset; 
 	}
@@ -4847,6 +4899,10 @@ span.openNav:hover{
 	}
 	.edit_items .big_container {
 		width: 100%;
+	}
+	#pagination div {
+	    padding: 0px 6px;
+	    font-size: 16px;
 	}
 }
 

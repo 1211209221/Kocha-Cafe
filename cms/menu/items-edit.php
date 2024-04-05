@@ -146,104 +146,96 @@
                 }
             }
 
-            // if (isset($_SESSION['editItem_success']) && $_SESSION['editItem_success'] === true) {
-            //     echo '<div class="toast_container">
-            //             <div id="custom_toast" class="custom_toast true fade_in">
-            //                 <div class="d-flex align-items-center message">
-            //                     <i class="fas fa-check-circle"></i> Item changes saved!
-            //                 </div>
-            //                 <div class="timer"></div>
-            //             </div>
-            //         </div>';
+            if (isset($_SESSION['editItem_success']) && $_SESSION['editItem_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Item changes saved!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
 
-            //     unset($_SESSION['editItem_success']);
-            // }
+                unset($_SESSION['editItem_success']);
+            }
 
-            // if (isset($_SESSION['editItem_error'])) {
-            //     echo '<div class="toast_container">
-            //                 <div id="custom_toast" class="custom_toast false fade_in">
-            //                     <div class="d-flex align-items-center message">
-            //                         <i class="fas fa-check-circle"></i>Failed to edit item. Please try again...
-            //                     </div>
-            //                     <div class="timer"></div>
-            //                 </div>
-            //             </div>';
+            if (isset($_SESSION['editItem_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to edit item. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
 
-            //     echo '<div class="error_message">' . $_SESSION['editItem_error'] . '</div>';
+                unset($_SESSION['editItem_error']);
+            }
 
-            //     unset($_SESSION['editItem_error']);
-            // }
+            if (isset($_SESSION['editItem_image_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to edit item image. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
 
-            // if (isset($_SESSION['editItem_image_error'])) {
-            //     echo '<div class="toast_container">
-            //                 <div id="custom_toast" class="custom_toast false fade_in">
-            //                     <div class="d-flex align-items-center message">
-            //                         <i class="fas fa-check-circle"></i>Failed to edit item image. Please try again...
-            //                     </div>
-            //                     <div class="timer"></div>
-            //                 </div>
-            //             </div>';
+                unset($_SESSION['editItem_image_error']);
+            }
 
-            //     echo '<div class="error_message">' . $_SESSION['editItem_image_error'] . '</div>';
+            if (isset($_SESSION['deleteItem_success']) && $_SESSION['deleteItem_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Item successfully deleted!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
 
-            //     unset($_SESSION['editItem_image_error']);
-            // }
+                unset($_SESSION['deleteItem_success']);
+            }
 
-            // if (isset($_SESSION['deleteItem_success']) && $_SESSION['deleteItem_success'] === true) {
-            //     echo '<div class="toast_container">
-            //             <div id="custom_toast" class="custom_toast true fade_in">
-            //                 <div class="d-flex align-items-center message">
-            //                     <i class="fas fa-check-circle"></i> Item successfully deleted!
-            //                 </div>
-            //                 <div class="timer"></div>
-            //             </div>
-            //         </div>';
+            if (isset($_SESSION['deleteItem_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delete item. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
 
-            //     unset($_SESSION['deleteItem_success']);
-            // }
+                unset($_SESSION['deleteItem_error']);
+            }
 
-            // if (isset($_SESSION['deleteItem_error'])) {
-            //     echo '<div class="toast_container">
-            //                 <div id="custom_toast" class="custom_toast false fade_in">
-            //                     <div class="d-flex align-items-center message">
-            //                         <i class="fas fa-check-circle"></i>Failed to delete item. Please try again...
-            //                     </div>
-            //                     <div class="timer"></div>
-            //                 </div>
-            //             </div>';
+            if (isset($_SESSION['deleteItem_image_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delete item image...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
 
-            //     echo '<div class="error_message">' . $_SESSION['deleteItem_error'] . '</div>';
+                unset($_SESSION['deleteItem_image_error']);
+            }
 
-            //     unset($_SESSION['deleteItem_error']);
-            // }
+            if (isset($_SESSION['submitReviews_success']) && $_SESSION['submitReviews_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Successfully updated item reviews!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
 
-            // if (isset($_SESSION['deleteItem_image_error'])) {
-            //     echo '<div class="toast_container">
-            //                 <div id="custom_toast" class="custom_toast false fade_in">
-            //                     <div class="d-flex align-items-center message">
-            //                         <i class="fas fa-check-circle"></i>Failed to delete item image...
-            //                     </div>
-            //                     <div class="timer"></div>
-            //                 </div>
-            //             </div>';
-
-            //     echo '<div class="error_message">' . $_SESSION['deleteItem_image_error'] . '</div>';
-
-            //     unset($_SESSION['deleteItem_image_error']);
-            // }
-
-            // if (isset($_SESSION['submitReviews_success']) && $_SESSION['submitReviews_success'] === true) {
-            //     echo '<div class="toast_container">
-            //             <div id="custom_toast" class="custom_toast true fade_in">
-            //                 <div class="d-flex align-items-center message">
-            //                     <i class="fas fa-check-circle"></i> Successfully updated item reviews!
-            //                 </div>
-            //                 <div class="timer"></div>
-            //             </div>
-            //         </div>';
-
-            //     unset($_SESSION['submitReviews_success']);
-            // }
+                unset($_SESSION['submitReviews_success']);
+            }
 
             function ratingToStars($rating) {
                 // Separate integer and decimal parts of the rating
@@ -539,6 +531,10 @@
                                                     }
                                                 }
                                             });
+
+                                            function updateItemOptionInput() {
+                                                document.getElementById('item_options').value = selectedOptionIDs.join(',');
+                                            }
 
                                             document.addEventListener('DOMContentLoaded', function() {
                                                 const reviewContainers = document.querySelectorAll('.review_container');
@@ -875,7 +871,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center page_bottom">
                                             <div id="pagination"></div>
-                                            <input type="submit" name="approve_submit" id="approve_submit" value="Submit Changes" onclick='return confirmAction("confirm this action");'>
+                                            <input type="submit" name="approve_submit" id="approve_submit" value="Submit Changes" onclick='return confirmAction("save these changes");'>
                                         </div>
                                         <a href="items-all.php" class="back_button">Back To List</a>
                                     </div>

@@ -87,8 +87,6 @@
                             </div>
                         </div>';
 
-                echo '<div class="error_message">' . $_SESSION['addItem_error'] . '</div>';
-
                 unset($_SESSION['addItem_error']);
             }
 
@@ -101,8 +99,6 @@
                                 <div class="timer"></div>
                             </div>
                         </div>';
-
-                echo '<div class="error_message">' . $_SESSION['addItem_image_error'] . '</div>';
 
                 unset($_SESSION['addItem_image_error']);
             }
