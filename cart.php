@@ -797,7 +797,7 @@
                                     ?>
                                 </div>
                                 <hr>
-                                <div class=" pb-xl-4 pb-lg-5 pb-0" style="z-index: 13; position: relative; background-color: white;"></div>
+                                <div class="pb-lg-5 pb-0" style="z-index: 13; position: relative; background-color: white;"></div>
                                 <div class="checkout_button"> Check Out</div>
                             </div>
                             <?php
