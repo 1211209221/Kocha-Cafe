@@ -47,12 +47,6 @@
         </div>
         <span>Wishlist</span>
     </a>
-    <a href="notifications.php" class="<?php echo ($current_page == 'notifications.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-bell"></i>
-        </div>
-        <span>Notifications</span>
-    </a>
     <a href="#">
         <div>
             <i class="fas fa-sign-out-alt"></i>

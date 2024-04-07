@@ -201,9 +201,6 @@
                     </div>
                 </div>
                 <div class="icons">
-                    <a class="notifications">
-                        <i class="far fa-bell"></i>
-                    </a>
                     <a class="profile"><i class="far fa-user"></i><span>Username</span></a>
                 </div>
             </div>

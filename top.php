@@ -88,9 +88,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <a href="wishlist.php" class="' . ($current_page == 'wishlist.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-heart"></i>
                         </a>
-                        <a href="#" class="' . ($current_page == 'notifications.php' ? 'active-menu' : '') . '">
-                            <i class="fas fa-bell"></i>
-                        </a>
                         <a href="logout.php"><i class="fas fa-sign-out-alt"></i></a>
                     </div>';
                 } else {

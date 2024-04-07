@@ -468,7 +468,7 @@
                                 echo '<div class="item_attribute options">
                                     <div class="item_attribute_container">Extra Requests</div>';
                                     if($row['item_availability'] == 0){
-                                        echo '<input name="item_request" id="item_request" class="disabled"></textarea>';
+                                        echo '<textarea name="item_request" id="item_request" class="disabled"></textarea>';
                                     }
                                     else{
                                         echo '<textarea name="item_request" id="item_request"></textarea>';

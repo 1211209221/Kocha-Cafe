@@ -362,7 +362,7 @@
 
                                             <?php
                                             // Query to fetch parent categories from the database
-                                            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE trash = 0 ORDER BY category_name ASC";
+                                            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE category_parent != 0 AND trash = 0 ORDER BY category_name ASC";
                                             $parent_categories_result = $conn->query($parent_categories_sql);
 
                                             // Populate selectedCategoryIDs array with category IDs retrieved from the database

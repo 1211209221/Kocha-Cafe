@@ -128,7 +128,7 @@
 
                                         <?php
                                         // Query to fetch parent categories from the database
-                                        $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories ORDER BY category_name ASC";
+                                        $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE category_parent != 0 AND trash = 0 ORDER BY category_name ASC";
                                         $parent_categories_result = $conn->query($parent_categories_sql);
 
                                         // Populate selectedCategoryIDs array with category IDs retrieved from the database
@@ -154,7 +154,7 @@
                                         <?php
                                         // Display selected categories in divs without commas
                                         foreach ($selectedCategoryIDs as $categoryId) {
-                                            $category_name_sql = "SELECT category_name FROM menu_categories WHERE category_ID = $categoryId";
+                                            $category_name_sql = "SELECT category_name FROM menu_categories WHERE category_ID = $categoryId AND trash = 0";
                                             $category_name_result = $conn->query($category_name_sql);
                                             if ($category_name_result->num_rows > 0) {
                                                 $row3 = $category_name_result->fetch_assoc();
@@ -213,7 +213,7 @@
                                 
                                         <?php
                                         // Query to fetch parent categories from the database
-                                        $menu_cutomization_sql = "SELECT * FROM menu_customization ORDER BY custom_name ASC";
+                                        $menu_cutomization_sql = "SELECT * FROM menu_customization WHERE trash = 0 ORDER BY custom_name ASC";
                                         $menu_cutomization_result = $conn->query($menu_cutomization_sql);
 
                                         // Populate selectedOptionIDs array with option IDs retrieved from the database
@@ -237,7 +237,7 @@
                                         <?php
                                         // Display selected categories in divs without commas
                                         foreach ($selectedOptionIDs as $optionId) {
-                                            $option_name_sql = "SELECT custom_name FROM menu_customization WHERE custom_ID = $optionId";
+                                            $option_name_sql = "SELECT custom_name FROM menu_customization WHERE custom_ID = $optionId AND trash = 0";
                                             $option_name_result = $conn->query($option_name_sql);
                                             if ($option_name_result->num_rows > 0) {
                                                 $row3 = $option_name_result->fetch_assoc();
