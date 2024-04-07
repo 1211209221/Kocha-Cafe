@@ -41,7 +41,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")
 
 		$_SESSION["username"]=$username;
 		
-		header("location:dashboard.php");
+		header("location:dashboard0.php");
 	}
 
 	else
