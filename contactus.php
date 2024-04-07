@@ -11,7 +11,6 @@
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="gototop.js"></script>
-        <script src="contactvalidation.js" defer></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
 
@@ -49,6 +48,13 @@
                     </div>
                 </section>
                 <div class="contact-form">
+                    <div class="maparea">
+                        <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
+                        2s4%2C%2044%2C%20Jalan%20Desa%2C%20Taman%20Desa%2C%2058100%20Kuala%20Lumpur%2C%20Wilayah%20Persekutuan%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1710597219405!5m2!1sen!2smy" 
+                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        
+                    </div>
                     <div class="form-box">
                         <div class="contact-info">
                             <h4>CONTACT INFO</h4>
@@ -75,75 +81,314 @@
                             </div>
                         </div>
                         <div class="contactForm">
-                            <form id = "Contactform" action ="mail.php" autocomplete="off" method ="POST" enctype ="multipart/form-data">
+                            <form id = "Contactform" action ="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" autocomplete="off" method ="POST" enctype ="multipart/form-data">
                                 <h4>SEND MESSAGE</h4>
                                 <div class="form">
                                     <div class="inputbox w50">
                                         <label for="name">Your Full Name:</label>
                                         <input type="text" id="name" name="name" class="name" placeholder="e.g. Eric Lim Ming" required>
-                                        <small class="error-input"></small>
+                                        <small class="error-input hidden"></small>
                                         
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="phno">Phone Number:</label>
                                         <input type="tel" id="phno" name="phno" class="phno" placeholder="e.g. +6012345678" required>
-                                        <small class="error-input"></small>
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="email">Email Address:</label>
                                         <input type="email" id="email" name="email" class="email" placeholder="e.g. eric123@gmail.com" required>
-                                        <small class="error-input"></small>
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="subject">Subject:</label>
                                         <input type="text" id="subject" name="subject" class="subject" placeholder="e.g. Feedback" required>
-                                        <small class="error-input"></small>
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox w50">
                                         <label for="attachment">File: <span>(optional)</span></label>
-                                        <input type="file" id="attachment" name="attachment">
-                                        <small class="error-input"></small>
+                                        <input type="file" id="attachment" name="attachment[]" multiple>
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox w80">
                                         <label for="message">Message:</label>
                                         <textarea id="message" name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
-                                        <small class="error-input"></small>
-                                    </div>
-                                    <div class="g-recaptcha w50" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox w50">
-                                        <input type="submit" name="submit" value="Submit">
-                                        
+                                        <div class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                        </div>
+                                        <small class="error-input hidden"><?php echo $recaptcha_err;?></small>
+                                    </div>
+                                    
+                                    <div class="inputbox w50 sbtn">
+                                        <input type="submit" id = "submitbtn" name="submit" value="Submit">
                                     </div>
                                     
                                 </div>
                             </form>
                         </div>
                     </div>
-
-                    <!--alert messaage for contact form-->
-
-                    <div class="maparea">
-                        <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
-                        2s4%2C%2044%2C%20Jalan%20Desa%2C%20Taman%20Desa%2C%2058100%20Kuala%20Lumpur%2C%20Wilayah%20Persekutuan%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1710597219405!5m2!1sen!2smy" 
-                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        
-                    </div>
                 </div>
             </div>
         </div>
-        
-        
 
         <?php include 'footer.php'; ?>
+                        
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Attach event listener to the submit button
+                document.getElementById("submitbtn").addEventListener("click", function(event) {
+                    // Validate form fields
+                    if (!validateContactForm()) {
+                        // Prevent form submission if validation fails
+                        event.preventDefault();
+                    }
+                });
+            });
 
-        
+            function isValidEmail(email) {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            function isValidPhone(phone) {
+                const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+                return re.test(String(phone).toLowerCase());
+            }
+
+            //function to validate
+            function validateContactForm() {
+                const name = document.getElementById("name").value;
+                const phno = document.getElementById("phno").value;
+                const email = document.getElementById("email").value;
+                const subject = document.getElementById("subject").value;
+                const message = document.getElementById("message").value;
+                var letters = /^[a-zA-Z-' ]*$/;
+                let valid = true; 
+
+                // Validate name
+                if (name.trim() === "") {
+                    errorDisplay(document.getElementById("name"), "*Please enter your name.*");
+                    valid = false;
+                }
+                else if(!name.match(letters)){
+                    errorDisplay(document.getElementById("name"), "*Only letters and white space allowed.*");
+                }
+                else{
+                    clearError(document.getElementById("name"));
+                }
+
+                // Validate phone number
+                if (phno.trim() === "") {
+                    errorDisplay(document.getElementById("phno"), "*Please enter your phone number.*");
+                    valid = false;
+                } else if (!isValidPhone(phno.trim())) {
+                    errorDisplay(document.getElementById("phno"), "*Invalid phone number format*");
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("phno"));
+                }
+
+                // Validate email
+                if (email.trim() === "") {
+                    errorDisplay(document.getElementById("email"), "*Please enter your email address.*");
+                    valid = false;
+                } else if (!isValidEmail(email.trim())) {
+                    errorDisplay(document.getElementById("email"), "*Invalid email format*");
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("email"));
+                }
+
+                // Validate subject
+                if (subject.trim() === "") {
+                    errorDisplay(document.getElementById("subject"), "*Please enter a subject.*");
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("subject"));
+                }
+
+                // Validate message
+                if (message.trim() === "") {
+                    errorDisplay(document.getElementById("message"), "*Please fill your message.*");
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("message"));
+                }
+
+                // Return the overall validity of the form
+                return valid;
+            }
+
+            //function to display error message
+            function errorDisplay(input, message) {
+                const errorElement = input.nextElementSibling;
+                errorElement.innerText = message;
+                errorElement.classList.remove('hidden');
+                input.classList.add('error');
+
+            }
+            // Function to clear error message
+            function clearError(input) {
+                const errorElement = input.nextElementSibling;
+                errorElement.innerText = " ";
+                errorElement.classList.add('hidden');
+            }
+        </script>
+
         <script>
             if(window.history.replaceState){
                 window.history.replaceState(null,null,window.location.href);
             }
         </script>
+
+        <?php
+            //for mail and data storing part
+            require_once 'PHPMailer src/PHPMailer.php';
+            require_once 'PHPMailer src/Exception.php';
+            require_once 'PHPMailer src/SMTP.php';
+
+            use PHPMailer\PHPMailer\PHPMailer;
+            use PHPMailer\PHPMailer\Exception;
+            use PHPMailer\PHPMailer\SMTP;
+
+            $name =  $phno = $email = $subject = $message = "";
+            $recaptcha_err = "";
+
+            if($_SERVER["REQUEST_METHOD"] == "POST"){
+                if(!empty($_POST["name"]) && !empty($_POST["phno"]) && !empty($_POST["email"]) && !empty($_POST["subject"]) && !empty($_POST["message"])){
+                    $name = $_POST['name'];
+                    $phno = $_POST['phno'];
+                    $email = $_POST['email'];
+                    $subject = $_POST['subject'];
+                    $message = $_POST['message'];
+
+                    if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
+                        $filecount = count($_FILES['attachment']['tmp_name']);
+                    }
+
+                    
+                    if(!$_POST["g-recaptcha-response"]){
+                        echo "Captcha is required!";
+                        exit();
+                    }
+                    else{
+                        $recaptcha_response = $_POST["g-recaptcha-response"];
+                        $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT";
+                        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_response";
+                        $response = file_get_contents($url);
+                        $response_data = json_decode($response, true);
+
+                    }
+
+                    if (!$response_data["success"]) {
+                        echo '<div class="toast_container role="alert"">
+                                            <div id="custom_toast" class="custom_toast false fade_in">
+                                                <div class="d-flex align-items-center message">
+                                                    <i class="fas fa-check-circle"></i>You are spammer! Get out...
+                                                </div>
+                                                <div class="timer"></div>
+                                            </div>
+                                        </div>';
+                    }
+                    else{
+                        $cfdate = date("Y-m-d H:i:s");
+                        $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message, CF_time) VALUES 
+                        ('$name', '$phno', '$email', '$subject', '$message', '$cfdate')";
+                        $result = mysqli_query($conn, $sql);
+
+                        $mail = new PHPMailer(true);
+                        try{
+                            // SMTP configuration
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = 'kochacafe8@gmail.com';
+                            $mail->Password = 'bktz mine wgfr ayis';
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = 587;
+
+                            $recipient = "kochacafe8@gmail.com"; 
+
+                            $mail->From = $email;
+                            $mail->FromName = $name;
+                            $mail->addReplyTo($email, $name);
+                            $mail->addAddress($recipient, 'Kocha Cafe');
+
+                            // Email content
+                            $mail->isHTML(true);
+                            $mail->Subject = $subject;
+                            $mail->Body = "<h2>This is a message received from $name</h2><hr>
+                                        <p>Email: $email <br>Phone Number: $phno <br>Message: $message</p>";
+
+                            if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
+                                $cfid = mysqli_insert_id($conn);
+                                for($i=0;$i<$filecount;$i++){
+                                    $file_tmp = $_FILES['attachment']['tmp_name'][$i];
+                                    $filename = $_FILES['attachment']['name'][$i];
+                                    $filetype = $_FILES['attachment']['type'][$i];
+                                    $filesize = $_FILES['attachment']['size'][$i];
+
+                                    $content = file_get_contents($file_tmp);
+                                    $mail->addStringAttachment($content, $filename, 'base64', $filetype);
+
+                                    $uploaddate = date("Y-m-d H:i:s");
+
+                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
+                                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                                    $fileresult =  mysqli_query($conn, $sqlfile);
+                                }
+                            }
+
+                            if(!$mail->send()){
+                                echo "Mailer Error: " . $mail->ErrorInfo;
+                            }
+                            else if($result === false ||$fileresult === false){
+                                echo "Database Failer.";
+                            }
+                            else{
+                                echo '<div class="toast_container role="alert"">
+                                <div id="custom_toast" class="custom_toast false fade_in">
+                                    <div class="d-flex align-items-center message">
+                                        <i class="fas fa-check-circle"></i>Your message is sent successfully!
+                                    </div>
+                                    <div class="timer"></div>
+                                </div>
+                            </div>';
+                            }
+
+                        }
+                        catch(Exception $e){
+                            echo '<div class="toast_container role="alert"">
+                                <div id="custom_toast" class="custom_toast false fade_in">
+                                    <div class="d-flex align-items-center message">
+                                        <i class="fas fa-check-circle"></i>Failed to send. Please try again...
+                                    </div>
+                                    <div class="timer"></div>
+                                </div>
+                            </div>';
+                            exit();
+                        }
+                    }
+
+                }
+            }
+            else{
+                echo '<div class="toast_container">
+                                <div id="custom_toast" class="custom_toast false fade_in">
+                                    <div class="d-flex align-items-center message">
+                                        <i class="fas fa-check-circle"></i>You are hacker...Get out!
+                                    </div>
+                                    <div class="timer"></div>
+                                </div>
+                            </div>';
+            }
+        ?>
     </body>
     
 </html>
