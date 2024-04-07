@@ -5,6 +5,7 @@
     body{
         background-color: #e9ecef !important;
         font-size: 18px !important;
+        color: #495057 !important;
     }
 
     @media (max-width: 480px){
@@ -19,33 +20,55 @@
 <div class="sidenav_container">
     <div id="adminSidenav" class="admin_sidenav">
         <div class="image_container">
-            <img src="../../images/logo/logo_2.png" class="nav_logo">
-            <img src="../../images/logo/logo_icon_2.png" class="nav_logo_expand">
+            <img src="../images/logo/logo_2.png" class="nav_logo">
+            <img src="../images/logo/logo_icon_2.png" class="nav_logo_expand">
         </div>
         <div class="page_container">
-            <a href="#.php" class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a href="#.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 0)">
                 <div>
-                    <i class="fas fa-chart-pie-alt"></i>
+                    <i class="fas fa-home-lg"></i>
                 </div>
-                <span>Dashboard</span>
+                <span>Home</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'dashboard.php') ? 'toggled' : ''; ?>" id="subPages0">
+                <a href="dashboard.php" class="subPage <?php echo ($current_page == 'dashboard.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-chart-pie-alt"></i>
+                    </div>
+                    <span>Dashboard</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php' || $current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == 'customers-all.php' || $current_page == 'customers-add.php' || $current_page == 'customers-edit.php' || $current_page == 'admins-all.php' || $current_page == 'admins-add.php' || $current_page == 'admins-edit.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 1)">
                 <div>
                     <i class="fas fa-user"></i>
                 </div>
                 <span>Users</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'customers-all.php' || $current_page == 'customers-add.php' || $current_page == 'customers-edit.php' || $current_page == 'admins-all.php' || $current_page == 'admins-add.php' || $current_page == 'admins-edit.php') ? 'toggled' : ''; ?>" id="subPages1">
+                <a href="customers-all.php" class="subPage <?php echo ($current_page == 'customers-all.php' || $current_page == 'customers-add.php' || $current_page == 'customers-edit.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <span>Customer List</span>
+                </a>
+                <a href="admins-all.php" class="subPage <?php echo ($current_page == 'admins-all.php' || $current_page == 'admins-add.php' || $current_page == 'admins-edit.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                       <i class="fas fa-user-cog"></i>
+                    </div>
+                    <span>Admin List</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 1)">
+            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php' || $current_page == 'categories.php' || $current_page == 'customization.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 2)">
                 <div>
                     <i class="fas fa-utensils"></i>
                 </div>
                 <span>Menu</span>
             </a>
-            <div class="sub_pages_container <?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php') ? 'toggled' : ''; ?>" id="subPages1">
+            <div class="sub_pages_container <?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php' || $current_page == 'categories.php' || $current_page == 'customization.php') ? 'toggled' : ''; ?>" id="subPages2">
                 <a href="items-all.php" class="subPage <?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php') ? 'active-menu' : ''; ?>">
                     <div>
                         <i class="fas fa-burger-soda"></i>
@@ -74,39 +97,71 @@
             </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == 'orders-all.php' || $current_page == 'orders-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 3)">
                 <div>
                     <i class="fas fa-clipboard-list"></i>
                 </div>
                 <span>Orders</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'orders-all.php' || $current_page == 'orders-view.php') ? 'toggled' : ''; ?>" id="subPages3">
+                <a href="orders-all.php" class="subPage <?php echo ($current_page == 'orders-all.php' || $current_page == 'orders-view.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-clipboard-list-check"></i>
+                    </div>
+                    <span>Order List</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 4)">
                 <div>
                     <i class="fas fa-comment"></i>
                 </div>
                 <span>Blog</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'toggled' : ''; ?>" id="subPages4">
+                <a href="blogs-all.php" class="subPage <?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span>Blog List</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
                 <div>
                     <i class="fas fa-envelope"></i>
                 </div>
-                <span>Messages</span>
+                <span>Inbox</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'toggled' : ''; ?>" id="subPages5">
+                <a href="messages-all.php" class="subPage <?php echo ($current_page == 'messages-all.php'|| $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-mail-bulk"></i>
+                    </div>
+                    <span>Message List</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 6)">
                 <div>
                     <i class="fas fa-ticket-alt"></i>
                 </div>
                 <span>Vouchers</span>
             </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'vouchers-all.php') ? 'toggled' : ''; ?>" id="subPages6">
+                <a href="vouchers-all.php" class="subPage <?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-ticket"></i>
+                    </div>
+                    <span>Vouchers List</span>
+                </a>
+            </div>
         </div>
         <div class="page_container">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>">
+            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 7)">
                 <div>
                     <i class="fas fa-cog"></i>
                 </div>
@@ -136,7 +191,12 @@
                     <div class="title">
                         <?php
                             echo ($current_page == 'dashboard.php') ? 'Dashboard' : '';
-                            echo ($current_page == 'items-all.php' || $current_page == 'items-edit.php' || $current_page == 'items-add.php') ? 'Menu' : '';
+                            echo ($current_page == 'customers-all.php' || $current_page == 'customers-add.php' || $current_page == 'customers-edit.php' || $current_page == 'admins-all.php' || $current_page == 'admins-add.php' || $current_page == 'admins-edit.php') ? 'Users' : '';
+                            echo ($current_page == 'orders-all.php' || $current_page == 'orders-view.php') ? 'Orders' : '';
+                            echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'Blog' : '';
+                            echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'Inbox' : '';
+                            echo ($current_page == 'vouchers-all.php') ? 'Vouchers' : '';
+                            echo ($current_page == 'items-all.php' || $current_page == 'items-edit.php' || $current_page == 'items-add.php' || $current_page == 'customization.php' || $current_page == 'categories.php') ? 'Menu' : '';
                         ?>
                     </div>
                 </div>
@@ -152,18 +212,19 @@
 <script>
     function toggleNav() {
         var sidenav = document.getElementById("adminSidenav");
-        var subPages = document.querySelector("[id*=subPages]");
-
+        var subPagesContainers = document.querySelectorAll("[id*=subPages]");
         var filter_darken = document.getElementById("filter_darken");
-        var isToggled = subPages.classList.contains("toggled");
-
         var isOpen = sidenav.classList.contains("expand");
 
-        if(!isOpen && isToggled){
-             setTimeout(function() {
-                subPages.style.maxHeight = subPages.scrollHeight + "px";}
-            , 1);
-        }
+        subPagesContainers.forEach(function(subPages) {
+            var isToggled = subPages.classList.contains("toggled");
+
+            if (!isOpen && isToggled) {
+                setTimeout(function() {
+                    subPages.style.maxHeight = subPages.scrollHeight + "px";
+                }, 1);
+            }
+        });
 
         if (!isOpen) {
             sidenav.classList.add("expand");
@@ -174,7 +235,8 @@
         }
     }
 
-     window.onload = function() {
+
+    window.onload = function() {
         var subPages = document.querySelector("[id*=subPages]");
         var activeMenuItem = subPages.querySelector(".subPage.active-menu");
         var isToggled = subPages.classList.contains("toggled");
@@ -191,15 +253,16 @@
     }
 
     window.onload = function() {
-        var subPages = document.querySelector("[id*=subPages]");
-        var activeMenuItem = subPages.querySelector(".subPage.active-menu");
-        if (activeMenuItem) {
-            subPages.style.maxHeight = subPages.scrollHeight + "px";
-        }
-        else{
-            subPages.style.maxHeight = null;
-
-        }
+        var subPagesContainers = document.querySelectorAll("[id^=subPages]");
+        
+        subPagesContainers.forEach(function(subPages) {
+            var activeMenuItem = subPages.querySelector(".subPage.active-menu");
+            if (activeMenuItem) {
+                subPages.style.maxHeight = subPages.scrollHeight + "px";
+            } else {
+                subPages.style.maxHeight = null;
+            }
+        });
     }
 
     function toggleSubPages(anchor, containerIndex) {

@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="../../style.css">
+    <title> New Item | Admin Panel</title>
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-    <link rel="icon" href="../../images/logo/logo_icon_2.png">
-    <script src="../../script.js"></script>
-    <script src="../../gototop.js"></script>
+    <link rel="icon" href="../images/logo/logo_icon_2.png">
+    <script src="../script.js"></script>
+    <script src="../gototop.js"></script>
 </head>
     <body>
         <?php
-            include '../../connect.php';
-            include '../../gototopbtn.php';
+            include '../connect.php';
+            include '../gototopbtn.php';
 
             session_start();
 
@@ -103,7 +103,7 @@
                 unset($_SESSION['addItem_image_error']);
             }
 
-            include '../navbar.php';
+            include 'navbar.php';
             ?>
                 <div class="container-fluid container">
                     <div class="col-12 m-auto">
@@ -113,7 +113,7 @@
                                 <div class="breadcrumbs">
                                     <a>Admin</a> > <a>Menu</a> > <a href="items-all.php">Item List</a> > <a class="active">Add New</a>
                                 </div>
-                                <div class='image_container'><img src='../../images/placeholder_image.png' class='item_image_diplay'>
+                                <div class='image_container'><img src='../images/placeholder_image.png' class='item_image_diplay'>
                                     <input type="file" name="image" class="upload_image" id="upload_image" required>
                                     <label class="upload_image_label" for="upload_image"><i class="fas fa-camera"></i></label>
                                 </div>
@@ -121,7 +121,7 @@
                                     <div class="page_title">New Item<i class="fas fa-pen"></i></div>
                                     <div class='item_detail_container'>
                                         <label for="item_name">Item Name</label>
-                                        <input type="text" name="item_name" id="item_name" placeholder="New Name" required><br>
+                                        <input type="text" name="item_name" id="item_name" placeholder="New Name" required>
                                     </div>
                                     <div class='item_detail_container'>
                                         <label for="item_category">Item Category</label>

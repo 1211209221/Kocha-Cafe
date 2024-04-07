@@ -70,18 +70,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="fas fa-shopping-cart">';
 
                             $sql_get_cart_no = "SELECT cust_cart FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
-                                    $result_get_cart_no = $conn->query($sql_get_cart_no);
-                                    if ($result_get_cart_no->num_rows > 0) {
-                                        while ($row_get_cart_no = $result_get_cart_no->fetch_assoc()) {
-                                            $items[] = "";
-                                            $items = explode("},{", $row_get_cart_no['cust_cart']);
-                                            $items = array_filter($items, 'strlen');
+                            $result_get_cart_no = $conn->query($sql_get_cart_no);
+                            if ($result_get_cart_no->num_rows > 0) {
+                                while ($row_get_cart_no = $result_get_cart_no->fetch_assoc()) {
+                                    $items[] = "";
+                                    $items = explode("},{", $row_get_cart_no['cust_cart']);
+                                    $items = array_filter($items, 'strlen');
 
-                                            if ((count($items)) > 0){
-                                                echo '<div class="notification_circle">'.(count($items)).'</div>';
-                                            }
-                                        }
+                                    if ((count($items)) > 0){
+                                        echo '<div class="notification_circle">'.(count($items)).'</div>';
                                     }
+                                }
+                            }
 
                             echo'</i>
                         </a>

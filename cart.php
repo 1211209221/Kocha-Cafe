@@ -753,37 +753,36 @@
                                                                             <div class="remove_item"><i class="far fa-times"></i></div>
                                                                         </div>
                                                                     </div>';
-                                                                        echo '<div class="item_bottom">';
-                                                                        foreach ($option_IDs as $option_ID) {
-                                                                            $chosen_options = "SELECT * FROM menu_customization WHERE custom_ID = '$option_ID' AND trash = 0";
+                                                                    echo '<div class="item_bottom">';
+                                                                    foreach ($option_IDs as $option_ID) {
+                                                                        $chosen_options = "SELECT * FROM menu_customization WHERE custom_ID = '$option_ID' AND trash = 0";
 
-                                                                            $result_options = $conn->query($chosen_options);
-                                                                            if ($result_options->num_rows > 0) {
-                                                                                while ($row_options = $result_options->fetch_assoc()) {
-                                                                                    echo '
-                                                                                        <div class="customization">
-                                                                                            <span class="custom_title">'.$row_options['custom_name'].'</span>
-                                                                                            <select value="" class="custom_select" name="item_option_selected[]" id="item_option_selected">
-                                                                                <option disabled>Select...</option>';
-                                                                                    $custom_options_string = $row_options['custom_options'];
-                                                                                    preg_match_all('/\("([^"]+)",([\d.]+)\)/', $custom_options_string, $matches, PREG_SET_ORDER);
-                                                                                    foreach ($matches as $match) {
-                                                                                        $option_choice = $match[1];
-                                                                                        $option_price = $match[2];
+                                                                        $result_options = $conn->query($chosen_options);
+                                                                        if ($result_options->num_rows > 0) {
+                                                                            while ($row_options = $result_options->fetch_assoc()) {
+                                                                                echo '
+                                                                                    <div class="customization">
+                                                                                        <span class="custom_title">'.$row_options['custom_name'].'</span>
+                                                                                        <select value="" class="custom_select" name="item_option_selected[]" id="item_option_selected">
+                                                                            <option disabled>Select...</option>';
+                                                                                $custom_options_string = $row_options['custom_options'];
+                                                                                preg_match_all('/\("([^"]+)",([\d.]+)\)/', $custom_options_string, $matches, PREG_SET_ORDER);
+                                                                                foreach ($matches as $match) {
+                                                                                    $option_choice = $match[1];
+                                                                                    $option_price = $match[2];
 
-                                                                                        $foundMatch = false;
-                                                                                        foreach ($option_values as $option_value) {
-                                                                                            if ($option_value == $option_choice) {
-                                                                                                $foundMatch = true;
-                                                                                                break;
-                                                                                            }
+                                                                                    $foundMatch = false;
+                                                                                    foreach ($option_values as $option_value) {
+                                                                                        if ($option_value == $option_choice) {
+                                                                                            $foundMatch = true;
+                                                                                            break;
                                                                                         }
-                                                                                        echo "<option value='"."(" .$option_price . "," .$option_choice . "," .$row_options['custom_ID'] . ",".$j.")"."' id='" .$option_price . "'" . ($foundMatch ? ' selected' : '') . "> " . $option_choice . " (+RM " . $option_price . ")</option>";
                                                                                     }
+                                                                                    echo "<option value='"."(" .$option_price . "," .$option_choice . "," .$row_options['custom_ID'] . ",".$j.")"."' id='" .$option_price . "'" . ($foundMatch ? ' selected' : '') . "> " . $option_choice . " (+RM " . $option_price . ")</option>";
                                                                                 }
-                                                                            }echo '</select>
-                                                                          </div>';
+                                                                            }echo '</select></div>';
                                                                         }
+                                                                    }
                                                                         echo '<div class="customization"><span class="custom_title">Extra Requests</span><textarea name="item_request[]" id="item_request">'.$item_request.'</textarea></div>
                                                                         </div>';
                                                                     echo ' 
