@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="../../style.css">
+    <title>Item List | Admin Panel</title>
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-    <link rel="icon" href="../../images/logo/logo_icon_2.png">
-    <script src="../../script.js"></script>
-    <script src="../../gototop.js"></script>
+    <link rel="icon" href="../images/logo/logo_icon_2.png">
+    <script src="../script.js"></script>
+    <script src="../gototop.js"></script>
 </head>
     <body>
         <?php
-            include '../../connect.php';
-            include '../../gototopbtn.php';
+            include '../connect.php';
+            include '../gototopbtn.php';
 
             session_start();
 
@@ -78,7 +78,7 @@
             }
 
 
-            include '../navbar.php';
+            include 'navbar.php';
         ?>
         <script>
             function confirmAction(message) {
@@ -116,12 +116,90 @@
                 const reviewContainers = document.querySelectorAll('tbody tr');
                 const perPageSelector = document.getElementById('perPage');
                 const pagination = document.getElementById('pagination');
+                const discountFilter = document.getElementById('discountFilter');
+                const availabilityFilter = document.getElementById('availabilityFilter');
+                const priceMinInput = document.getElementById('priceMin');
+                const priceMaxInput = document.getElementById('priceMax');
+                const categoryCheckboxes = document.querySelectorAll('.categories_filter input[type="checkbox"]');
+                const clearAllButton = document.querySelector('.filter_header .clear');
                 let currentPage = 1;
+                let searchTerm = '';
+                let selectedDiscountFilter = 'all';
+                let selectedAvailabilityFilter = 'all';
+                let minPrice = '';
+                let maxPrice = '';
+                let selectedCategories = [];
 
-               function showPage(pageNumber) {
+                function showPage(pageNumber) {
                     const perPage = parseInt(perPageSelector.value);
                     const startIndex = (pageNumber - 1) * perPage;
                     const endIndex = startIndex + perPage;
+
+                    let filteredContainers = Array.from(reviewContainers);
+
+                    // Filter items based on search term
+                    if (searchTerm) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const itemName = container.querySelector('.t_name').textContent.toLowerCase();
+                            return itemName.includes(searchTerm.toLowerCase());
+                        });
+                    }
+
+                    // Filter items based on discount
+                    if (selectedDiscountFilter !== 'all') {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const discount = container.querySelector('.t_discount').textContent.trim();
+                            if (selectedDiscountFilter === '1') {
+                                return discount === '-';
+                            } else if (selectedDiscountFilter === '2') {
+                                return discount !== '-';
+                            }
+                        });
+                    }
+
+                    // Filter items based on availability
+                    if (selectedAvailabilityFilter !== 'all') {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const availabilityIcon = container.querySelector('.t_availability i');
+                            if (selectedAvailabilityFilter === 'Available') {
+                                return availabilityIcon.classList.contains('fa-check');
+                            } else if (selectedAvailabilityFilter === 'SoldOut') {
+                                return availabilityIcon.classList.contains('fa-times');
+                            }
+                        });
+                    }
+
+                    // Filter items based on price range
+                    if (minPrice || maxPrice) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const price = parseFloat(container.querySelector('.t_price').textContent.trim().replace('RM', ''));
+                            if (minPrice && maxPrice) {
+                                return price >= minPrice && price <= maxPrice;
+                            } else if (minPrice) {
+                                return price >= minPrice;
+                            } else if (maxPrice) {
+                                return price <= maxPrice;
+                            }
+                            return true;
+                        });
+                    }
+
+                    // Filter items based on selected categories
+                    if (selectedCategories.length > 0) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const categories = container.querySelector('.t_categories div').textContent;
+                            return selectedCategories.some(category => categories.includes(category));
+                        });
+                    }
+
+                    // Add 'unfiltered' class to the tr elements that do not meet the filter criteria
+                    reviewContainers.forEach(container => {
+                        if (!filteredContainers.includes(container)) {
+                            container.classList.add('unfiltered');
+                        } else {
+                            container.classList.remove('unfiltered');
+                        }
+                    });
 
                     // Hide all review containers
                     reviewContainers.forEach(container => {
@@ -129,18 +207,20 @@
                     });
 
                     // Show review containers for the current page
-                    for (let i = startIndex; i < endIndex && i < reviewContainers.length; i++) {
-                        reviewContainers[i].style.display = 'table-row';
+                    for (let i = startIndex; i < endIndex && i < filteredContainers.length; i++) {
+                        const container = filteredContainers[i];
+                        container.style.display = 'table-row';
+                        // Update entry numbers
+                        container.querySelector('.t_no').textContent = i + 1;
                     }
 
                     // Update active page button
                     const pageButtons = pagination.querySelectorAll('.page-button');
                     pageButtons.forEach(button => {
                         button.classList.remove('active-page');
-                        button.classList.remove('adjacent'); // Remove adjacent class from all buttons
+                        button.classList.remove('adjacent');
                         if (parseInt(button.textContent) === pageNumber) {
                             button.classList.add('active-page');
-                            // Add adjacent class to the two buttons preceding and following the active page button
                             const index = parseInt(button.textContent);
                             if (index > 1) {
                                 pageButtons[index - 2].classList.add('adjacent');
@@ -152,24 +232,81 @@
 
                 function displayResultIndexes() {
                     const perPage = parseInt(perPageSelector.value);
+                    const filteredContainers = Array.from(reviewContainers).filter(container => !container.classList.contains('unfiltered'));
                     const startIndex = (currentPage - 1) * perPage + 1;
-                    const endIndex = Math.min(startIndex + perPage - 1, reviewContainers.length);
+                    const endIndex = Math.min(startIndex + perPage - 1, filteredContainers.length);
 
                     const resultIndexesElement = document.createElement('div');
-                    resultIndexesElement.textContent = `Showing ${startIndex} to ${endIndex} of ${reviewContainers.length} results`;
-                    
+                    resultIndexesElement.textContent = `Showing ${startIndex} to ${endIndex} of ${filteredContainers.length} results`;
+
                     const noResultsPage = document.querySelector('.no_results_page');
                     noResultsPage.innerHTML = ''; // Clear existing content
                     noResultsPage.appendChild(resultIndexesElement);
                 }
 
                 function createPagination() {
-                    const totalReviews = reviewContainers.length;
+                    let filteredContainers = Array.from(reviewContainers);
+
+                    // Filter items based on search term
+                    if (searchTerm) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const itemName = container.querySelector('.t_name').textContent.toLowerCase();
+                            return itemName.includes(searchTerm.toLowerCase());
+                        });
+                    }
+
+                    // Filter items based on discount
+                    if (selectedDiscountFilter !== 'all') {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const discount = container.querySelector('.t_discount').textContent.trim();
+                            if (selectedDiscountFilter === '1') {
+                                return discount === '-';
+                            } else if (selectedDiscountFilter === '2') {
+                                return discount !== '-';
+                            }
+                        });
+                    }
+
+                    // Filter items based on availability
+                    if (selectedAvailabilityFilter !== 'all') {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const availabilityIcon = container.querySelector('.t_availability i');
+                            if (selectedAvailabilityFilter === 'Available') {
+                                return availabilityIcon.classList.contains('fa-check');
+                            } else if (selectedAvailabilityFilter === 'SoldOut') {
+                                return availabilityIcon.classList.contains('fa-times');
+                            }
+                        });
+                    }
+
+                    // Filter items based on price range
+                    if (minPrice || maxPrice) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const price = parseFloat(container.querySelector('.t_price').textContent.trim().replace('RM', ''));
+                            if (minPrice && maxPrice) {
+                                return price >= minPrice && price <= maxPrice;
+                            } else if (minPrice) {
+                                return price >= minPrice;
+                            } else if (maxPrice) {
+                                return price <= maxPrice;
+                            }
+                            return true;
+                        });
+                    }
+
+                    // Filter items based on selected categories
+                    if (selectedCategories.length > 0) {
+                        filteredContainers = filteredContainers.filter(container => {
+                            const categories = container.querySelector('.t_categories div').textContent;
+                            return selectedCategories.some(category => categories.includes(category));
+                        });
+                    }
+
+                    const totalReviews = filteredContainers.length;
                     const perPage = parseInt(perPageSelector.value);
                     const totalPages = Math.ceil(totalReviews / perPage);
                     pagination.innerHTML = '';
 
-                    // Previous Button
                     const prevButton = document.createElement('div');
                     prevButton.textContent = 'Previous';
                     prevButton.classList.add('page-button');
@@ -182,7 +319,6 @@
                     });
                     pagination.appendChild(prevButton);
 
-                    // Page Buttons
                     for (let i = 1; i <= totalPages; i++) {
                         const pageButton = document.createElement('div');
                         pageButton.textContent = i;
@@ -198,7 +334,6 @@
                         pagination.appendChild(pageButton);
                     }
 
-                    // Next Button
                     const nextButton = document.createElement('div');
                     nextButton.textContent = 'Next';
                     nextButton.classList.add('page-button');
@@ -212,7 +347,89 @@
                     pagination.appendChild(nextButton);
                 }
 
+                function clearAllFilters() {
+                    // Clear search term
+                    searchTerm = '';
+
+                    // Reset select inputs for discount and availability filters
+                    discountFilter.value = 'all';
+                    selectedDiscountFilter = 'all';
+                    availabilityFilter.value = 'all';
+                    selectedAvailabilityFilter = 'all';
+
+                    // Clear price range inputs
+                    minPrice = '';
+                    maxPrice = '';
+                    priceMinInput.value = '';
+                    priceMaxInput.value = '';
+
+                    // Uncheck all category checkboxes
+                    categoryCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+
+                    // Reset selected categories arrays
+                    selectedCategories = [];
+                    selectedPrimaryCategories = [];
+
+                    // Trigger filter update
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                }
+
                 perPageSelector.addEventListener('change', function() {
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                });
+
+                discountFilter.addEventListener('change', function() {
+                    selectedDiscountFilter = discountFilter.value;
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                });
+
+                availabilityFilter.addEventListener('change', function() {
+                    selectedAvailabilityFilter = availabilityFilter.value;
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                });
+
+                priceMinInput.addEventListener('input', function() {
+                    minPrice = parseFloat(priceMinInput.value) || '';
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                });
+
+                priceMaxInput.addEventListener('input', function() {
+                    maxPrice = parseFloat(priceMaxInput.value) || '';
+                    currentPage = 1;
+                    showPage(currentPage);
+                    createPagination();
+                });
+
+                categoryCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        selectedCategories = Array.from(categoryCheckboxes)
+                            .filter(checkbox => checkbox.checked)
+                            .map(checkbox => checkbox.nextSibling.textContent.trim());
+                        currentPage = 1;
+                        showPage(currentPage);
+                        createPagination();
+                    });
+                });
+
+                clearAllButton.addEventListener('click', function() {
+                    clearAllFilters();
+                });
+
+                const searchInput = document.querySelector('.search_bar');
+                searchInput.addEventListener('input', function(event) {
+                    searchTerm = event.target.value.trim();
                     currentPage = 1;
                     showPage(currentPage);
                     createPagination();
@@ -221,7 +438,6 @@
                 showPage(currentPage);
                 createPagination();
             });
-
         </script>
         <style>
             
@@ -230,22 +446,119 @@
             <div class="col-12 m-auto">
                 <div class="all_items">
                      <div class="breadcrumbs">
-                        <a href="index.php">Home</a> > <a href="index.php">Menu</a> > <a class="active">Item List</a>
+                        <a>Admin</a> > <a>Menu</a> > <a class="active">Item List</a>
                     </div>
                     <div class="page_title">All Items</div>
+                    <div class="filter_selectors">
+                        <div class="menu">
+                            <div class="filter_header">
+                                <div class="d-flex flex-row align-items-baseline">
+                                    <i class="fas fa-sliders-h"></i><span>Filters</span>
+                                </div>
+                                <div class="clear">
+                                    <div>Clear all</div>
+                                </div>
+                            </div>
+                            <hr class="mt-1">
+                            <?php
+                                function getSubCategories($category_ID, $conn, $category_parent) {
+                                    $sql_sub = "SELECT * FROM menu_categories WHERE category_parent = '$category_ID' AND trash = 0";
+                                    $result_sub = $conn->query($sql_sub);
+                                    
+                                    if ($result_sub->num_rows > 0) {
+                                        if($category_parent == 0){
+                                            echo '<ul class="categoryToggle">';
+                                        }
+                                        else{
+                                            echo '<ul>';
+                                        }
+                                        while ($row_sub = $result_sub->fetch_assoc()) {
+                                            echo '<li>';
+                                            echo '<span><input type="checkbox" name="'.$row_sub['category_ID'].','.$row_sub['category_parent'].','.$row_sub['category_primary'].'" id='.$row_sub['category_ID'].'>' . $row_sub['category_name'].'</span>';
+
+                                            
+                                            // Check if this category has subcategories
+                                            $sub_category_ID = $row_sub['category_ID'];
+                                            $sql_has_sub = "SELECT * FROM menu_categories WHERE category_parent = '$sub_category_ID' AND trash = 0";
+                                            $result_has_sub = $conn->query($sql_has_sub);
+                                            
+                                            if ($result_has_sub->num_rows > 0) {
+                                                echo '<i onclick="categoryToggle(this)" class="fas fa-angle-down"></i>';
+                                            }
+                                            
+                                            getSubCategories($sub_category_ID, $conn, 1); // Recursively call for subcategories
+                                            echo '</li>';
+                                        }
+                                        echo '</ul>';
+                                    }
+                                }
+
+                                $sql_cate = "SELECT * FROM menu_categories WHERE category_parent = 0 and trash = 0 ORDER BY category_primary DESC";
+                                    $result_cate = $conn->query($sql_cate);
+
+                                if ($result_cate->num_rows > 0) {
+                                    while($row_cate = $result_cate->fetch_assoc()) {
+                                        echo '<div class="categories_filter';
+                                        if($row_cate["category_primary"] == 1){
+                                            echo ' primary';
+                                        }
+                                        echo'">';
+                                        echo '<li>';
+                                        echo '<span class="filter_name">'.$row_cate["category_name"].'</span>';
+                                        getSubCategories($row_cate["category_ID"], $conn, $row_cate["category_parent"]);
+                                        echo '</li>';
+                                        echo '</div><hr>';
+                                    }
+                                }
+                                else{
+                                    echo '<hr>';
+                                }
+                            ?>
+                        </div>
+                        <div>
+                            <div class="filter_type">
+                                <label for="discountFilter">Filter by Discount</label>
+                                <select id="discountFilter">
+                                    <option value="all">All</option>
+                                    <option value="1">No Discount</option>
+                                    <option value="2">With Discount</option>
+                                </select>
+                            </div>
+                            <div class="filter_type">
+                                <label for="availabilityFilter">Filter by Availability</label>
+                                <select id="availabilityFilter">
+                                    <option value="all">All</option>
+                                    <option value="Available">Available</option>
+                                    <option value="SoldOut">Sold Out</option>
+                                </select>
+                            </div>
+                            <div class="filter_type">
+                                <label for="priceMin">Price Range (MYR)</label>
+                                <div>
+                                    <input type="text" class="priceMin" name="priceMin" id="priceMin" placeholder="Min.">
+                                    <span class="mx-2"> - </span>
+                                    <input type="text" class="priceMax" name="priceMax" id="priceMax" placeholder="Max.">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
                     <div class="search_container">
                         <div class="item_search">
                             <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" placeholder="Search item...">
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search item...">
                             <select id="perPage">
-                                <option value="5" selected>5</option>
-                                <option value="10">10</option>
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                             </select>
                             <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
                         </div>
-                    <form method='post' name='trash_form' class='trash-form' id='trash_form'>
+                        <form method='post' name='trash_form' class='trash-form' id='trash_form'>
                         <div class="d-flex align-items-center justify-content-center">
                             <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete items" onclick="return confirmAction('delete the selected menu items(s)')">
                             <a href="items-add.php"><div class="add_button">New Item</div></a>
@@ -291,7 +604,7 @@
                                         }
                                     }
                                     else{
-                                        echo "<td class='t_image' style='height: 90px;'><img src='../../images/placeholder_image.png'></td>";
+                                        echo "<td class='t_image' style='height: 90px;'><img src='../images/placeholder_image.png'></td>";
                                     }
 
                                     echo "<td class='t_name'>".$row['item_name']."</td><td class='t_categories'><div>";
@@ -407,7 +720,7 @@
                         <div class="navigation_container">
                             <div id="pagination"></div>
                             <div class="no_results_page">
-                                <span>Showing 1 to 25 of 52 results</span>
+                                <span>Showing to of results</span>
                             </div>
                         </div>
                     </div>

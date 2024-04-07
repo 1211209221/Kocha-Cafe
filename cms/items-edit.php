@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="../../style.css">
+    <title>Edit Item | Admin Panel</title>
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-    <link rel="icon" href="../../images/logo/logo_icon_2.png">
-    <script src="../../script.js"></script>
-    <script src="../../gototop.js"></script>
+    <link rel="icon" href="../images/logo/logo_icon_2.png">
+    <script src="../script.js"></script>
+    <script src="../gototop.js"></script>
 </head>
     <body>
         <?php
-            include '../../connect.php';
-            include '../../gototopbtn.php';
+            include '../connect.php';
+            include '../gototopbtn.php';
 
             session_start();
 
@@ -277,7 +277,7 @@
             // Fetch item from the database
             $sql = "SELECT * FROM menu_items WHERE item_ID = $item_ID";
 
-            include '../navbar.php';
+            include 'navbar.php';
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -304,7 +304,7 @@
                                                 echo "<img src='".$src."' class='item_image_diplay'>";
                                             }
                                         }else{
-                                            echo "<img src='../../images/placeholder_image.png' class='item_image_diplay'>";
+                                            echo "<img src='../images/placeholder_image.png' class='item_image_diplay'>";
                                         }
 
                                     ?>
@@ -355,14 +355,14 @@
                                         <div class="page_title">Edit Item<i class="fas fa-pen"></i></div>
                                         <div class="item_detail_container">
                                             <label for="item_name">Item Name</label>
-                                            <input type="text" name="item_name" id="item_name" value="<?php echo $row['item_name']; ?>" maxlength='50' required><br>
+                                            <input type="text" name="item_name" id="item_name" value="<?php echo $row['item_name']; ?>" maxlength='50' required>
                                         </div>
                                         <div class="item_detail_container">
                                             <label for="item_category">Item Category</label>
 
                                             <?php
                                             // Query to fetch parent categories from the database
-                                            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE trash = 0 ORDER BY category_name ASC";
+                                            $parent_categories_sql = "SELECT category_ID, category_name FROM menu_categories WHERE category_parent != 0 AND trash = 0 ORDER BY category_name ASC";
                                             $parent_categories_result = $conn->query($parent_categories_sql);
 
                                             // Populate selectedCategoryIDs array with category IDs retrieved from the database
@@ -451,7 +451,6 @@
                                                 document.getElementById('item_category').value = selectedCategoryIDs.join(',');
                                             }
                                         </script>
-                                        <br>
                                         <div class="item_detail_container">
                                             <label for="item_price">Customization Options</label>
                                             <?php
@@ -830,7 +829,7 @@
 
                                                     echo "<input type='hidden' name='review_ID[]' value='".$row_reviews['review_ID']."'>";
 
-                                                    echo '<div class="review_container"><div class="review_details"><div class="top_container"><img src="../../images/icons/user.png"><div><span>'.$row_reviews['review_title'].'</span><div class="container"><div class="review_stars">';
+                                                    echo '<div class="review_container"><div class="review_details"><div class="top_container"><img src="../images/icons/user.png"><div><span>'.$row_reviews['review_title'].'</span><div class="container"><div class="review_stars">';
                                                     ratingToStars($row_reviews['review_rating']);
                                                     echo '</div>
                                                     <div class="review_date">'.$row_reviews['review_date'].'</div></div></div></div>';
