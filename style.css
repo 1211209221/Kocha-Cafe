@@ -4596,6 +4596,16 @@ span.openNav:hover{
     display: flex;
 }
 
+.admin_page #perPageLabel{
+	white-space: nowrap;
+    align-items: center;
+    display: flex;
+    margin-bottom: 0px;
+    font-size: 18px;
+    font-weight: 800;
+    padding-left: 8px;
+}
+
 /*Responsive*/
 @media (max-width: 1200px){
 	.menu .item_container .discount{
