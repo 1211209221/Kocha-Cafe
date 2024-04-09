@@ -50,11 +50,11 @@ if (isset($_POST["login"])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login V2</title>
+    <title>Kocha Login</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="icon" type="image/png" href="login/css/logo_icon.png"/>
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="login/vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
@@ -83,10 +83,9 @@ if (isset($_POST["login"])) {
         <div class="wrap-login100">
             <form class="login100-form validate-form" method="POST" action="">
                 <span class="login100-form-title p-b-26">
-                    Welcome
+                    <img src="login/css/logo_1.png" alt="" style="width: 150px; height: auto;"> Login
                 </span>
                 <span class="login100-form-title p-b-48">
-                    <i class="zmdi zmdi-font"></i>
                 </span>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
