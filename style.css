@@ -60,7 +60,7 @@ input:focus, select:focus, textarea:focus{
 .toast_container{
 	position: sticky;
     top: 68px;
-    z-index: 6;
+    z-index: 13;
     opacity: 0.8 !important;
     transition: 0.15s;
 }

@@ -18,8 +18,161 @@
         <?php
             include 'connect.php';
             include 'top.php';
+
+            //for mail and data storing part
+            require_once 'PHPMailer src/PHPMailer.php';
+            require_once 'PHPMailer src/Exception.php';
+            require_once 'PHPMailer src/SMTP.php';
+
+            use PHPMailer\PHPMailer\PHPMailer;
+            use PHPMailer\PHPMailer\Exception;
+            use PHPMailer\PHPMailer\SMTP;
+
+            $name =  $phno = $email = $subject = $message = "";
+
+            if($_SERVER["REQUEST_METHOD"] == "POST"){
+                if(!empty($_POST["name"]) && !empty($_POST["phno"]) && !empty($_POST["email"]) && !empty($_POST["subject"]) && !empty($_POST["message"])){
+                    $name = $_POST['name'];
+                    $phno = $_POST['phno'];
+                    $email = $_POST['email'];
+                    $subject = $_POST['subject'];
+                    $message = $_POST['message'];
+                    $message_line_breaks = nl2br($message);
+
+                    if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
+                        $filecount = count($_FILES['attachment']['tmp_name']);
+                    }
+
+                    if($_POST["g-recaptcha-response"]){
+                        $recaptcha_response = $_POST["g-recaptcha-response"];
+                        $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT";
+                        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_response";
+                        $response = file_get_contents($url);
+                        $response_data = json_decode($response, true);
+
+                    }
+
+                    if (!$response_data["success"]) {
+                        $_SESSION['captcharesponse'] = true;
+                        header("Location: {$_SERVER['PHP_SELF']}");
+                        exit();
+                    }
+                    else{
+                        $cfdate = date("Y-m-d H:i:s");
+                        $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message, CF_time) VALUES 
+                        ('$name', '$phno', '$email', '$subject', '$message', '$cfdate')";
+                        $result = mysqli_query($conn, $sql);
+
+                        $mail = new PHPMailer(true);
+                        try{
+                            // SMTP configuration
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = 'kochacafe8@gmail.com';
+                            $mail->Password = 'bktz mine wgfr ayis';
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = 587;
+
+                            $recipient = "kochacafe8@gmail.com"; 
+
+                            $mail->From = $email;
+                            $mail->FromName = $name;
+                            $mail->addReplyTo($email, $name);
+                            $mail->addAddress($recipient, 'Kocha Cafe');
+
+                            // Email content
+                            $mail->isHTML(true);
+                            $mail->Subject = $subject;
+                            $mail->Body = '<table style = "max-width:500px; display:flex; margin:5px; padding: 10px; border: 0.5px solid #5e5e5e;"><h3 style = "color:#50A596;">&#128236;  CONTACT FORM MESSAGE RECEIVED FROM <span style = "color: #36676A; text-transform: uppercase;"> '.$name.'<span></h3><hr style="color:#838383;">
+                            <p><b>Email:</b> '. $email .' <br><br><b>Phone Number:</b> '. $phno .'<br><br><b>Message:</b><br> '. $message_line_breaks.'</p></table>';
+
+                            if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
+                                $cfid = mysqli_insert_id($conn);
+                                for($i=0;$i<$filecount;$i++){
+                                    $file_tmp = $_FILES['attachment']['tmp_name'][$i];
+                                    $filename = $_FILES['attachment']['name'][$i];
+                                    $filetype = $_FILES['attachment']['type'][$i];
+                                    $filesize = $_FILES['attachment']['size'][$i];
+
+                                    $content = file_get_contents($file_tmp);
+                                    $mail->addStringAttachment($content, $filename, 'base64', $filetype);
+
+                                    $uploaddate = date("Y-m-d H:i:s");
+
+                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
+                                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                                    $fileresult =  mysqli_query($conn, $sqlfile);
+                                }
+                                if($result === false ||$fileresult === false){
+                                    $_SESSION['databasepart'] = true;
+                                    header("Location: {$_SERVER['PHP_SELF']}");
+                                    exit();
+                                }
+                                
+                            }
+
+                            if($mail->send()){
+                                $_SESSION['success'] = true;
+                                header("Location: {$_SERVER['PHP_SELF']}");
+                                exit();
+                            }
+
+                        }
+                        catch(Exception $e){
+                            $_SESSION['error'] = true;
+                            header("Location: {$_SERVER['PHP_SELF']}");
+                            exit();
+                        }
+                    }
+
+                }
+            }
+            if(isset($_SESSION['captcharesponse']) &&  $_SESSION['captcharesponse'] === true){
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>You are spammer! Get out...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+                unset($_SESSION['captcharesponse']);
+            }
+            if(isset($_SESSION['databasepart']) && $_SESSION['databasepart'] === true){
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Couldn\'t connect to database. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+                unset($_SESSION['databasepart']);
+            }
+            if(isset($_SESSION['success']) && $_SESSION['success'] === true){
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast true fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Your message is sent successfully!
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+                unset($_SESSION['success']);
+            }
+            if(isset($_SESSION['error']) && $_SESSION['error'] === true){
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to send.('. $mail->ErrorInfo .') Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+                unset($_SESSION['error']);
+            }
             include 'sidebar.php';
-            include 'mail.php';
             include 'gototopbtn.php'
         ;?>
 
@@ -44,7 +197,7 @@
                             </ul>
                         </div>
                         <p class="line-2"><i class="far fa-hand-point-right"></i> Any other inquiries are also welcome! We will strive to respond to you <u>within 24 hours</u> .</p>
-                        <p class="line-2"><i class="far fa-hand-point-right"></i> If you think we did a great job we'd also love to hear from you.</p>
+                        <p class="line-2"><i class="far fa-hand-point-right"></i> If you think we did a great job &#128077; we'd also love to hear from you.</p>
                     </div>
                 </section>
                 <div class="contact-form">
@@ -105,20 +258,20 @@
                                         <input type="text" id="subject" name="subject" class="subject" placeholder="e.g. Feedback" required>
                                         <small class="error-input hidden"></small>
                                     </div>
-                                    <div class="inputbox w50">
-                                        <label for="attachment">File: <span>(optional)</span></label>
+                                    <div class="inputbox w100">
+                                        <label for="attachment">File: <span>(optional, total max size: 10MB)</span></label>
                                         <input type="file" id="attachment" name="attachment[]" multiple>
                                         <small class="error-input hidden"></small>
                                     </div>
-                                    <div class="inputbox w80">
+                                    <div class="inputbox w100">
                                         <label for="message">Message:</label>
                                         <textarea id="message" name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
                                         <small class="error-input hidden"></small>
                                     </div>
-                                    <div class="inputbox w50">
-                                        <div class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                    <div class="inputbox">
+                                        <div id="captcha" class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                         </div>
-                                        <small class="error-input hidden"><?php echo $recaptcha_err;?></small>
+                                        <small class="error-input hidden"></small>
                                     </div>
                                     
                                     <div class="inputbox w50 sbtn">
@@ -137,6 +290,14 @@
                         
         <script>
             document.addEventListener("DOMContentLoaded", function() {
+                // Attach event listener to the form elements
+                const formElements = document.querySelectorAll("#name, #phno, #email, #subject, #attachment, #message, #captcha");
+                formElements.forEach(element => {
+                    element.addEventListener("input", function() {
+                        validateContactForm();
+                    });
+                });
+
                 // Attach event listener to the submit button
                 document.getElementById("submitbtn").addEventListener("click", function(event) {
                     // Validate form fields
@@ -163,6 +324,8 @@
                 const phno = document.getElementById("phno").value;
                 const email = document.getElementById("email").value;
                 const subject = document.getElementById("subject").value;
+                const attachment = document.getElementById("attachment");
+                const f = attachment.files;
                 const message = document.getElementById("message").value;
                 var letters = /^[a-zA-Z-' ]*$/;
                 let valid = true; 
@@ -212,6 +375,28 @@
                     clearError(document.getElementById("subject"));
                 }
 
+                //Validate file
+                if(f.length > 0){//not empty
+                    let totalsize = 0;
+                    const allfile = 10 * 1024 * 1024 //10mb
+
+                    for(let i = 0; i < f.length; i++){
+                        const fsize = f[i].size;
+                        totalsize += fsize;
+                    }
+                    if(totalsize > allfile){
+                        errorDisplay(document.getElementById("attachment"), "*Oops, the file(s) exceed total size limit.*");
+                        valid = false;
+                    }
+                    else{
+                        clearError(document.getElementById("attachment"));
+                    }
+
+                } 
+                else{
+                    clearError(document.getElementById("attachment"));
+                }   
+
                 // Validate message
                 if (message.trim() === "") {
                     errorDisplay(document.getElementById("message"), "*Please fill your message.*");
@@ -219,6 +404,15 @@
                 }
                 else{
                     clearError(document.getElementById("message"));
+                }
+
+                //validate recaptcha
+                if (window.grecaptcha.getResponse().length === 0) { 
+                    errorDisplay(document.getElementById("captcha"), "*Please tick the recaptcha.*"); 
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("captcha"));
                 }
 
                 // Return the overall validity of the form
@@ -230,14 +424,14 @@
                 const errorElement = input.nextElementSibling;
                 errorElement.innerText = message;
                 errorElement.classList.remove('hidden');
-                input.classList.add('error');
-
+                input.classList.add('error-color');
             }
             // Function to clear error message
             function clearError(input) {
                 const errorElement = input.nextElementSibling;
                 errorElement.innerText = " ";
                 errorElement.classList.add('hidden');
+                input.classList.remove('error-color');
             }
         </script>
 
@@ -247,148 +441,6 @@
             }
         </script>
 
-        <?php
-            //for mail and data storing part
-            require_once 'PHPMailer src/PHPMailer.php';
-            require_once 'PHPMailer src/Exception.php';
-            require_once 'PHPMailer src/SMTP.php';
-
-            use PHPMailer\PHPMailer\PHPMailer;
-            use PHPMailer\PHPMailer\Exception;
-            use PHPMailer\PHPMailer\SMTP;
-
-            $name =  $phno = $email = $subject = $message = "";
-            $recaptcha_err = "";
-
-            if($_SERVER["REQUEST_METHOD"] == "POST"){
-                if(!empty($_POST["name"]) && !empty($_POST["phno"]) && !empty($_POST["email"]) && !empty($_POST["subject"]) && !empty($_POST["message"])){
-                    $name = $_POST['name'];
-                    $phno = $_POST['phno'];
-                    $email = $_POST['email'];
-                    $subject = $_POST['subject'];
-                    $message = $_POST['message'];
-
-                    if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
-                        $filecount = count($_FILES['attachment']['tmp_name']);
-                    }
-
-                    
-                    if(!$_POST["g-recaptcha-response"]){
-                        echo "Captcha is required!";
-                        exit();
-                    }
-                    else{
-                        $recaptcha_response = $_POST["g-recaptcha-response"];
-                        $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT";
-                        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_response";
-                        $response = file_get_contents($url);
-                        $response_data = json_decode($response, true);
-
-                    }
-
-                    if (!$response_data["success"]) {
-                        echo '<div class="toast_container role="alert"">
-                                            <div id="custom_toast" class="custom_toast false fade_in">
-                                                <div class="d-flex align-items-center message">
-                                                    <i class="fas fa-check-circle"></i>You are spammer! Get out...
-                                                </div>
-                                                <div class="timer"></div>
-                                            </div>
-                                        </div>';
-                    }
-                    else{
-                        $cfdate = date("Y-m-d H:i:s");
-                        $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message, CF_time) VALUES 
-                        ('$name', '$phno', '$email', '$subject', '$message', '$cfdate')";
-                        $result = mysqli_query($conn, $sql);
-
-                        $mail = new PHPMailer(true);
-                        try{
-                            // SMTP configuration
-                            $mail->isSMTP();
-                            $mail->Host = 'smtp.gmail.com';
-                            $mail->SMTPAuth = true;
-                            $mail->Username = 'kochacafe8@gmail.com';
-                            $mail->Password = 'bktz mine wgfr ayis';
-                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                            $mail->Port = 587;
-
-                            $recipient = "kochacafe8@gmail.com"; 
-
-                            $mail->From = $email;
-                            $mail->FromName = $name;
-                            $mail->addReplyTo($email, $name);
-                            $mail->addAddress($recipient, 'Kocha Cafe');
-
-                            // Email content
-                            $mail->isHTML(true);
-                            $mail->Subject = $subject;
-                            $mail->Body = "<h2>This is a message received from $name</h2><hr>
-                                        <p>Email: $email <br>Phone Number: $phno <br>Message: $message</p>";
-
-                            if(!empty($_FILES['attachment']['tmp_name'][0]) && is_uploaded_file($_FILES['attachment']['tmp_name'][0])){
-                                $cfid = mysqli_insert_id($conn);
-                                for($i=0;$i<$filecount;$i++){
-                                    $file_tmp = $_FILES['attachment']['tmp_name'][$i];
-                                    $filename = $_FILES['attachment']['name'][$i];
-                                    $filetype = $_FILES['attachment']['type'][$i];
-                                    $filesize = $_FILES['attachment']['size'][$i];
-
-                                    $content = file_get_contents($file_tmp);
-                                    $mail->addStringAttachment($content, $filename, 'base64', $filetype);
-
-                                    $uploaddate = date("Y-m-d H:i:s");
-
-                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
-                                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
-                                    $fileresult =  mysqli_query($conn, $sqlfile);
-                                }
-                            }
-
-                            if(!$mail->send()){
-                                echo "Mailer Error: " . $mail->ErrorInfo;
-                            }
-                            else if($result === false ||$fileresult === false){
-                                echo "Database Failer.";
-                            }
-                            else{
-                                echo '<div class="toast_container role="alert"">
-                                <div id="custom_toast" class="custom_toast false fade_in">
-                                    <div class="d-flex align-items-center message">
-                                        <i class="fas fa-check-circle"></i>Your message is sent successfully!
-                                    </div>
-                                    <div class="timer"></div>
-                                </div>
-                            </div>';
-                            }
-
-                        }
-                        catch(Exception $e){
-                            echo '<div class="toast_container role="alert"">
-                                <div id="custom_toast" class="custom_toast false fade_in">
-                                    <div class="d-flex align-items-center message">
-                                        <i class="fas fa-check-circle"></i>Failed to send. Please try again...
-                                    </div>
-                                    <div class="timer"></div>
-                                </div>
-                            </div>';
-                            exit();
-                        }
-                    }
-
-                }
-            }
-            else{
-                echo '<div class="toast_container">
-                                <div id="custom_toast" class="custom_toast false fade_in">
-                                    <div class="d-flex align-items-center message">
-                                        <i class="fas fa-check-circle"></i>You are hacker...Get out!
-                                    </div>
-                                    <div class="timer"></div>
-                                </div>
-                            </div>';
-            }
-        ?>
     </body>
     
 </html>
