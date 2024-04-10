@@ -29,17 +29,11 @@
         </div>
         <span>Profile</span>
     </a>
-    <a href="contactus.php" class="<?php echo ($current_page == 'contactus.php') ? 'active-menu' : ''; ?>">
+    <a href="order-tracking.php" class="<?php echo ($current_page == 'order-tracking.php') ? 'active-menu' : ''; ?>">
         <div>
-            <i class="fas fa-envelope"></i>
+            <i class="fas fa-location-circle"></i>
         </div>
-        <span>Contact Us</span>
-    </a>
-    <a href="blog.php" class="<?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-comment"></i>
-        </div>
-        <span>Blog</span>
+        <span>Order Tracking</span>
     </a>
     <a href="wishlist.php" class="<?php echo ($current_page == 'wishlist.php') ? 'active-menu' : ''; ?>">
         <div>
@@ -47,11 +41,23 @@
         </div>
         <span>Wishlist</span>
     </a>
-    <a href="notifications.php" class="<?php echo ($current_page == 'notifications.php') ? 'active-menu' : ''; ?>">
+    <a href="blog.php" class="<?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">
         <div>
-            <i class="fas fa-bell"></i>
+            <i class="fas fa-comment"></i>
         </div>
-        <span>Notifications</span>
+        <span>Blog</span>
+    </a>
+    <a href="contactus.php" class="<?php echo ($current_page == 'contactus.php') ? 'active-menu' : ''; ?>">
+        <div>
+            <i class="fas fa-envelope"></i>
+        </div>
+        <span>Contact Us</span>
+    </a>
+    <a href="aboutus.php" class="<?php echo ($current_page == 'aboutus.php') ? 'active-menu' : ''; ?>">
+        <div>
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <span>About Us</span>
     </a>
     <a href="#">
         <div>
