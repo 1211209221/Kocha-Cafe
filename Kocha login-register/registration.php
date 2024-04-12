@@ -5,18 +5,18 @@ if (isset($_SESSION["user"])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
+
+<html lang="en" dir="ltr">
+  <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <title> Responsive Registration Form | CodingLab </title>
+    <link rel="stylesheet" href="register.css">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
 <body>
-    <div class="container">
-    <h2>KOCHA</h2>
+<div class="container">
+    <div class="title">Registration</div>
+    <div class="content">
         <?php
         if (isset($_POST["submit"])) {
            $fullName = $_POST["fullname"];
@@ -69,19 +69,24 @@ if (isset($_SESSION["user"])) {
         }
         ?>
         <form action="registration.php" method="post">
-            <div class="form-group">
-                <input type="text" class="form-control" name="fullname" placeholder="Full Name:">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="Email:">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password:">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="repeat_password" placeholder="Repeat Password:">
-            </div>
-            <div class="form-btn">
+        <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" placeholder="Enter your username" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="text" placeholder="Enter your email" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="text" placeholder="Enter your password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="text" placeholder="Confirm your password" required>
+          </div>
+        </div>
+            <div class="button">
                 <input type="submit" class="btn btn-primary" value="Register" name="submit">
             </div>
         </form>

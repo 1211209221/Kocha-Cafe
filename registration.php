@@ -5,22 +5,37 @@ if (isset($_SESSION["user"])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
+
+<html lang="en" dir="ltr">
+  <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Kocha Registration</title>
+    <link rel="icon" href="register/logo_icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="register/register.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration | Kocha Café</title>
-    <link rel="icon" href="images/logo/logo_icon.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-    <link rel="stylesheet" href="login-register-style.css">
-</head>
+    <style>
+        .title {
+            display: flex;
+            flex-direction: column; /* Align items in a column */
+            align-items: center; /* Align items horizontally */
+            margin-top: 20px; /* Add some margin to the top */
+        }
+
+        .title img {
+            height: 60px; /* Adjust the height of the logo as needed */
+            margin-bottom: 10px; /* Add some spacing between the logo and text */
+        }
+        .alert-success {
+            color: green;
+        }
+    </style>
+   </head>
 <body>
-    <div class="container">
-    <h2>KOCHA</h2>
+<div class="container">
+    <div class="title">
+        <img src="register/logo_1.png" alt="Logo" class="logo">Registration
         <?php
-        if (isset($_POST["submit"])) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
            $fullName = $_POST["fullname"];
            $email = $_POST["email"];
            $password = $_POST["password"];
@@ -30,7 +45,7 @@ if (isset($_SESSION["user"])) {
 
            $errors = array();
            
-           if (empty($fullName) OR empty($email) OR empty($password) OR empty($passwordRepeat)) {
+           if (empty($fullName) || empty($email) || empty($password) || empty($passwordRepeat)) {
             array_push($errors,"All fields are required");
            }
            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -39,61 +54,61 @@ if (isset($_SESSION["user"])) {
            if (strlen($password)<8) {
             array_push($errors,"Password must be at least 8 characters long");
            }
-           if ($password!==$passwordRepeat) {
+           if ($password !== $passwordRepeat) {
             array_push($errors,"Password does not match");
            }
            require_once "connect.php";
-           
-           // Check for duplicate email
-           $sql_email = "SELECT * FROM customer WHERE cust_email = '$email'";
-           $result_email = mysqli_query($conn, $sql_email);
-           $rowCount_email = mysqli_num_rows($result_email);
-           if ($rowCount_email > 0) {
-            array_push($errors,"Email already exists!");
-           }
-
-           // Check for duplicate username
-           $sql_username = "SELECT * FROM customer WHERE cust_username = '$fullName'";
-           $result_username = mysqli_query($conn, $sql_username);
-           $rowCount_username = mysqli_num_rows($result_username);
-           if ($rowCount_username > 0) {
-            array_push($errors,"Username already exists!");
-           }
-
-           if (count($errors)>0) {
-            foreach ($errors as  $error) {
-                echo "<div class='alert alert-danger'>$error</div>";
-            }
+           $sql = "SELECT * FROM customer WHERE cust_email = ?";
+           $stmt = mysqli_stmt_init($conn);
+           if (mysqli_stmt_prepare($stmt, $sql)) {
+               mysqli_stmt_bind_param($stmt, "s", $email);
+               mysqli_stmt_execute($stmt);
+               mysqli_stmt_store_result($stmt);
+               if (mysqli_stmt_num_rows($stmt) > 0) {
+                   array_push($errors,"Email already exists!");
+               }
            } else {
-            
-            $sql = "INSERT INTO customer (cust_username, cust_email, cust_pass) VALUES (?, ?, ?)";
-            $stmt = mysqli_stmt_init($conn);
-            $prepareStmt = mysqli_stmt_prepare($stmt, $sql);
-            if ($prepareStmt) {
-                mysqli_stmt_bind_param($stmt, "sss", $fullName, $email, $passwordHash);
-                mysqli_stmt_execute($stmt);
-                echo "<div class='alert alert-success'>You are registered successfully.</div>";
-            } else {
-                die("Something went wrong");
-            }
+               array_push($errors,"Database error");
+           }
+           if (count($errors) > 0) {
+               foreach ($errors as $error) {
+                   echo "<div class='alert alert-danger' style='color: red;'>$error</div>";
+               }
+           } else {
+               $sql = "INSERT INTO customer (cust_username, cust_email, cust_pass) VALUES (?, ?, ?)";
+               $stmt = mysqli_stmt_init($conn);
+               if (mysqli_stmt_prepare($stmt, $sql)) {
+                   mysqli_stmt_bind_param($stmt, "sss", $fullName, $email, $passwordHash);
+                   mysqli_stmt_execute($stmt);
+                   echo "<div class='alert alert-success'>You are registered successfully.</div>";
+               } else {
+                   echo "<div class='alert alert-danger' style='color: red;'>Something went wrong</div>";
+               }
            }
         }
         ?>
-        <form action="registration.php" method="post">
-            <div class="form-group">
-                <input type="text" class="form-control" name="fullname" placeholder="Username:">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control" name="email" placeholder="Email:">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password:">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="repeat_password" placeholder="Repeat Password:">
-            </div>
-            <div class="form-btn">
-                <input type="submit" class="btn btn-primary" value="Register" name="submit">
+        <div class="content">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <div class="user-details">
+        <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" name="fullname" placeholder="Enter your username" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" name="repeat_password" placeholder="Confirm your password" required>
+          </div>
+        </div>
+            <div class="button">
+            <input type="submit" name="submit" value="Register">
             </div>
         </form>
         <div>
