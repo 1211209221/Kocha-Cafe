@@ -1,3 +1,28 @@
+<style>
+    .alert.alert-danger {
+        padding: 5px 10px;
+        margin-bottom: 0px;
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+        height: 30px;
+    }
+    input:placeholder-shown{
+        opacity: 0;
+    }
+    input:placeholder-shown + .focus-input100 + .alert.alert-danger {
+        display: none;
+    }
+    input:placeholder-shown:not(:focus) + .focus-input100 + .alert.alert-danger {
+        display: block;
+    }
+    .btn-show-pass:has(+ input:placeholder-shown:not(:focus)){
+        display: none;
+    }
+    .alert.alert-danger {
+        font-size: 14px;
+    }
+
+</style>
 <?php
 session_start();
 if (isset($_SESSION["user"])) {
@@ -44,6 +69,12 @@ if (isset($_POST["login"])) {
             $email_error = "Email does not exist";
         }
     }
+}else{
+    echo '<style>
+        .alert.alert-danger {
+            display:none !important;
+        }
+    </style>';
 }
 ?>
 
@@ -89,7 +120,7 @@ if (isset($_POST["login"])) {
                 </span>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
-                    <input class="input100" type="text" name="email" required oninput="hideError('email_error')">
+                    <input class="input100" type="text" name="email" required oninput="hideError('email_error')" placeholder="Type your email">
                     <span class="focus-input100" data-placeholder="Email"></span>
                     <?php if(isset($email_error) && empty($_POST["login"])) { echo "<div id='email_error' class='alert alert-danger'>$email_error</div>"; } ?>
                 </div>
@@ -98,7 +129,7 @@ if (isset($_POST["login"])) {
                     <span class="btn-show-pass">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input class="input100" type="password" name="password" required oninput="hideError('password_error')">
+                    <input class="input100" type="password" name="password" required oninput="hideError('password_error')" placeholder="Type your password">
                     <span class="focus-input100" data-placeholder="Password"></span>
                     <?php if(isset($password_error) && empty($_POST["login"])) { echo "<div id='password_error' class='alert alert-danger'>$password_error</div>"; } ?>
                 </div>
