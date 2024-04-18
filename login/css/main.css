@@ -62,15 +62,19 @@ a:focus {
 a:hover {
 	text-decoration: none;
   color: #6a7dfe;
-  color: -webkit-linear-gradient(left, #fe6a76, #1595a9);
-  color: -o-linear-gradient(left, #fe6a76, #1595a9);
-  color: -moz-linear-gradient(left, #fe6a76, #1595a9);
-  color: linear-gradient(left, #fe6a76, #1595a9);
+  color: -webkit-linear-gradient(left, #fe6a76, #e2857b);
+  color: -o-linear-gradient(left, #fe6a76, #e2857b);
+  color: -moz-linear-gradient(left, #fe6a76, #e2857b);
+  color: linear-gradient(left, #fe6a76, #e2857b);
 }
 
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
 	margin: 0px;
+}
+
+a {
+  font-size: bold;
 }
 
 p {
@@ -372,10 +376,10 @@ iframe {
   width: 300%;
   height: 100%;
   background: #a64bf4;
-  background: -webkit-linear-gradient(right, #fe6a76, #1595a9, #fe6a76, #1595a9);
-  background: -o-linear-gradient(right, #fe6a76, #1595a9, #fe6a76, #1595a9);
-  background: -moz-linear-gradient(right, #fe6a76, #1595a9, #fe6a76, #1595a9);
-  background: linear-gradient(right, #fe6a76, #1595a9, #fe6a76, #1595a9);
+  background: -webkit-linear-gradient(right, #d5525c, #e2857b, #d5525c, #e2857b);
+  background: -o-linear-gradient(right, #d5525c, #e2857b, #d5525c, #e2857b);
+  background: -moz-linear-gradient(right, #d5525c, #e2857b, #d5525c, #e2857b);
+  background: linear-gradient(right, #d5525c, #e2857b, #d5525c, #e2857b);
   top: 0;
   left: -100%;
 
