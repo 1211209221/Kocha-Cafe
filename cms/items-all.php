@@ -607,34 +607,70 @@
                                         echo "<td class='t_image' style='height: 90px;'><img src='../images/placeholder_image.png'></td>";
                                     }
 
-                                    echo "<td class='t_name'>".$row['item_name']."</td><td class='t_categories'>";
+                                    echo "<td class='t_name'>".$row['item_name']."</td><td class='t_categories'><div>";
 
-
-                                    $options = $row['item_options'];
+                                    $categories = $row['item_category'];
                                     // Remove any commas
-                                    $options_array = explode(',', $options);
+                                    $category_array = explode(',', $categories);
 
-                                    $valid_options_ids = array(); // Define an array to store valid category IDs
+                                    $valid_category_ids = array(); // Define an array to store valid category IDs
+                                    $category_count = 0; // Initialize category count
 
-                                    foreach ($options_array as $option) {
-                                        $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
-                                        $result4 = $conn->query($sql4);
+                                    foreach ($category_array as $category) {
+                                        $sql3 = "SELECT category_name FROM menu_categories WHERE category_ID = {$category} AND trash = 0 LIMIT 1";
+                                        $result3 = $conn->query($sql3);
 
-                                        if ($result4 && $result4->num_rows > 0) {
-                                            while ($row4 = $result4->fetch_assoc()) {
-                                                $valid_options_ids[] = $option;
+                                        if ($result3 && $result3->num_rows > 0) {
+                                            // Category exists, add it to the valid category IDs array
+                                            while ($row3 = $result3->fetch_assoc()) {
+                                                echo $row3['category_name'];
+                                                
+                                                // Check if it's not the last category
+                                                if ($category_count < count($category_array) - 1) {
+                                                    echo ", ";
+                                                }
+                                                
+                                                $valid_category_ids[] = $category;
                                             }
                                         } else {
-                                            $options_array = array_diff($options_array, array($option));
+                                            $category_array = array_diff($category_array, array($category));
                                         }
+                                        
+                                        $category_count++;
                                     }
 
                                     // Construct updated item_category string
-                                    $updated_options_string = implode(',', $valid_options_ids);
+                                    $updated_category_string = implode(',', $valid_category_ids);
 
                                     // Update item_category in the database
-                                    $update_sql2 = "UPDATE menu_items SET item_options = '{$updated_options_string}' WHERE item_ID = {$row['item_ID']}";
-                                    $conn->query($update_sql2);
+                                    $update_sql = "UPDATE menu_items SET item_category = '{$updated_category_string}' WHERE item_ID = {$row['item_ID']}";
+                                    $conn->query($update_sql);
+
+                                    // $options = $row['item_options'];
+                                    // // Remove any commas
+                                    // $options_array = explode(',', $options);
+
+                                    // $valid_options_ids = array(); // Define an array to store valid category IDs
+
+                                    // foreach ($options_array as $option) {
+                                    //     $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
+                                    //     $result4 = $conn->query($sql4);
+
+                                    //     if ($result4 && $result4->num_rows > 0) {
+                                    //         while ($row4 = $result4->fetch_assoc()) {
+                                    //             $valid_options_ids[] = $option;
+                                    //         }
+                                    //     } else {
+                                    //         $options_array = array_diff($options_array, array($option));
+                                    //     }
+                                    // }
+
+                                    // // Construct updated item_category string
+                                    // $updated_options_string = implode(',', $valid_options_ids);
+
+                                    // // Update item_category in the database
+                                    // $update_sql2 = "UPDATE menu_items SET item_options = '{$updated_options_string}' WHERE item_ID = {$row['item_ID']}";
+                                    // $conn->query($update_sql2);
 
                                     echo "</div></td><td class='t_price'";
                                     if ($row['item_discount'] > 0){
