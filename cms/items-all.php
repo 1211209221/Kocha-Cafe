@@ -646,31 +646,31 @@
                                     $update_sql = "UPDATE menu_items SET item_category = '{$updated_category_string}' WHERE item_ID = {$row['item_ID']}";
                                     $conn->query($update_sql);
 
-                                    $options = $row['item_options'];
-                                    // Remove any commas
-                                    $options_array = explode(',', $options);
+                                    // $options = $row['item_options'];
+                                    // // Remove any commas
+                                    // $options_array = explode(',', $options);
 
-                                    $valid_options_ids = array(); // Define an array to store valid category IDs
+                                    // $valid_options_ids = array(); // Define an array to store valid category IDs
 
-                                    foreach ($options_array as $option) {
-                                        $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
-                                        $result4 = $conn->query($sql4);
+                                    // foreach ($options_array as $option) {
+                                    //     $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
+                                    //     $result4 = $conn->query($sql4);
 
-                                        if ($result4 && $result4->num_rows > 0) {
-                                            while ($row4 = $result4->fetch_assoc()) {
-                                                $valid_options_ids[] = $option;
-                                            }
-                                        } else {
-                                            $options_array = array_diff($options_array, array($option));
-                                        }
-                                    }
+                                    //     if ($result4 && $result4->num_rows > 0) {
+                                    //         while ($row4 = $result4->fetch_assoc()) {
+                                    //             $valid_options_ids[] = $option;
+                                    //         }
+                                    //     } else {
+                                    //         $options_array = array_diff($options_array, array($option));
+                                    //     }
+                                    // }
 
-                                    // Construct updated item_category string
-                                    $updated_options_string = implode(',', $valid_options_ids);
+                                    // // Construct updated item_category string
+                                    // $updated_options_string = implode(',', $valid_options_ids);
 
-                                    // Update item_category in the database
-                                    $update_sql2 = "UPDATE menu_items SET item_options = '{$updated_options_string}' WHERE item_ID = {$row['item_ID']}";
-                                    $conn->query($update_sql2);
+                                    // // Update item_category in the database
+                                    // $update_sql2 = "UPDATE menu_items SET item_options = '{$updated_options_string}' WHERE item_ID = {$row['item_ID']}";
+                                    // $conn->query($update_sql2);
 
                                     echo "</div></td><td class='t_price'";
                                     if ($row['item_discount'] > 0){
