@@ -653,7 +653,7 @@
                                     $valid_options_ids = array(); // Define an array to store valid category IDs
 
                                     foreach ($options_array as $option) {
-                                        $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = {$option} AND trash = 0 LIMIT 1";
+                                        $sql4 = "SELECT * FROM menu_customization WHERE custom_ID = '{$option}' AND trash = 0 LIMIT 1";
                                         $result4 = $conn->query($sql4);
 
                                         if ($result4 && $result4->num_rows > 0) {
