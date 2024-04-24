@@ -52,17 +52,18 @@
             require_once "connect.php";
             session_start();
 
+            $errors = array();
+
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $fullName = $_POST["fullname"];
                 $email = $_POST["email"];
                 $password = $_POST["password"];
                 $passwordRepeat = $_POST["repeat_password"];
 
+                $check_name_query = mysqli_query($conn, "SELECT * FROM customer WHERE cust_username ='$fullName'");
                 $check_query = mysqli_query($conn, "SELECT * FROM customer where cust_email ='$email'");
                 $rowCount = mysqli_num_rows($check_query);
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-                $errors = array();
 
                 if (empty($fullName) || empty($email) || empty($password) || empty($passwordRepeat)) {
                     array_push($errors, "All fields are required");
@@ -75,6 +76,11 @@
                 }
                 if ($password != $passwordRepeat) {
                     array_push($errors, "Password does not match");
+                }
+
+                // Check if the username already exists in the database
+                if (mysqli_num_rows($check_name_query) > 0) {
+                    array_push($errors, "Username already exists");
                 }
 
                 $sql = "SELECT * FROM customer WHERE cust_email = ?";
@@ -90,13 +96,7 @@
                     array_push($errors, "Database error");
                 }
 
-                if (count($errors) > 0) {
-                    echo "<div class='alert alert-danger'>";
-                    foreach ($errors as $error) {
-                        echo "<div>$error</div>";
-                    }
-                    echo "</div>";
-                } else {
+                if (count($errors) == 0) {
                     $sql = "INSERT INTO customer (cust_username, cust_email, cust_pass) VALUES (?, ?, ?)";
                     $stmt = mysqli_stmt_init($conn);
                     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -152,6 +152,14 @@
             }
             ?>
 
+            <?php
+            // Display error messages if there are any
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && count($errors) > 0) {
+                $errorMessage = implode("\\n", $errors);
+                echo "<script>alert('$errorMessage');</script>";
+            }
+            ?>
+
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                 <div class="user-details">
                     <div class="input-box">
@@ -159,27 +167,19 @@
                         <input type="text" name="fullname" placeholder="Enter your username"
                             value="<?php echo isset($_POST['fullname']) ? $_POST['fullname'] : ''; ?>" required>
                     </div>
-                    <?php if (isset($errors) && in_array("All fields are required", $errors))
-                        echo "<div class='alert alert-danger'>All fields are required</div>"; ?>
                     <div class="input-box">
                         <span class="details">Email</span>
                         <input type="email" name="email" placeholder="Enter your email"
                             value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>" required>
                     </div>
-                    <?php if (isset($errors) && in_array("Email is not valid", $errors))
-                        echo "<div class='alert alert-danger'>Email is not valid</div>"; ?>
                     <div class="input-box">
                         <span class="details">Password</span>
                         <input type="password" name="password" placeholder="Enter your password" required>
                     </div>
-                    <?php if (isset($errors) && in_array("Password must be at least 8 characters long", $errors))
-                        echo "<div class='alert alert-danger'>Password must be at least 8 characters long</div>"; ?>
                     <div class="input-box">
                         <span class="details">Confirm Password</span>
                         <input type="password" name="repeat_password" placeholder="Confirm your password" required>
                     </div>
-                    <?php if (isset($errors) && in_array("Password does not match", $errors))
-                        echo "<div class='alert alert-danger'>Password does not match</div>"; ?>
                 </div>
                 <div class="button">
                     <input type="submit" name="submit" value="Register">
@@ -189,6 +189,7 @@
                 <p>Already Registered <a href="login.php">Login Here</a></p>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
