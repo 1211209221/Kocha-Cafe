@@ -133,6 +133,11 @@ if (isset($_POST["login"])) {
                     <span class="focus-input100" data-placeholder="Password"></span>
                     <?php if(isset($password_error) && empty($_POST["login"])) { echo "<div id='password_error' class='alert alert-danger'>$password_error</div>"; } ?>
                 </div>
+                <div class="text-center">
+                    <a class="txt1" href="recover_psw.php">
+                        Forgot Password
+                    </a>
+                </div>
 
                 <div class="container-login100-form-btn">
                     <div class="wrap-login100-form-btn">
