@@ -83,7 +83,7 @@ html
 }
 @keyframes slide {
     100%{
-        top: -110px;
+        top: -108px;
     }
 }
 
@@ -203,11 +203,10 @@ html
 .form-box .contactForm .form label{
     display: block;
     color: #fff;
-    margin-bottom: 2px;
 }
 .form-box .contactForm .form .inputbox{
     position: relative;
-    margin-bottom: 9px;
+    margin-bottom: 20px;
     display: grid;
     flex-direction: column;
 }
@@ -215,6 +214,7 @@ html
 .form-box .contactForm .form .inputbox textarea{
     outline: none;
     border: none;
+    border-bottom: 1px solid #fff;
     border-radius: 5px;
     background-color: #f8f8f8;
     width: 100%;
@@ -227,12 +227,18 @@ html
 .form-box .contactForm .form .w50{
     width: 47%;
 }
-.form-box .contactForm .form .w100{
-    width: 100%;
+.form-box .contactForm .form .w80{
+    width: 70%;
 }
-
+.form-box .contactForm .form .inputbox input:hover,
+.form-box .contactForm .form .inputbox textarea:hover{
+    border-bottom: 1px solid;
+    border-color: #50A596;
+    transition: 0.5s;
+}
 .form-box .contactForm .form .inputbox input:focus,
 .form-box .contactForm .form .inputbox textarea:focus{
+    border-bottom: 2px solid rgb(190, 190, 185);
     background-color: rgb(255, 255, 238);
     font-weight: 400;
     transition: 0.2s;
@@ -240,25 +246,27 @@ html
 .form-box .contactForm .form .inputbox input[type="submit"]{
     position: relative;
     cursor: pointer;
-    background-color: #fff;
-    color: #000;
-    font-weight: 800;
+    background-color: #50A596;
+    color: #fff;
+    font-weight: 700;
     font-size: 16px;
-    border: 2px solid rgb(98, 98, 98);
+    border: none;
     max-width: 110px;
-    align-self: center;
+    align-self: flex-end;
     padding: 10px;
+    margin-left: 50px;
 }
 .form-box .contactForm .form .inputbox input[type="submit"]:hover{
-    background-color: #ffaca7;
-    border-color: #ffaca7;
-    color: #fff;
+    background-color: rgb(255, 224, 212);
     transform: scale(1.05);
     transition: 0.3s ease-in-out;
     font-size: 15px;
+    color: #145018;
 }
 .form-box .contactForm .form .inputbox input[type="submit"]:active{
     transform: scale(1);
+    background-color: rgb(233 182 154);
+    color: #fff;
 }
 .inputbox .sbtn{
     justify-self: baseline;
@@ -271,17 +279,13 @@ html
     border-radius: 5px;
     width: fit-content;
     margin: 3px 0px 0px 0px;
-    height: 17px;
-}
-.error-color {
-    border-left: 3px solid #ca4e4e !important; 
 }
 
 .hidden{
-    visibility: hidden;
+    display: none;
 }
 .error{
-    border-left: 2px solid red;
+    border-bottom: 1px solid red;
 }
 
 .maparea{
@@ -315,7 +319,7 @@ html
         padding-left: 120px;
     }
     .contact-form .form-box{
-        margin: 10px 10px 100px;
+        margin: 10px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         border-radius: 5px;
     }
@@ -325,7 +329,7 @@ html
     }
     .form-box .contact-info{
         top: 0;
-        height: 690px;
+        height: 650px;
         margin: unset;
         position: relative;
         box-shadow: none;
@@ -338,7 +342,7 @@ html
     .form-box .contactForm{
         position: relative;
         width: 100%;
-        height: 690px;
+        height: 650px;
         padding-left: 0;
         margin-left: 0;
         border-radius: 0;
@@ -366,6 +370,7 @@ html
         font-size: 15px !important;
     }
     .contact-form .form-box{
+        margin: 0;
         display: flex;
         flex-direction: column;
         background-color: transparent;
@@ -434,6 +439,7 @@ html
         padding-right: 5px;
     }
     .contact-form .form-box{
+        margin: 0;
         min-width: 250px;
     }
     .form-box .contact-info,
@@ -462,10 +468,6 @@ html
     }
     .form-box .contactForm .form .inputbox input[type="submit"]{
         margin-left: 0;
-        width: 100%;
-    }
-    .inputbox .error-input{
-        height: fit-content;
     }
 @media (max-width: 380px){
     .g-recaptcha{
@@ -499,7 +501,7 @@ html
     position: relative;
     width: 50%;
     max-width: 400px;
-    min-width: 250px;
+    min-width: 280px;
     display: flex;
     flex-direction: column;
     border-radius: .3rem;
@@ -508,15 +510,21 @@ html
     padding: 10px;
     display: grid;
 }
+
 .profile-edit-content input[type=text], 
-.profile-edit-content input[type=tel] {
+.profile-edit-content input[type=tel], 
+select{
     width: 95%;
-    padding: 8px 10px;
+    padding: 6px 8px;
     margin: 0px 2px;
-    margin-bottom: 20px;
     display: inline-block;
     border: 1px solid #ccc;
     justify-self: center;
+    font-size: 15px;
+}
+.pcontainer-height option:hover{
+    background-color: #5a9498;
+    cursor: pointer;
 }
 .profile-edit-content input[type=text]:focus, 
 .profile-edit-content input[type=tel]:focus{
@@ -525,10 +533,24 @@ html
 .pcontainer label{
     margin-left: 12px;
     margin-bottom: 3px;
+    margin-top: 10px;
 } 
 .pcontainer label i{
     margin-right: 7px;
     font-size: 14px;
+}
+.pcontainer .address-error{
+    color: red;
+    width: 95%;
+    padding: 0px 3px;
+    margin: 0px 2px;
+    font-size: 12px;
+    display: block;
+}
+.pcontainer .pcontainer-height{
+    max-height: 350px;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 .pcontainer .edit-profile-btn{
     background-color: #5a9498;
@@ -559,9 +581,8 @@ html
     position: absolute;
     left: 20px;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 21px;
     color: #5a9498;
-    text-decoration: underline;
 }
 .xcontainer .closeedit {
     position: absolute;
@@ -595,8 +616,7 @@ html
     height: 540px;
     position: relative;
     margin: 10px;
-    margin-top: 20px;
-    margin-bottom: 50px;
+    margin-top: 30px;
     justify-content: center;
 }
 .bottom-info .left-opt{
@@ -727,6 +747,7 @@ html
     background-color: #ffffff;
     color: #5a9498;
     font-size: 19px;
+    font-weight: 600;
     border-left: 5px solid #36676A;
     border-right: 5px solid #36676A;
     transition: 0.3s;
@@ -841,6 +862,7 @@ html
     margin: 3px 0px;
     padding: 5px;
     font-weight: 600;
+    font-size: 17px;
 }
 .pro-detail-part p i{
     font-size: 14px;
@@ -853,7 +875,7 @@ html
     margin-bottom: 10px;
     background-color: #e9ecef;
     color: #484848;
-    font-size: 14px;
+    font-size: 15px;
     display: flex;
 }
 .pro-detail-part .inner-box{
@@ -889,6 +911,7 @@ html
     margin: 3px 0px;
     padding: 0 5px;
     font-weight: 600;
+    font-size: 17px;
 }
 .account-container p i{
     font-size: 14px;
@@ -901,7 +924,7 @@ html
     margin-bottom: 10px;
     background-color: #e9ecef;
     color: #484848;
-    font-size: 14px;
+    font-size: 15px;
     display: flex;
 }
 .account-container button{
@@ -947,7 +970,7 @@ html
 .profile-container .profile-container-two{
     width: 50%;
     min-width: 190px;
-    height: 400px;
+    height: 404px;
     border: 1px solid #c5c5c5;
     border-radius: 5px;
     padding: 15px;
@@ -957,8 +980,8 @@ html
 }
 .profile-container .profile-container-two h6{
     margin-top: 5px;
-    margin-bottom: 10px;
-    font-size: 17px;
+    margin-bottom: 5px;
+    font-size: 18px;
     font-weight: 600;
     color: #36676A;
 }
@@ -968,7 +991,7 @@ html
     height: 90%;
     margin-top: 3px;
 }
-.delivery-box .accordion{
+.delivery-box .accordion, .add-accordion{
     background-color: #50a5951f;
     color: #5a9498;
     cursor: pointer;
@@ -980,10 +1003,22 @@ html
     text-align: left;
     font-weight: 600;
     outline: none;
-    font-size: 16px;
+    font-size: 17px;
     transition: 0.4s;
 }
-
+.add-accordion{
+    display: flex;
+    background-color: #f0f0f0;
+    color: #5a9498;
+    justify-content: center;
+}
+.add-accordion .fa-plus{
+    font-size: 14px;
+}
+.add-accordion:hover{
+    background-color: #e2e2e2;
+    transition: 0.5s;
+}
 .expandacc, 
 .accordion:hover{
     background-color: #5a9498 !important;
@@ -1055,7 +1090,7 @@ html
     margin-bottom: 10px;
     background-color: #e9ecef;
     color: #484848;
-    font-size: 14px;
+    font-size: 15px;
     display: flex;
     height: max-content;
     word-wrap: break-word;
@@ -1100,13 +1135,13 @@ html
     .tabcontent .profile-container{
         flex-direction: column;
         overflow-y: scroll;
-        scrollbar-width: none;
         height: 380px;
     }
     .profile-container .profile-container-one,
     .profile-container .profile-container-two{
         width: 100%;
         margin: unset;
+        height: auto;
     }
     .profile-container-one .account-container,
     .profile-container-one .profile-detail-container{
