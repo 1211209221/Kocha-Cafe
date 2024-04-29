@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit(); // Terminate script execution after redirection
         } elseif ($row["admintype"] == "admin") {
             $_SESSION["username"] = $username;
-            header("location:dashboard0.php");
+            header("location:dashboard.php");
             exit(); // Terminate script execution after redirection
         } else {
             $error_message = "Invalid admin type";
