@@ -13,6 +13,7 @@ include('connect.php');
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
+    <link rel="icon" href="register/logo_icon.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Fonts -->
@@ -27,7 +28,7 @@ include('connect.php');
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 
-    <title>Login Form</title>
+    <title>Reset Password</title>
 </head>
 <body>
 

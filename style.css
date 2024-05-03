@@ -6536,4 +6536,300 @@ span.openNav:hover{
 	.admin_page .filter_selectors {
         padding: 10px 10px;
     }
+/*index and about us css */
+.main-content {
+	width: 100%;
+	height: 80vh;
+	background-image: url(./images/coffee2.jpg);
+	background-size: cover;
+	background-position: 73%;
+}
+
+.content {
+	text-align: center;
+	font-family: 'Afacad';
+	padding-top: 150px;
+	margin-left: 50px;
+	color: white;
+}
+
+.content h1 {
+	text-align: center;
+	font-family: 'Afacad';
+	font-size: 70px;
+	font-weight: bold;
+}
+
+.content h2 {
+	text-align: center;
+	font-family: 'Afacad';
+	font-size: 70px;
+	font-weight: bold;
+}
+
+#btn1 button {
+	font-family: 'Afacad';
+	width: 200px;
+	height: 35px;
+	margin-top: 20px;
+	font-weight: bold;
+	background-color: rgb(8, 166, 119);
+	border: none;
+	transition: 0.3s ease;
+	cursor: pointer;
+
+}
+
+#btn1 button:hover {
+	background-color: rgb(8, 166, 119);
+	box-shadow: 0 0 5px rgb(8, 166, 119),
+		0 0 20px rgb(8, 166, 119),
+		0 0 60px rgb(8, 166, 119),
+		0 0 150px rgb(8, 166, 119);
+}
+
+
+
+
+
+.card {
+	box-shadow: 0px 0px 5px black;
+	cursor: pointer;
+	transition: transform 0.5s ease;
+	margin: auto;
+}
+
+.best-card .card:hover {
+	transform: translateY(-15px);
+}
+
+.best-card h1 {
+	font-family: 'Afacad';
+	font-weight: bold;
+	color: white;
+}
+
+.best-card p {
+	font-family: 'Afacad';
+	font-weight: bold;
+	color: white;
+}
+
+
+
+
+.card-content h1 {
+
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.card-content h3 {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.card-content h5 {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.card-content p {
+	font-weight: bold;
+}
+
+
+
+
+
+
+.banner h1 {
+	font-family: 'Afacad';
+	font-size: 70px;
+	color: rgb(255, 113, 113);
+	font-weight: bold;
+	padding-top: 15px;
+	margin-left: 5px;
+	text-shadow: 2px 1px 5px black;
+}
+
+.change-content:after {
+	font-family: 'Afacad';
+	content: 'Text 1';
+	color: rgb(8, 166, 119);
+	animation: fadeText 10s infinite linear;
+}
+
+@keyframes fadeText {
+	0% {
+		content: "Spaghetti";
+	}
+
+	20% {
+		content: "Fried Rice";
+	}
+
+	60% {
+		content: "Porridge";
+	}
+
+	80% {
+		content: " Juices";
+	}
+
+	100% {
+		content: "Coffees";
+	}
+}
+
+.banner h2 {
+	font-family: 'Afacad';
+	font-size: 50px;
+	color: rgb(8, 166, 119);
+	font-weight: bold;
+	padding-top: 15px;
+	margin-left: 5px;
+}
+
+#btn2 button {
+	font-family: 'Afacad';
+	width: 200px;
+	height: 35px;
+	margin-left: 5px;
+	margin-top: 20px;
+	font-weight: bold;
+	background-color: rgb(8, 166, 119);
+	border: none;
+	transition: 0.3s ease;
+	cursor: pointer;
+}
+
+#btn2 button:hover {
+	background-color: rgb(8, 166, 119);
+	box-shadow: 0 0 5px rgb(8, 166, 119),
+		0 0 20px rgb(8, 166, 119),
+		0 0 60px rgb(8, 166, 119),
+		0 0 150px rgb(8, 166, 119);
+
+}
+
+.new-card {
+	margin-top: 50px;
+	cursor: pointer;
+}
+
+.new-card h1 {
+	font-size: 50px;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
+
+#btn3 {
+	text-align: center;
+}
+
+#btn3 button {
+	width: 150px;
+	height: 35px;
+	font-weight: bold;
+	border: none;
+	background-color: rgb(8, 166, 119);
+	transition: 0.50s ease-in;
+	cursor: pointer;
+
+}
+
+#btn3 button:hover {
+	background-color: black;
+	color: white;
+}
+
+#btn4 {
+	text-align: center;
+	margin-top: 50px;
+}
+
+#btn4 button {
+
+	width: 200px;
+	height: 35px;
+	background-color: rgb(8, 166, 119);
+	border: none;
+	font-weight: bold;
+	transition: transform 0.5s ease;
+	cursor: pointer;
+}
+
+#btn4 button:hover {
+	transform: translateY(-10px);
+}
+
+
+
+
+
+
+
+.banner2 {
+	width: 100%;
+	height: 60vh;
+	background-image: url(./images/banner2.png);
+	background-size: cover;
+	background-position: 50%;
+	margin-top: 50px;
+}
+
+.banner2 h1 {
+	font-weight: bold;
+	color: white;
+	font-size: 60px;
+	padding-top: 100px;
+	margin-left: 10px;
+}
+
+.banner2 h2 {
+	font-weight: bold;
+	color: black;
+	background-color: rgb(53, 178, 140);
+	font-size: 60px;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.row{
+	font-family: 'Afacad';
+	color: rgb(0, 0, 0);
+}
+
+.about-content {
+	font-family: 'Afacad';
+	color: rgb(0, 0, 0);
+}
+.about-container {
+	background-color: rgb(55, 181, 131);
+	/* Set background color */
+	padding: 20px;
+	/* Add some padding for better readability */
+	border-radius: 30px;
+	/* Add rounded corners */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	/* Add a subtle box shadow */
+}
+
+.about-container p {
+	font-family: 'Afacad';
+	font-size: 20px;
+	/* Adjust font size */
+	line-height: 1.6;
+	/* Increase line height for better readability */
+	color: #e6e6e6;
+}
+
+.about-container img {
+	max-width: 100%;
+	/* Ensure the image does not exceed container width */
+	display: block;
+	/* Center the image horizontally */
+	margin: 0 auto 20px;
+	/* Add some bottom margin */
 }

@@ -1,34 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Home | Kocha Café</title>
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    <title>Home | Kocha Café</title>
 
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-        <link rel="icon" href="images/logo/logo_icon.png">
-        <script src="gototop.js"></script>
-    </head>
-    <body>
-        
-        <?php
-            include 'connect.php';
-            include 'top.php';
-            include 'sidebar.php'
-        ;?>
-        <div style="width: 100%;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Semper quis lectus nulla at volutpat diam ut. Sit amet consectetur adipiscing elit. Augue interdum velit euismod in. Elit ut aliquam purus sit amet luctus venenatis lectus magna. Tempor nec feugiat nisl pretium. Faucibus in ornare quam viverra. Ipsum consequat nisl vel pretium lectus. Id porta nibh venenatis cras. Risus nec feugiat in fermentum posuere urna nec tincidunt praesent. Vel quam elementum pulvinar etiam non. Ornare quam viverra orci sagittis eu volutpat odio facilisis. Sagittis eu volutpat odio facilisis mauris sit. Senectus et netus et malesuada fames ac turpis egestas sed. Condimentum id venenatis a condimentum. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Scelerisque in dictum non consectetur.
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor aliquam. Nunc mi ipsum faucibus vitae aliquet. Et malesuada fames ac turpis egestas integer eget. Quis ipsum suspendisse ultrices gravida dictum fusce ut. At risus viverra adipiscing at in tellus integer. Viverra nibh cras pulvinar mattis. Massa tincidunt nunc pulvinar sapien et ligula ullamcorper. A condimentum vitae sapien pellentesque habitant morbi tristique senectus et. At consectetur lorem donec massa. Proin libero nunc consequat interdum varius sit amet mattis. Pharetra magna ac placerat vestibulum lectus mauris ultrices eros. Fermentum dui faucibus in ornare. Aliquam malesuada bibendum arcu vitae elementum curabitur vitae nunc.
+    <link rel="stylesheet" href="style.css">
+    <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+    <link rel="icon" href="images/logo/logo_icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
-        Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. In nisl nisi scelerisque eu ultrices. At varius vel pharetra vel turpis nunc eget lorem. Mus mauris vitae ultricies leo integer malesuada. Mattis vulputate enim nulla aliquet porttitor. Dignissim convallis aenean et tortor at. Habitant morbi tristique senectus et netus et. Eu sem integer vitae justo eget magna fermentum iaculis eu. Integer enim neque volutpat ac tincidunt vitae semper. Sed vulputate mi sit amet mauris commodo quis. Vel quam elementum pulvinar etiam non quam. Id porta nibh venenatis cras sed felis eget velit. Turpis egestas pretium aenean pharetra magna ac.
+    <!-- bootstrap link -->
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+</head>
 
-        Fringilla urna porttitor rhoncus dolor purus non. Odio tempor orci dapibus ultrices in iaculis. Nunc aliquet bibendum enim facilisis gravida neque convallis a. Iaculis urna id volutpat lacus laoreet non curabitur gravida arcu. Aliquam purus sit amet luctus. In dictum non consectetur a erat nam. At erat pellentesque adipiscing commodo elit at. Integer eget aliquet nibh praesent. Dui accumsan sit amet nulla facilisi morbi tempus iaculis. Ultrices in iaculis nunc sed augue lacus viverra vitae. Eros in cursus turpis massa tincidunt dui ut ornare. Dui nunc mattis enim ut tellus.
+<body>
 
-        Quis auctor elit sed vulputate mi sit amet mauris. Quam nulla porttitor massa id neque aliquam vestibulum morbi blandit. Eget egestas purus viverra accumsan in nisl nisi scelerisque. Dignissim cras tincidunt lobortis feugiat vivamus at augue. Lacinia quis vel eros donec ac odio tempor. Sit amet aliquam id diam maecenas ultricies mi eget mauris. Metus aliquam eleifend mi in. Nibh praesent tristique magna sit amet purus gravida quis. Egestas fringilla phasellus faucibus scelerisque eleifend. Pharetra convallis posuere morbi leo. Vel pharetra vel turpis nunc eget lorem dolor sed viverra. Et netus et malesuada fames ac. Justo nec ultrices dui sapien. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo. Fames ac turpis egestas maecenas. Egestas sed sed risus pretium. Vitae justo eget magna fermentum iaculis. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin.</div>
-        <?php include 'footer.php'; ?>
-    </body>
+    <?php
+    include 'connect.php';
+    include 'top.php';
+    include 'sidebar.php'
+    ; ?>
+    <div class="main-content">
+        <div class="content">
+            <h1>WELCOME TO KOCHA Café</h1>
+            <h2>Let's discover more</h2>
+            <a id="btn1" href="menu.php"><button>Order Now</button></a>
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <div class="container">
+        <div class="best-card">
+            <div class="row" style="margin-top: 100px ;">
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/dishes2.jpg" alt="">
+                        <div class="card-img-overlay">
+                            <h1 class="card-titel">Side Dishes</h1>
+                            <p class="card-text">Having some little snacks and fries in your meal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/main2.jpg" alt="">
+                        <div class="card-img-overlay">
+                            <h1 class="card-titel">Iconic Dishes</h1>
+                            <p class="card-text">Special cuisine always in Kocha Cafe</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/card3.png" alt="" height="230px">
+                        <div class="card-img-overlay">
+                            <h1 class="card-titel">Fast Delivery</h1>
+                            <p class="card-text">You can wait your food arrived once you ordered</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="container">
+        <div class="banner">
+            <h1>Best <span class="change-content"></span></h1>
+            <h2>Only in Kocha Cafe</h2>
+            <a id="btn2" href="menu.php"><button>View Full Menu</button></a>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="new-card">
+            <div class="row">
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/dishes3.jpg" alt="">
+                        <div class="card-body">
+                            <h2 class="card-titel text-center">Main Dishes</h2>
+                            <h3 class="card-titel text-center"></h3>
+                            <p class="card-text text-center">We have many varient dishes such as Fried Rice, Porridge and Spaghetti</p>
+                            <a id="btn3" href="menu.php#A2" style="display: block"><button>Order Now</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/juices.jpg" alt="">
+                        <div class="card-body">
+                            <h2 class="card-titel text-center">Beverages</h2>
+                            <h3 class="card-titel text-center"></h3>
+                            <p class="card-text text-center">Our Cafe have many type drinks to giving more taste to our customer with Latte or Milk Tea for some sweet taste</p>
+                            <a id="btn3" href="menu.php#A11" style="display: block"><button>Order Now</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 py-3 py-md-0">
+                    <div class="card">
+                        <img class="card-image-top" src="./images/salad.jpg" alt="">
+                        <div class="card-body">
+                            <h2 class="card-titel text-center">Side Dishes</h2>
+                            <h3 class="card-titel text-center"></h3>
+                            <p class="card-text text-center">Here some real snacks for combination to your own dishes</p>
+                            <a id="btn3" href="menu.php#A20" style="display: block"><button>Order Now</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+    <?php include 'footer.php'; ?>
+</body>
+
 </html>

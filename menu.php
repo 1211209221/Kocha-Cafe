@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="script.js"></script>
         <script src="gototop.js"></script>
@@ -408,6 +407,9 @@
                     <div class="row d-flex justify-content-between pb-1">
                         <div class="col-0 col-lg-3 mx-auto">
                             <div id="menuFilters" class="filter_container">
+                                <div class="close_filter">
+                                    <i class="fal fa-times" onclick="closeFilters()"></i>
+                                </div>
                                 <div class="active_filters">
                                     <div class="justify-content-between d-flex">
                                         <span><i class="fas fa-sliders-h"></i></i>Filters</span>
@@ -478,15 +480,14 @@
                                 <div class="price_filter">
                                     <span>Price Range (MYR)</span>
                                     <div class="d-flex justify-content-center py-1">
-                                        <input type="number" name="price_min" min="0" placeholder="Min.">
-                                        <div class="px-2" style="font-size: 22px;">-</div>
-                                        <input type="number" name="price_max" min="0" placeholder="Max.">
+                                        <input type="text" name="price_min" placeholder="Min.">
+                                        <div class="px-2">-</div>
+                                        <input type="text" name="price_max" placeholder="Max.">
                                     </div>
                                 </div>
                                 <hr>
                                  <input type="hidden" name="filterState" id="filterStateInput">
                                 <button type="submit" name="submit_filter" id="submit_filter" class="submit_filter">Apply Filters</button>
-                                <div class="close_filter" onclick="closeFilters()">Cancel</div>
                             </div>
                             <div id="filter_darken" onclick="closeFilters()"></div>
                         </div>
@@ -625,7 +626,7 @@
                                             // echo $num_menu_items;
                                             $result_menu_items = $conn->query($num_menu_items);
                                             if($result_menu_items->num_rows > 0){
-                                                echo '<span>' . $row["category_name"]. '</span>';
+                                                echo '<span id=A'. $row["category_ID"]. '>' . $row["category_name"]. '</span>';
                                                 
                                             }
 
@@ -685,7 +686,7 @@
 
                                 echo'</div>';
                                 if ($itemsGenerated == 0) {
-                                    echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items...</div>';
+                                    echo '<div class="no_items"><i class="far fa-ghost"></i>No menu items.</div>';
                                 }
                                 echo'</div>';
                             ?>
