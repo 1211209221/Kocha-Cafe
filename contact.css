@@ -988,7 +988,7 @@ select{
 .profile-container-two .delivery-box{
     overflow-y: scroll;
     scrollbar-width: none;
-    height: 90%;
+    height: 85%;
     margin-top: 3px;
 }
 .delivery-box .accordion, .add-accordion{
@@ -1095,6 +1095,19 @@ select{
     height: max-content;
     word-wrap: break-word;
 
+}
+#confirmdelete .xcontainer .fa-exclamation{
+    margin-right: 8px;
+}
+#confirmdelete .pcontainer p{
+    font-size: 17px;
+    margin: 12px;
+    text-align: center;
+}
+#confirmdelete .pcontainer button{
+    outline: none;
+    height: 40px;
+    padding: 0;
 }
 
 @media (max-width: 768px){

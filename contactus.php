@@ -10,6 +10,7 @@
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
+        <script src="script.js"></script>
         <script src="gototop.js"></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
