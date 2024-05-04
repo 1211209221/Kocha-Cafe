@@ -63,7 +63,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <?php
             if (is_array($user) && !empty($user)) {
                 echo '<div class="icons">
-                        <a href="#" class="' . ($current_page == 'profile.php' ? 'active-menu' : '') . '">
+                        <a href="profile.php" class="' . ($current_page == 'profile.php' ? 'active-menu' : '') . '">
                             <i class="fas fa-user"><span style="padding-left: 5px;">' . $user["cust_username"] . '</span></i>
                         </a>
                         <a href="cart.php" class="' . ($current_page == 'cart.php' ? 'active-menu' : '') . '">

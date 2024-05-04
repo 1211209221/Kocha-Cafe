@@ -25,6 +25,36 @@
                 exit();
             }
 
+            $get_ph = "SELECT cust_phone FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+            $ph_result = $conn->query($get_ph);
+            $ph_row = $ph_result->fetch_assoc();
+            if($ph_row && !empty($ph_row['cust_phone'])){
+                $phone = $ph_row['cust_phone'];
+            }
+            else{
+                $phone = "No record.";
+            }
+
+            $get_name = "SELECT cust_username FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+            $name_result = $conn->query($get_name);
+            $name_row = $name_result->fetch_assoc();
+            if($name_row && !empty($name_row['cust_username'])){
+                $name = $name_row['cust_username'];
+            }
+            else{
+                $name = "There is a problem on database.";
+            }
+
+            $get_email = "SELECT cust_email FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+            $email_result = $conn->query($get_email);
+            $email_row = $email_result->fetch_assoc();
+            if($email_row && !empty($email_row['cust_email'])){
+                $email_address = $email_row['cust_email'];
+            }
+            else{
+                $email_address = "There is a problem on database.";
+            }
+
             $add_label = array();
             $add_unit = array();
             $add_building = array();
@@ -205,7 +235,115 @@
                     }
                 }
             }
+            if (isset($_POST['changepwd'])) {
+                $get_pwd = "SELECT cust_pass FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                $pwd_result = $conn->query($get_pwd);
+                $pwd_row = $pwd_result->fetch_assoc();
+            
+                if ($pwd_row) {
+                    if (password_verify($_POST['originalpwd'], $pwd_row['cust_pass'])) {
+                        $_SESSION['password_verification'] = 'correct';
+                    } else {
+                        $_SESSION['password_verification'] = 'Incorrect password';
+                    }
+                }
+            
+                // Redirect to the same page to prevent form resubmission
+                header("Location: profile.php");
+                exit();
+            }
+            if(isset($_POST['changepwd1'])){
+                $new_password = $_POST['newpwd1'];
+                $h_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+                $update_query = "UPDATE customer SET cust_pass = '$h_new_password' WHERE cust_ID = $cust_ID AND trash = 0";
 
+                if ($conn->query($update_query) === TRUE) {
+                    // Password updated successfully
+                    $_SESSION['password_update_success'] = true;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                } else {
+                    // Error updating password
+                    $_SESSION['password_update_error'] = "Error updating password: " . $conn->error;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                }
+            }
+            if(isset($_POST['del-acc'])){
+                $update_query = "UPDATE customer SET trash = 1 WHERE cust_ID = $cust_ID AND trash = 0";
+                if ($conn->query($update_query) === TRUE) {
+                    // Password updated successfully
+                    $_SESSION['delete_acc_success'] = true;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                } else {
+                    // Error updating password
+                    $_SESSION['delete_acc_error'] = "Error updating record: " . $conn->error;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                }
+            }
+            if (isset($_SESSION['delete_acc_success']) && $_SESSION['delete_acc_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Password successfully changed!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['delete_acc_success']);
+            }
+            if (isset($_SESSION['delete_acc_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to change password. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['delete_acc_error'] . '</div>';
+
+                unset($_SESSION['delete_acc_error']);
+            }
+
+            if (isset($_SESSION['password_update_success']) && $_SESSION['password_update_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Password successfully changed!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['password_update_success']);
+            }
+            if (isset($_SESSION['password_update_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to change password. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['password_update_error'] . '</div>';
+
+                unset($_SESSION['password_update_error']);
+            }
             if (isset($_SESSION['deleteAddress_success']) && $_SESSION['deleteAddress_success'] === true) {
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
@@ -288,6 +426,23 @@
             include 'sidebar.php';
             include 'gototopbtn.php'
         ?>
+        <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    <?php
+                    if (isset($_SESSION['password_verification'])) {
+                        if ($_SESSION['password_verification'] == 'correct') {
+                            echo 'document.getElementById(\'changepwd1\').style.display=\'flex\';';
+                        } else {
+                            echo 'document.getElementById(\'changepwd\').style.display=\'flex\';';
+                            echo 'document.getElementById("pwd-error").innerText = "Incorrect password";';
+                        }
+
+                        // Clear the session variable after displaying the message
+                        unset($_SESSION['password_verification']);
+                    }
+                    ?>
+                });
+            </script>
         <div class="container-fluid container">
             <div class="col-12 m-auto">
                 
@@ -302,10 +457,12 @@
                           </div>
                       <div class="pcontainer">
                         <label for="uname"><b><i class="fas fa-user-edit"></i>Username</b></label>
-                        <input type="text" id="uname" name="uname" required>
+                        <input type="text" id="uname" name="uname" value="<?php echo $name;?>" required>
+                        <span class="address-error"></span>
                   
                         <label for="pn"><b><i class="fas fa-phone-alt"></i> Phone Number</b></label>
-                        <input type="tel" id="pn" name="pn" required>
+                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone;?>" required></div>
+                        <span class="address-error"></span>
                           
                         <button type="submit" name="update-profile" class="edit-profile-btn" style="outline: none;">Update</button>
                         
@@ -525,7 +682,92 @@
                       </div>
                     </form>
                   </div>
-        
+                  <div id="changepwd" class="modal">
+                    <form class="profile-edit-content animate" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                        <div class="xcontainer">
+                            <span class="txt">Account</span>
+                            <span onclick="document.getElementById('changepwd').style.display='none'" class="closeedit" title="Close Modal">&times;</span>
+                          </div>
+                      <div class="pcontainer">
+                        <div class="pcontainer-height">
+                        <label for="email"><b><i class="fas fa-at"></i>Email:</b></label>
+                        <input type="email" id="email" name="email" value="<?php echo $email_address;?>" readonly>
+                        <span class="address-error"></span>
+                        
+                        <label for="originalpwd"><b><i class="fas fa-lock"></i>Original Password:</b></label>
+                        <input type="password" id="originalpwd" name="originalpwd" placeholder="" required>
+                        <span id="pwd-error" class="address-error"></span>
+                        
+                    </div>
+                        <p style = "margin-top:10px; margin-left:8px; margin-bottom:unset; font-size: 14px">Forgot Password? <a href="recover_psw.php" style="color:#5a9498;"><b> CLICK HERE</b></a></p>
+                        <button type="submit" name="changepwd" id="submit-pwd" class="edit-profile-btn" style="outline: none; margin-top:7px">Done</button>
+                      </div>
+                  
+                      <div class="pcontainer" style="background-color:#f3f3f3; height: 80px;">
+                        <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById('changepwd').style.display='none'">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div id="changepwd1" class="modal">
+                    <form class="profile-edit-content animate" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                        <div class="xcontainer">
+                            <span class="txt">Account</span>
+                            <span onclick="document.getElementById('changepwd1').style.display='none'" class="closeedit" title="Close Modal">&times;</span>
+                          </div>
+                      <div class="pcontainer">
+                        <div class="pcontainer-height">
+                        <label for="email1"><b><i class="fas fa-at"></i>Email:</b></label>
+                        <input type="email" id="email1" name="email1" value="<?php echo $email_address;?>" readonly>
+                        <span class="address-error"></span>
+                        
+                        <label for="newpwd1"><b><i class="fas fa-key"></i>New Password:</b></label>
+                        <div style="position:relative;"><i class="fas fa-eye-slash" style="position:absolute;right: 20px;top: 12px;font-size: 13px; cursor:pointer;" onclick="togglePasswordVisibility('newpwd1', this)"></i><input type="password" id="newpwd1" name="newpwd1" required></div>
+                        <span class="address-error"></span>
+                          
+                        <label for="newpwd2"><b><i class="fas fa-key"></i>Confirm New Password:</b></label>
+                        <div style="position:relative;"><i class="fas fa-eye-slash" style="position:absolute;right: 20px;top: 12px;font-size: 13px;cursor:pointer;" onclick="togglePasswordVisibility('newpwd2', this)"></i><input type="password" id="newpwd2" name="newpwd2" required></div>
+                        <span class="address-error"></span>
+                    </div>
+                        <button type="submit" name="changepwd1" id="submit-pwd1" class="edit-profile-btn" style="outline: none; margin-top:7px">Done</button>
+                      </div>
+                  
+                      <div class="pcontainer" style="background-color:#f3f3f3; height: 80px;">
+                        <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById('changepwd1').style.display='none'">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div id="deleteacc" class="modal">
+                    <form class="profile-edit-content animate" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                        <div class="xcontainer">
+                            <span class="txt" style="color: #e2857b;"><i class="fas fa-exclamation" style="color: #e2857b;"></i> Alert</span>
+                            <span onclick="document.getElementById('deleteacc').style.display='none'" class="closeedit" title="Close Modal">&times;</span>
+                        </div>
+                        <div class="pcontainer">
+                            <p style="margin-bottom:unset;">Are you sure you want to <b style="color:#e2857b;">DELETE</b> this account?</p>
+                            <p style="margin-top:5px;">Your purchase history, wishlist, and other data will be <b style="color:#e2857b;">LOST!</b></p>
+                            <button type="submit" name="del-acc" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
+                        </div>
+                        <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
+                            <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById('deleteacc').style.display='none'">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                  <script>
+                  function togglePasswordVisibility(passwordFieldId, icon) {
+                        const passwordField = document.getElementById(passwordFieldId);
+                        
+                        if (passwordField.type === "password") {
+                            passwordField.type = "text";
+                            icon.classList.remove("fa-eye-slash");
+                            icon.classList.add("fa-eye");
+                        } else {
+                            passwordField.type = "password";
+                            icon.classList.remove("fa-eye");
+                            icon.classList.add("fa-eye-slash");
+                        }
+                    }
+                    </script>
                     <script>
                         //validate the updateform
                         document.addEventListener("DOMContentLoaded", function () {
@@ -533,6 +775,7 @@
                             const formElements2 = document.querySelectorAll("#Label2, #houseno2, #addline2, #addline22, #postcode2, #state2");
                             const formElements3 = document.querySelectorAll("#Label3, #houseno3, #addline3, #addline23, #postcode3, #state3");
                             const formElements4 = document.querySelectorAll("#newLabel, #newhouseno, #newaddline, #newaddline2, #newpostcode, #newstate");
+                            const formElements5 = document.querySelectorAll("#newpwd1, #newpwd2");
                             
                             formElements1.forEach(element => {
                                 element.addEventListener("input", function () {
@@ -550,6 +793,11 @@
                                 });
                             });
                             formElements4.forEach(element => {
+                                element.addEventListener("input", function () {
+                                    validateAddressForm4();
+                                });
+                            });
+                            formElements5.forEach(element => {
                                 element.addEventListener("input", function () {
                                     validateAddressForm4();
                                 });
@@ -580,6 +828,13 @@
                             document.getElementById("submit-add").addEventListener("click", function (event) {
                                 // Validate form fields
                                 if (!validateAddressForm4()) {
+                                    // Prevent form submission if validation fails
+                                    event.preventDefault();
+                                }
+                            });
+                            document.getElementById("submit-pwd1").addEventListener("click", function (event) {
+                                // Validate form fields
+                                if (!validateAddressForm5()) {
                                     // Prevent form submission if validation fails
                                     event.preventDefault();
                                 }
@@ -1003,6 +1258,49 @@
                             // Return the overall validity of the form
                             return valid;
                         }
+                        function validateAddressForm5() {
+                            
+                            const newpwd1 = document.getElementById("newpwd1").value;
+                            const newpwd2 = document.getElementById("newpwd2").value;
+
+                            let valid = true;
+      
+                            // Validate pwd
+                            if (newpwd1.length < 8) {
+                                errorDisplay1(document.getElementById("newpwd1"), "*Password must be at least 8 characters long.");
+                                valid = false;
+                            } else {
+                                clearError1(document.getElementById("newpwd1"));
+                            }
+
+                            // Validate both passwords are not empty and match
+                            if (newpwd1.trim() === "" || newpwd2.trim() === "") {
+                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords cannot be empty.");
+                                valid = false;
+                            } else if (newpwd1 !== newpwd2) {
+                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords do not match.");
+                                valid = false;
+                            } else {
+                                clearError1(document.getElementById("newpwd2"));
+                            }
+                            
+                            // Return the overall validity of the form
+                            return valid;
+                        }
+                        function errorDisplay1(input, message) {
+                            const errorElement = input.parentNode.nextElementSibling;
+                            errorElement.innerText = message;
+                            errorElement.classList.remove('hidden');
+                            input.classList.add('error-color');
+                        }
+
+                        // Function to clear error message
+                        function clearError1(input) {
+                            const errorElement = input.parentNode.nextElementSibling;
+                            errorElement.innerText = "";
+                            errorElement.classList.add('hidden');
+                            input.classList.remove('error-color');
+                        }
 
                         // Function to display error message
                         function errorDisplay(input, message) {
@@ -1088,7 +1386,7 @@
                                         </div>
                                     </div>
                                     <div class="account-container">
-                                        <button class="changepwdbtn" style="outline: none;">Change Password</button>
+                                        <button class="changepwdbtn" style="outline: none;" onclick="document.getElementById('changepwd').style.display='flex'">Change Password</button>
                                         <h6>Account</h6>
                                             <p><i class="fas fa-at"></i>Email:</p>
                                             <div class="email-box">
@@ -1105,7 +1403,7 @@
                                                 }
                                             ?>
                                             </div>
-                                            <button style="border: none; outline: none;"><i class="fas fa-trash-alt" style="font-size: 13px;margin-right: 5px;"></i>Delete Account</button>
+                                            <button style="border: none; outline: none;" onclick="document.getElementById('deleteacc').style.display='flex'"><i class="fas fa-trash-alt" style="font-size: 13px;margin-right: 5px;"></i>Delete Account</button>
                                     </div>
                                 </div>
                                 <div class="profile-container-two">
@@ -1156,14 +1454,14 @@
                                                 </div>';
 
                                                 echo '<div id="confirmdelete" class="modal">
-                                                <form id="delete-address-form" class="profile-edit-content animate" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">
+                                                <form class="profile-edit-content animate" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">
                                                     <div class="xcontainer">
-                                                        <span class="txt" style="color: #e2857b;"><i class="fas fa-exclamation" style="color: #e2857b;"></i> Warning</span>
+                                                        <span class="txt" style="color: #e2857b;"><i class="fas fa-exclamation" style="color: #e2857b;"></i> Alert</span>
                                                         <span onclick="document.getElementById(\'confirmdelete\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
                                                       </div>
                                                   <div class="pcontainer">
                                                     <p>Are you sure you want to <b style="color:#e2857b;">DELETE</b> this address?</p>
-                                                    <input type="hidden" id="delete-address" name="delete-index" value="'.$index.'">
+                                                    <input type="hidden" name="delete-index" value="'.$index.'">
                                                     <button type="submit" name="del-address" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
                                                   </div>
                                                   <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">

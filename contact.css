@@ -513,10 +513,12 @@ html
 
 .profile-edit-content input[type=text], 
 .profile-edit-content input[type=tel], 
+.profile-edit-content input[type=password],
+.profile-edit-content input[type=email],
 select{
     width: 95%;
     padding: 6px 8px;
-    margin: 0px 2px;
+    margin: 0px 5px;
     display: inline-block;
     border: 1px solid #ccc;
     justify-self: center;
@@ -526,7 +528,8 @@ select{
     background-color: #5a9498;
     cursor: pointer;
 }
-.profile-edit-content input[type=text]:focus, 
+.profile-edit-content input[type=text]:focus,
+.profile-edit-content input[type=password]:focus, 
 .profile-edit-content input[type=tel]:focus{
     border: 1px solid #5a9498;
 }
@@ -549,6 +552,7 @@ select{
 }
 .pcontainer .pcontainer-height{
     max-height: 350px;
+    padding-bottom: 5px;
     overflow-y: scroll;
     scrollbar-width: none;
 }
@@ -558,7 +562,7 @@ select{
     padding: 10px 20px;
     font-weight: 600;
     font-size: 17px;
-    margin: 5px;
+    margin: 10px 5px 5px 5px;
     border: none;
     cursor: pointer;
     justify-self: center;
@@ -1096,15 +1100,18 @@ select{
     word-wrap: break-word;
 
 }
-#confirmdelete .xcontainer .fa-exclamation{
+#confirmdelete .xcontainer .fa-exclamation,
+#deleteacc .xcontainer .fa-exclamation{
     margin-right: 8px;
 }
-#confirmdelete .pcontainer p{
+#confirmdelete .pcontainer p,
+#deleteacc .pcontainer p{
     font-size: 17px;
     margin: 12px;
     text-align: center;
 }
-#confirmdelete .pcontainer button{
+#confirmdelete .pcontainer button,
+#deleteacc .pcontainer button{
     outline: none;
     height: 40px;
     padding: 0;

@@ -48,8 +48,8 @@
                         <h4>Categories</h4>
                         <ul class="m-0 categories">
                             <li class="m-auto"><a href="#">About Us</a></li>
-                            <li class="m-auto"><a href="#">Menu</a></li>
-                            <li class="m-auto"><a href="#">Contact Us</a></li>
+                            <li class="m-auto"><a href="item.php">Menu</a></li>
+                            <li class="m-auto"><a href="contactus.php">Contact Us</a></li>
                             <li class="m-auto"><a href="#">Blog</a></li>
                         </ul>
                     </div>
@@ -107,7 +107,7 @@
                     </a>
                 </div>
                 <div class="icon">
-                    <a class="underline-animation <?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
+                    <a href="profile.php" class="underline-animation  <?php echo ($current_page == 'profile.php') ? 'active-menu' : ''; ?>">
                         <i class="far fa-user"></i>
                         <span>Profile</span>
                     </a>
