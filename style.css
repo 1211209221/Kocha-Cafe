@@ -3555,7 +3555,8 @@ span.openNav:hover{
     color: #5a9498;
 }
 
-.edit_items .item_details input[type="text"], .edit_items .item_details input[type="number"], .edit_items .item_details select, .edit_items .item_details textarea{
+.edit_items .item_details input[type="text"], .edit_items .item_details input[type="number"], .edit_items .item_details select, .edit_items .item_details textarea,
+.edit_items .item_details input[type="tel"], .edit_items .item_details input[type="email"]{
     /*padding: 2px 10px;
     background-color: white;
     margin: 3px 7px 3px 0px;*/
@@ -5140,6 +5141,9 @@ span.openNav:hover{
     #pagination div {
 		padding: 0px 6px;
 	}
+	.admin_page .t_action .fa-trash{
+		margin-left: unset !important;
+	}
 }
 
 @media (max-width: 768px){
@@ -5475,6 +5479,9 @@ span.openNav:hover{
 		background-color: white;
 		height: 150px;
 	}
+	.edit_items .item_details .address-error{
+		margin-left: 5px !important;
+	}
 	.all_items .trash-form{
 		display: flex;
 	    justify-content: end;
@@ -5532,6 +5539,9 @@ span.openNav:hover{
         font-size: 17px;
         padding: 0px 6px;
     }
+	.admin_page .t_action .fa-trash{
+		margin-left: unset !important;
+	}
 }
 
 @media (max-width: 575px){
@@ -5856,9 +5866,14 @@ span.openNav:hover{
         padding: 2px;
         font-size: 13px;
     }
+	
+	.admin_page .t_presence i{
+		font-size: 13px;
+	}
     .all_items .t_action i.fa-pen{
         font-size: 12px !important;
     }
+
     .t_action .notification_circle {
         font-weight: 100;
         width: 13px !important;
@@ -5928,6 +5943,11 @@ span.openNav:hover{
 	    padding: 2px 6px;
 	    font-size: 16px;
 	}
+	.admin_page .t_action i{
+        padding: 2px !important;
+        font-size: 13px !important;
+		margin: 5px;
+    }
 }
 
 @media (max-width: 380px){
@@ -6110,8 +6130,11 @@ span.openNav:hover{
     text-align: center;
 }
 .admin_page .t_presence{
-    width: 8%;
+    width: 7%;
     text-align: center;
+}
+.admin_page .act1{
+	width: 10%;
 }
 .admin_page .table td.t_action div{
     overflow: visible;
@@ -6120,12 +6143,18 @@ span.openNav:hover{
     width: 7%;
     text-align: center;
 }
+.admin_page .t_action .fa-trash{
+	margin-left: 8px;
+}
 .admin_page .t_action i{
     text-decoration: none;
     color: #687371;
     padding: 5px;
-    font-size: 12px;
+    font-size: 16px;
     transition: 0.15s;
+}
+.admin_page .t_presence i{
+	font-size: 14px;
 }
 .admin_page .t_action i:hover{
     transform: translateY(-3px);

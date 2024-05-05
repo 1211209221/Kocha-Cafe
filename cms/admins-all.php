@@ -16,9 +16,99 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+
+            session_start();
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $admin_ids = $_POST['admin_ID'];
+                $trashes = $_POST['trash_item'];
+
+                if(isset($_POST['submit_trash_items'])){
+                    $FailedUpdate = 0;
+
+                    for($i=0;$i<count($admin_ids);$i++){
+                        $admin_id = $admin_ids[$i];
+                        $trash = $trashes[$i];
+
+                        $trash_sql = "UPDATE admin SET trash = {$trash} WHERE admin_ID = $admin_id AND trash = 0";
+                        
+                        if ($conn->query($trash_sql) !== TRUE) {
+                            $FailedUpdate = 1;
+                            break;
+                        }
+                    }
+                    if ($FailedUpdate == 0) {
+                        $_SESSION['deleteAdmin_success'] = true;
+                        header("Location: admins-all.php");
+                        exit();
+                    }
+                    else{
+                        $_SESSION['deleteAdmin_error'] = true;
+                        header("Location: admins-all.php");
+                        exit();
+                    }
+                }
+            }
+            if (isset($_SESSION['deleteAdmin_success'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast true fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Successfully deleted selected admin(s)!
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['deleteAdmin_success']);
+            }
+
+            if (isset($_SESSION['deleteAdmin_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delte admin(s). Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['deleteAdmin_error']);
+            }
+
+
             include 'navbar.php';
         ?>
         <script>
+            function confirmAction(message) {
+                return confirm("Are you sure you want to " + message + "?");
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get all trash icons
+                var trashIcons = document.querySelectorAll('tr .trash-icon');
+
+                // Loop through each trash icon
+                trashIcons.forEach(function(icon) {
+                    // Add click event listener
+                    icon.addEventListener('click', function() {
+                        // Find the corresponding trash item input
+                        var trashItemInput = this.parentElement.querySelector('.trash-item-input');
+                        
+                        // Toggle the value between 0 and 1
+                        trashItemInput.value = trashItemInput.value === '0' ? '1' : '0';
+
+                        // Get the parent tr element
+                        var parentTR = this.closest('tr');
+
+                        // Add or remove the 'delete' class based on the trash item input value
+                        if (trashItemInput.value === '1') {
+                            parentTR.classList.add('delete');
+                        } else {
+                            parentTR.classList.remove('delete');
+                        }
+                    });
+                });
+            });
             document.addEventListener('DOMContentLoaded', function() {
                 const reviewContainers = document.querySelectorAll('tbody tr');
                 const perPageSelector = document.getElementById('perPage');
@@ -319,7 +409,7 @@
                                             <th class="t_email">Email</th>
                                             <th class="t_level">Level</th>
                                             <th class="t_presence">Presence</th>
-                                            <th class="t_action">Action</th>
+                                            <th class="t_action act1">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody border="transparent">
@@ -349,7 +439,7 @@
                                                         echo "<i class='fas fa-circle color-red' style='color: #e77468;'></i>";
                                                     }
                                                     echo "</td>";
-                                                    echo '<td class="t_action"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
+                                                    echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
                                                     echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
                                                         <input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
                                                         <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>

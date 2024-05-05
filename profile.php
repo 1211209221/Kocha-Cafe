@@ -30,9 +30,10 @@
             $ph_row = $ph_result->fetch_assoc();
             if($ph_row && !empty($ph_row['cust_phone'])){
                 $phone = $ph_row['cust_phone'];
+                $phone_without_country_code = substr($phone, 3);
             }
             else{
-                $phone = "No record.";
+                $phone = "";
             }
 
             $get_name = "SELECT cust_username FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
@@ -43,6 +44,16 @@
             }
             else{
                 $name = "There is a problem on database.";
+            }
+
+            $get_point = "SELECT cust_points FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+            $point_result = $conn->query($get_point);
+            $point_row = $point_result->fetch_assoc();
+            if($point_row && !empty($point_row['cust_points'])){
+                $point = $point_row['cust_points'];
+            }
+            else{
+                $point = "0";
             }
 
             $get_email = "SELECT cust_email FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
@@ -291,6 +302,55 @@
                     exit();
                 }
             }
+            if(isset($_POST['update-profile'])){
+                $un = $_POST['uname'];
+                $ph = $_POST['pn'];
+
+                $phone_with_country_code = "+60" . $ph;
+
+                $update_username = "UPDATE customer SET cust_username = '$un' WHERE cust_ID = $cust_ID AND trash = 0";
+                $update_phone = "UPDATE customer SET cust_phone = '$phone_with_country_code' WHERE cust_ID = $cust_ID AND trash = 0";
+
+                if($conn->query($update_username) === TRUE && $conn->query($update_phone) === TRUE) {
+                    $_SESSION['update_pro_success'] = true;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                } else {
+                    $_SESSION['update_pro_error'] = "Error updating record: " . $conn->error;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                }
+            }
+            if (isset($_SESSION['update_pro_success']) && $_SESSION['update_pro_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Profile successfully updated!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['update_pro_success']);
+            }
+            if (isset($_SESSION['update_pro_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to update profile. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['update_pro_error'] . '</div>';
+
+                unset($_SESSION['update_pro_error']);
+            }
             if (isset($_SESSION['delete_acc_success']) && $_SESSION['delete_acc_success'] === true) {
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
@@ -461,10 +521,10 @@
                         <span class="address-error"></span>
                   
                         <label for="pn"><b><i class="fas fa-phone-alt"></i> Phone Number</b></label>
-                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone;?>" required></div>
+                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone_without_country_code;?>" required></div>
                         <span class="address-error"></span>
                           
-                        <button type="submit" name="update-profile" class="edit-profile-btn" style="outline: none;">Update</button>
+                        <button type="submit" id="updateprofile" name="update-profile" class="edit-profile-btn" style="outline: none;">Update</button>
                         
                       </div>
                   
@@ -776,6 +836,7 @@
                             const formElements3 = document.querySelectorAll("#Label3, #houseno3, #addline3, #addline23, #postcode3, #state3");
                             const formElements4 = document.querySelectorAll("#newLabel, #newhouseno, #newaddline, #newaddline2, #newpostcode, #newstate");
                             const formElements5 = document.querySelectorAll("#newpwd1, #newpwd2");
+                            const formElements6 = document.querySelectorAll("#uname, #pn");
                             
                             formElements1.forEach(element => {
                                 element.addEventListener("input", function () {
@@ -799,7 +860,12 @@
                             });
                             formElements5.forEach(element => {
                                 element.addEventListener("input", function () {
-                                    validateAddressForm4();
+                                    validateAddressForm5();
+                                });
+                            });
+                            formElements6.forEach(element => {
+                                element.addEventListener("input", function () {
+                                    validateAddressForm6();
                                 });
                             });
 
@@ -835,6 +901,13 @@
                             document.getElementById("submit-pwd1").addEventListener("click", function (event) {
                                 // Validate form fields
                                 if (!validateAddressForm5()) {
+                                    // Prevent form submission if validation fails
+                                    event.preventDefault();
+                                }
+                            });
+                            document.getElementById("updateprofile").addEventListener("click", function (event) {
+                                // Validate form fields
+                                if (!validateAddressForm6()) {
                                     // Prevent form submission if validation fails
                                     event.preventDefault();
                                 }
@@ -1267,7 +1340,7 @@
       
                             // Validate pwd
                             if (newpwd1.length < 8) {
-                                errorDisplay1(document.getElementById("newpwd1"), "*Password must be at least 8 characters long.");
+                                errorDisplay1(document.getElementById("newpwd1"), "*Password must be at least 8 characters long.*");
                                 valid = false;
                             } else {
                                 clearError1(document.getElementById("newpwd1"));
@@ -1275,13 +1348,53 @@
 
                             // Validate both passwords are not empty and match
                             if (newpwd1.trim() === "" || newpwd2.trim() === "") {
-                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords cannot be empty.");
+                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords cannot be empty.*");
                                 valid = false;
                             } else if (newpwd1 !== newpwd2) {
-                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords do not match.");
+                                errorDisplay1(document.getElementById("newpwd2"), "*Passwords do not match.*");
                                 valid = false;
                             } else {
                                 clearError1(document.getElementById("newpwd2"));
+                            }
+                            
+                            // Return the overall validity of the form
+                            return valid;
+                        }
+                        function validateAddressForm6() {
+                            
+                            const uname = document.getElementById("uname").value;
+                            const pn = document.getElementById("pn").value;
+
+                            let valid = true;
+      
+                            // Validate pwd
+                            if (uname.trim() === "") {
+                                errorDisplay(document.getElementById("uname"), "*Username cannot be empty.*");
+                                valid = false;
+                            } else if(uname.length > 20){
+                                errorDisplay(document.getElementById("uname"), "*Username cannot be more than 20 characters.*");
+                                valid = false;
+                            } 
+                            else {
+                                clearError(document.getElementById("uname"));
+                            }
+
+                            // Validate both passwords are not empty and match
+                            if (pn.trim() === "") {
+                                errorDisplay1(document.getElementById("pn"), "*Phone Number cannot be empty.*");
+                                valid = false;
+                            } else if (pn.length < 9) {
+                                errorDisplay1(document.getElementById("pn"), "*Please fill the valid phone number.*");
+                                valid = false;
+                            }else if (pn.charAt(0) === '0') {
+                                errorDisplay1(document.getElementById("pn"), "*Please remove the first 0 in front.*");
+                                valid = false;
+                            }else if (!/^\d+$/.test(pn)) {
+                                errorDisplay1(document.getElementById("pn"), "*Please enter only digits in the phone number.*");
+                                valid = false;
+                            } 
+                            else {
+                                clearError1(document.getElementById("pn"));
                             }
                             
                             // Return the overall validity of the form
@@ -1323,12 +1436,12 @@
                 <div class="bottom-info">
                     <div class="left-opt">
                         <div class="bottom-user-info">
-                            <p>GUEST</p>
+                            <p><?php echo $name;?></p>
                             <div class="btm-pt">
                                 <img src="images/coin.png" width="22px">
                                 <div class="btm-pt-prt">
                                     <p>Points Owned:</p>
-                                    <span>625 pts</span>
+                                    <span><?php echo $point;?> pts</span>
                                 </div>
                                 <div id="tooltip">
                                     <i class="far fa-question-circle"></i>
@@ -1345,7 +1458,7 @@
                             </ul>
                         </div>
                         <div class="logout-opt">
-                            <i class="fas fa-sign-out-alt"></i> Log Out
+                        <a href="logout.php" style="text-decoration:none;color:#E2857B;"><i class="fas fa-sign-out-alt"></i> Log Out</a>
                         </div>
                     </div>
                     <div class="right-detail">
@@ -1375,11 +1488,10 @@
                                                 $phno_row = $phno_result->fetch_assoc();
                                                 if($phno_row && !empty($phno_row['cust_phone'])){
                                                     $phone_number = $phno_row['cust_phone'];
-                                                    $phone_number = ltrim($phone_number, '0');
-                                                    echo '<span>+60</span> <span class="box-witdh2">'.htmlspecialchars($phone_number) .'</span>';
+                                                    echo '<span class="box-witdh2">'.htmlspecialchars($phone_number) .'</span>';
                                                 }
                                                 else{
-                                                    echo '<span>+60</span> <span class="box-witdh2">-</span>';
+                                                    echo '<span class="box-witdh2">-</span>';
                                                 }
                                             ?>
                                             </div>
