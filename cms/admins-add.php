@@ -16,15 +16,76 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+
+        session_start();
+        if (isset($_POST['add-admin'])) {
+            // Retrieve form data
+            $admin_name = $_POST['admin_name'];
+            $admin_phone = $_POST['admin_phone'];
+            $admin_username = $_POST['admin_username'];
+            $admin_email = $_POST['admin_email'];
+            $admin_password = $_POST['admin_password'];
+            $admin_level = $_POST['admin_level'];
+
+            $admin_password = password_hash($admin_password, PASSWORD_DEFAULT);
+            
+            // Construct the SQL query to insert 
+            $sqladmin = "INSERT INTO admin (admin_name, admin_username, admin_phno, admin_pass, admin_email, admin_level) VALUES ('$admin_name', '$admin_username', '$admin_phone', '$admin_password', '$admin_email', '$admin_level')";
+
+            if ($conn->query($sqladmin) === TRUE) {
+                $_SESSION['addAdmin_success'] = true;
+                header("Location: admins-add.php");
+                exit();
+
+            } else {
+                $_SESSION['addAdmin_error'] = "Error: " . $sqladmin . "<br>" . $conn->error;
+                header("Location: admins-add.php");
+                exit();
+            }
+        }
+
+        if (isset($_SESSION['addAdmin_success']) && $_SESSION['addAdmin_success'] === true) {
+            echo '<div class="toast_container">
+                    <div id="custom_toast" class="custom_toast true fade_in">
+                        <div class="d-flex align-items-center message">
+                            <i class="fas fa-check-circle"></i> Admin successfully added to admin list!
+                        </div>
+                        <div class="timer"></div>
+                    </div>
+                </div>';
+
+            unset($_SESSION['addAdmin_success']);
+        }
+
+        if (isset($_SESSION['addAdmin_error'])) {
+            echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast false fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i>Failed to add admin. Please try again...
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+            unset($_SESSION['addAdmin_error']);
+        }
+
         include 'navbar.php';
     ?>
+    <style>
+        @media (max-width: 768px) {
+            .edit_items .item_details .fa-eye-slash, .edit_items .item_details .fa-eye {
+                top:37px !important;
+            }
+        }
+    </style>
     <div class="container-fluid container">
         <div class="col-12 m-auto">
             <div class="edit_items add_items">
-                <form action="items-add.php" method="post" enctype="multipart/form-data" class="item_edit_form">
+                <form action="admins-add.php" method="post" class="item_edit_form">
                     <div class="big_container" style="position: relative;">
                         <div class="breadcrumbs">
-                            <a>Admin</a> > <a>Users</a> > <a href="admins-all.php">Item List</a> > <a class="active">Add New</a>
+                            <a>Admin</a> > <a>Users</a> > <a href="admins-all.php">Admin List</a> > <a class="active">Add New</a>
                         </div>
                         
                         <div class='item_details'>
@@ -36,7 +97,7 @@
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_phone">Phone Number</label>
-                            <input type="tel" value="+60" name="admin_phone" id="admin_phone" placeholder="+60 123456789" required>
+                            <input type="tel" value="+60" name="admin_phone" id="admin_phone" placeholder="+60123456789" required>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
@@ -49,15 +110,20 @@
                             <input type="email" name="admin_email" id="admin_email" placeholder="xxx@gmail.com" required>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class='item_detail_container' style="position:relative;">
+                            <label for="admin_password">Password</label>
+                            <input type="password" name="admin_password" id="admin_password" required><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
+                        </div>
+                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_level">Admin Level</label>
-                            <select name="admin_level" id="admin_level">
+                            <select name="admin_level" id="admin_level" style="width:100%;">
                                 <option value="1">Admin</option>
                                 <option value="2">Superadmin</option>
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="add-admin" value="Add Admin" class="edit_submit">
+                            <input type="submit" name="add-admin" id="add-admin" value="Add Admin" class="edit_submit">
                         </div>
                     </div>
                     <a href="admins-all.php" class="back_button2">Back</a>
@@ -68,8 +134,23 @@
         </div>
     </div>
     <script>
+                  function togglePasswordVisibility(passwordFieldId, icon) {
+                        const passwordField = document.getElementById(passwordFieldId);
+                        
+                        if (passwordField.type === "password") {
+                            passwordField.type = "text";
+                            icon.classList.remove("fa-eye-slash");
+                            icon.classList.add("fa-eye");
+                        } else {
+                            passwordField.type = "password";
+                            icon.classList.remove("fa-eye");
+                            icon.classList.add("fa-eye-slash");
+                        }
+                    }
+    </script>
+    <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const formElements1 = document.querySelectorAll("#admin_name, #admin_phone, #admin_username, #admin_email");
+            const formElements1 = document.querySelectorAll("#admin_name, #admin_phone, #admin_username, #admin_email, #admin_password");
 
             formElements1.forEach(element => {
                 element.addEventListener("input", function () {
@@ -101,6 +182,7 @@
             const admin_phone = document.getElementById("admin_phone").value;
             const admin_username = document.getElementById("admin_username").value;
             const admin_email = document.getElementById("admin_email").value;
+            const admin_password = document.getElementById("admin_password").value;
             var letters = /^[a-zA-Z-' ]*$/;
             let valid = true;
       
@@ -123,7 +205,21 @@
                 valid = false;
             } 
             else {
-                clearError  (document.getElementById("admin_username"));
+                clearError1(document.getElementById("admin_username"));
+            }
+
+            if (admin_phone.trim() === "") {
+                errorDisplay1(document.getElementById("admin_phone"), "*Please enter your phone number.*");
+                valid = false;
+            }else if (!admin_phone.trim().startsWith("+60")) {
+                errorDisplay1(document.getElementById("admin_phone"), "*Please enter a phone number starting with +60*");
+                valid = false;
+            } else if (!isValidPhone(admin_phone.trim())) {
+                errorDisplay1(document.getElementById("admin_phone"), "*Invalid phone number format*");
+                valid = false;
+            }
+            else{
+                clearError1(document.getElementById("admin_phone"));
             }
 
             if (admin_email.trim() === "") {
@@ -137,7 +233,16 @@
                 clearError1(document.getElementById("admin_email"));
             }
 
-                            
+            if (admin_password.trim() === "") {
+                errorDisplay1(document.getElementById("admin_password"), "*Password cannot be empty.*");
+                    valid = false;
+            }
+            else if (admin_password.length < 8) {
+                errorDisplay1(document.getElementById("admin_password"), "*Password must be at least 8 characters long.*");
+                valid = false;
+            } else {
+                clearError1(document.getElementById("admin_password"));
+            }                
                             
             // Return the overall validity of the form
             return valid;

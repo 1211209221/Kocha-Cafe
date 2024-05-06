@@ -66,7 +66,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delte admin(s). Please try again...
+                                    <i class="fas fa-check-circle"></i>Failed to delete admin(s). Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -384,7 +384,7 @@
                     <div class="search_container">
                         <div class="item_search">
                             <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search item...">
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search admin...">
                             <select id="perPage">
                                 <option value="5">5</option>
                                 <option value="10" selected>10</option>
@@ -405,10 +405,9 @@
                                         <tr>
                                             <th class="t_no">No.</th>
                                             <th class="t_name">Name</th>
-                                            <th class="t_username">Username</th>
                                             <th class="t_email">Email</th>
                                             <th class="t_level">Level</th>
-                                            <th class="t_presence">Presence</th>
+                                            <th class="t_presence">Status</th>
                                             <th class="t_action act1">Action</th>
                                         </tr>
                                     </thead>
@@ -423,8 +422,7 @@
                                                     echo "<tr";
                                                     echo"><td class='t_no'>".$no_count."</td>";
                                                     echo "<td class='t_name'>".$row['admin_name']."</td>";
-                                                    echo "<td class='t_username'>".$row['admin_username']."</td>";
-                                                    echo "<td class='t_email'>".$row['admin_email']."</td>";
+                                                    echo "<td class='t_email'><a title='Email' href='mailto:" . $row['admin_email'] . "'>" . $row['admin_email'] . "</a></td>";
                                                     echo "<td class='t_level'>";
                                                     if($row['admin_level'] == 1){
                                                         echo "Admin";
