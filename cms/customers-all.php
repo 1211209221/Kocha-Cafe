@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin List | Admin Panel</title>
+        <title>Customer List | Admin Panel</title>
         <link rel="stylesheet" href="../style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
@@ -13,102 +13,27 @@
         <script src="../gototop.js"></script>
     </head>
     <body>
+        <style>
+            .admin_page .t_level a {
+                text-decoration: none;
+                color: #495057;
+            }
+            .admin_page .t_level a:hover {
+                color: #5a9498;
+            }
+        </style>
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
 
             session_start();
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                $admin_ids = $_POST['admin_ID'];
-                $trashes = $_POST['trash_item'];
-
-                if(isset($_POST['submit_trash_items'])){
-                    $FailedUpdate = 0;
-
-                    for($i=0;$i<count($admin_ids);$i++){
-                        $admin_id = $admin_ids[$i];
-                        $trash = $trashes[$i];
-
-                        $trash_sql = "UPDATE admin SET trash = {$trash} WHERE admin_ID = $admin_id AND trash = 0";
-                        
-                        if ($conn->query($trash_sql) !== TRUE) {
-                            $FailedUpdate = 1;
-                            break;
-                        }
-                    }
-                    if ($FailedUpdate == 0) {
-                        $_SESSION['deleteAdmin_success'] = true;
-                        header("Location: admins-all.php");
-                        exit();
-                    }
-                    else{
-                        $_SESSION['deleteAdmin_error'] = true;
-                        header("Location: admins-all.php");
-                        exit();
-                    }
-                }
-            }
-            if (isset($_SESSION['deleteAdmin_success'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast true fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Successfully deleted selected admin(s)!
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
-
-                unset($_SESSION['deleteAdmin_success']);
-            }
-
-            if (isset($_SESSION['deleteAdmin_error'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast false fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delte admin(s). Please try again...
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
-
-                unset($_SESSION['deleteAdmin_error']);
-            }
-
+        
 
             include 'navbar.php';
         ?>
         <script>
-            function confirmAction(message) {
-                return confirm("Are you sure you want to " + message + "?");
-            }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get all trash icons
-                var trashIcons = document.querySelectorAll('tr .trash-icon');
-
-                // Loop through each trash icon
-                trashIcons.forEach(function(icon) {
-                    // Add click event listener
-                    icon.addEventListener('click', function() {
-                        // Find the corresponding trash item input
-                        var trashItemInput = this.parentElement.querySelector('.trash-item-input');
-                        
-                        // Toggle the value between 0 and 1
-                        trashItemInput.value = trashItemInput.value === '0' ? '1' : '0';
-
-                        // Get the parent tr element
-                        var parentTR = this.closest('tr');
-
-                        // Add or remove the 'delete' class based on the trash item input value
-                        if (trashItemInput.value === '1') {
-                            parentTR.classList.add('delete');
-                        } else {
-                            parentTR.classList.remove('delete');
-                        }
-                    });
-                });
-            });
+        
             document.addEventListener('DOMContentLoaded', function() {
                 const reviewContainers = document.querySelectorAll('tbody tr');
                 const perPageSelector = document.getElementById('perPage');
@@ -128,7 +53,7 @@
 
                     let filteredContainers = Array.from(reviewContainers);
 
-                    // Filter items based on search term
+                    // Filter cust based on search term
                     if (searchTerm) {
                         filteredContainers = filteredContainers.filter(container => {
                             const itemName = container.querySelector('.t_name').textContent.toLowerCase();
@@ -136,7 +61,7 @@
                         });
                     }
 
-                    // Filter admin based on level
+                    // Filter cust based on level
                     if (selectedlevelFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
                             const level = container.querySelector('.t_level').textContent.trim();
@@ -148,14 +73,14 @@
                         });
                     }
 
-                    // Filter admin based on presence
+                    // Filter cust based on presence
                     if (selectedpresenceFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
                             const presence = container.querySelector('.t_presence i')
-                            if (selectedpresenceFilter === '0') {
-                                return presence.classList.contains('fa-circle') && presence.classList.contains('color-red');
-                            } else if (selectedpresenceFilter === '1') {
-                                return presence.classList.contains('fa-circle')  && presence.classList.contains('color-green');
+                            if (selectedpresenceFilter === '1') {
+                                return presence.classList.contains('fa-ban') && presence.classList.contains('color-red');
+                            } else if (selectedpresenceFilter === '0') {
+                                return presence.classList.contains('fa-check-circle')  && presence.classList.contains('color-green');
                             }
                         });
                     }
@@ -364,19 +289,19 @@
                         </div>
                         <div>
                             <div class="filter_type">
-                                <label for="levelFilter">Filter by Admin Level</label>
+                                <label for="levelFilter">Filter by Empty Record</label>
                                 <select id="levelFilter">
                                     <option value="all">All</option>
-                                    <option value="1">Admin</option>
+                                    <option value="1">No record</option>
                                     <option value="2">Superadmin</option>
                                 </select>
                             </div>
                             <div class="filter_type">
-                                <label for="presenceFilter">Filter by Presence</label>
+                                <label for="presenceFilter">Filter by Access</label>
                                 <select id="presenceFilter">
                                     <option value="all">All</option>
-                                    <option value="1">Online</option>
-                                    <option value="0">Offline</option>
+                                    <option value="1">Disabled</option>
+                                    <option value="0">Accessible</option>
                                 </select>
                             </div>
                         </div>
@@ -384,7 +309,7 @@
                     <div class="search_container">
                         <div class="item_search">
                             <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search item...">
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search user...">
                             <select id="perPage">
                                 <option value="5">5</option>
                                 <option value="10" selected>10</option>
@@ -395,8 +320,6 @@
                         </div>
                         <form method='post' name='trash_form' class='trash-form' id='trash_form'>
                         <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction('delete the selected menu admin(s)')">
-                            <a href="admins-add.php"><div class="add_button">New Admin</div></a>
                         </div>
                     </div>
                             <div class="table-responsive">
@@ -404,51 +327,48 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th class="t_no">No.</th>
-                                            <th class="t_name">Name</th>
-                                            <th class="t_username">Username</th>
+                                            <th class="t_name">Username</th>
                                             <th class="t_email">Email</th>
-                                            <th class="t_level">Level</th>
-                                            <th class="t_presence">Presence</th>
+                                            <th class="t_level">Phone</th>
+                                            <th class="t_presence">Access</th>
                                             <th class="t_action act1">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody border="transparent">
                                         <?php
                                             $no_count = 0;
-                                            $admin_query = "SELECT * FROM admin WHERE trash = 0";
+                                            $admin_query = "SELECT * FROM customer";
                                             $result = $conn->query($admin_query);
                                             if($result && $result->num_rows > 0){
                                                 while ($row = $result->fetch_assoc()) {
                                                     $no_count++;
                                                     echo "<tr";
                                                     echo"><td class='t_no'>".$no_count."</td>";
-                                                    echo "<td class='t_name'>".$row['admin_name']."</td>";
-                                                    echo "<td class='t_username'>".$row['admin_username']."</td>";
-                                                    echo "<td class='t_email'>".$row['admin_email']."</td>";
+                                                    echo "<td class='t_name'>".$row['cust_username']."</td>";
+                                                    echo "<td class='t_email'><a title='Email' href='mailto:" . $row['cust_email'] . "'>" . $row['cust_email'] . "</a></td>";
                                                     echo "<td class='t_level'>";
-                                                    if($row['admin_level'] == 1){
-                                                        echo "Admin";
+                                                    if(!empty($row['cust_phone'])){
+                                                        echo "<a title='Call' href='tel:" . $row['cust_phone'] . "'>" . $row['cust_phone'] . "</a>";
                                                     }else{
-                                                        echo "Superadmin";
+                                                        echo "-";
                                                     }
                                                     echo "</td>";
                                                     echo "<td class='t_presence'>";
-                                                    if($row['admin_active'] == 1){
-                                                        echo "<i class='fas fa-circle color-green' style='color: #5a9498;'></i>";
+                                                    if($row['trash'] == 0){
+                                                        echo "<i class='fas fa-check-circle color-green' style='color: #5a9498;'></i>";
                                                     }else{
-                                                        echo "<i class='fas fa-circle color-red' style='color: #e77468;'></i>";
+                                                        echo "<i class='fas fa-ban color-red' style='color: #e77468;'></i>";
                                                     }
                                                     echo "</td>";
-                                                    echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
-                                                    echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                                        <input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
-                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
+                                                    echo '<td class="t_action act1"><div><a href="customers-edit.php?ID=' . $row['cust_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
+                                                    echo "</i></a>
+                                                        <input type='hidden' name='cust_ID[]' value='".$row['cust_ID']."'>
                                                         </div>";
                                                      echo "</tr>";
                                                 }
                                             }
                                             else {
-                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No admins found...</td></tr>";
+                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No customers found...</td></tr>";
                                             }
                                         $conn->close();
                                         ?>
