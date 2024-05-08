@@ -1,8 +1,24 @@
 <div id="mySidenav" class="sidenav">
     <div class="buttons">
-        <button class="signup">Sign up</button>
-        <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>
-
+    <?php
+        if(empty($user)){
+            echo '<button class="signup">Sign up</button>
+            <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>';
+            
+        }
+        else{
+            $get_name = "SELECT cust_username FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+            $name_result = $conn->query($get_name);
+            $name_row = $name_result->fetch_assoc();
+            if($name_row && !empty($name_row['cust_username'])){
+                $name = $name_row['cust_username'];
+            }
+            else{
+                $name = "Error.";
+            }
+            echo '<div class="profile"><i class="far fa-user"></i>'.$name.'</div>';
+        }
+    ?>
         <!-- <div class="profile"><i class="far fa-user"></i>Username</div> -->
     </div>
     <a href="index.php" class="<?php echo ($current_page == 'index.php') ? 'active-menu' : ''; ?>">

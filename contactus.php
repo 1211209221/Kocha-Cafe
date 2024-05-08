@@ -10,10 +10,16 @@
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
+        <script src="script.js"></script>
         <script src="gototop.js"></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
-
+    <style>
+        .w100{
+            width: 100%;
+        }    
+        
+    </style>
     <body>
         <?php
             include 'connect.php';
@@ -268,7 +274,7 @@
                                         <textarea id="message" name="message" class="message" placeholder="Write your message here..." rows="4" required></textarea>
                                         <small class="error-input hidden"></small>
                                     </div>
-                                    <div class="inputbox">
+                                    <div class="inputbox cap">
                                         <div id="captcha" class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                         </div>
                                         <small class="error-input hidden"></small>

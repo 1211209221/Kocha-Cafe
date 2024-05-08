@@ -206,7 +206,7 @@ html
 }
 .form-box .contactForm .form .inputbox{
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     display: grid;
     flex-direction: column;
 }
@@ -254,7 +254,6 @@ html
     max-width: 110px;
     align-self: flex-end;
     padding: 10px;
-    margin-left: 50px;
 }
 .form-box .contactForm .form .inputbox input[type="submit"]:hover{
     background-color: rgb(255, 224, 212);
@@ -322,6 +321,7 @@ html
         margin: 10px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         border-radius: 5px;
+        margin-bottom: 50px;
     }
     .form-box:hover{
         box-shadow: 0px 0px 20px 7px rgba(176, 176, 176, 0.407);
@@ -329,7 +329,7 @@ html
     }
     .form-box .contact-info{
         top: 0;
-        height: 650px;
+        height: 700px;
         margin: unset;
         position: relative;
         box-shadow: none;
@@ -342,7 +342,7 @@ html
     .form-box .contactForm{
         position: relative;
         width: 100%;
-        height: 650px;
+        height: 700px;
         padding-left: 0;
         margin-left: 0;
         border-radius: 0;
@@ -352,6 +352,17 @@ html
     }
     .form-box .contactForm:hover{
         box-shadow: unset;
+    }
+    .form-box .contactForm .form .cap{
+        width: 100%;
+    }
+    .form-box .contactForm .form .sbtn{
+        width: 100%;
+    }
+    .form-box .contactForm .form .inputbox input[type="submit"]{
+        max-width: unset;
+        position: absolute;
+        bottom: -50px;
     }
 }
 @media (max-width:990px){
@@ -441,6 +452,7 @@ html
     .contact-form .form-box{
         margin: 0;
         min-width: 250px;
+        margin-bottom: 70px;
     }
     .form-box .contact-info,
     .form-box .contactForm{
@@ -463,11 +475,12 @@ html
         font-size: 16px;
     }
     .form-box .contact-info .box .info-text p{
-        font-size: 14px;
+        font-size: 15px;
         padding: initial;
     }
     .form-box .contactForm .form .inputbox input[type="submit"]{
         margin-left: 0;
+        position: unset;
     }
 @media (max-width: 380px){
     .g-recaptcha{
@@ -513,10 +526,12 @@ html
 
 .profile-edit-content input[type=text], 
 .profile-edit-content input[type=tel], 
+.profile-edit-content input[type=password],
+.profile-edit-content input[type=email],
 select{
     width: 95%;
     padding: 6px 8px;
-    margin: 0px 2px;
+    margin: 0px 5px;
     display: inline-block;
     border: 1px solid #ccc;
     justify-self: center;
@@ -526,7 +541,8 @@ select{
     background-color: #5a9498;
     cursor: pointer;
 }
-.profile-edit-content input[type=text]:focus, 
+.profile-edit-content input[type=text]:focus,
+.profile-edit-content input[type=password]:focus, 
 .profile-edit-content input[type=tel]:focus{
     border: 1px solid #5a9498;
 }
@@ -549,6 +565,7 @@ select{
 }
 .pcontainer .pcontainer-height{
     max-height: 350px;
+    padding-bottom: 5px;
     overflow-y: scroll;
     scrollbar-width: none;
 }
@@ -558,7 +575,7 @@ select{
     padding: 10px 20px;
     font-weight: 600;
     font-size: 17px;
-    margin: 5px;
+    margin: 10px 5px 5px 5px;
     border: none;
     cursor: pointer;
     justify-self: center;
@@ -618,6 +635,7 @@ select{
     margin: 10px;
     margin-top: 30px;
     justify-content: center;
+    margin-bottom: 50px;
 }
 .bottom-info .left-opt{
     height: 100%;
@@ -770,7 +788,7 @@ select{
     margin-right: 5px;
     font-size: 16px;
 }
-.left-opt .logout-opt:hover{
+.left-opt .logout-opt a:hover{
     color: #505050;
     border: 3px solid #505050;
     transition: 0.15s ease-in-out;
@@ -988,7 +1006,7 @@ select{
 .profile-container-two .delivery-box{
     overflow-y: scroll;
     scrollbar-width: none;
-    height: 90%;
+    height: 85%;
     margin-top: 3px;
 }
 .delivery-box .accordion, .add-accordion{
@@ -1096,6 +1114,22 @@ select{
     word-wrap: break-word;
 
 }
+#confirmdelete .xcontainer .fa-exclamation,
+#deleteacc .xcontainer .fa-exclamation{
+    margin-right: 8px;
+}
+#confirmdelete .pcontainer p,
+#deleteacc .pcontainer p{
+    font-size: 17px;
+    margin: 12px;
+    text-align: center;
+}
+#confirmdelete .pcontainer button,
+#deleteacc .pcontainer button{
+    outline: none;
+    height: 40px;
+    padding: 0;
+}
 
 @media (max-width: 768px){
     .bottom-info {
@@ -1200,6 +1234,7 @@ select{
         margin: 0;
         padding: 18px;
         height: 550px;
+        margin-bottom: 80px;
     }
     .right-detail .tabcontent .title{
         font-size: 20px;
