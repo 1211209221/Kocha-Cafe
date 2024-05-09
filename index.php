@@ -104,7 +104,7 @@
 
     <div class="container">
         <div class="new-card">
-            <div class="row">
+            <div class="row" style="margin-bottom: 50px;">
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
                         <img class="card-image-top" src="./images/dishes3.jpg" alt="">
@@ -122,7 +122,7 @@
                         <div class="card-body">
                             <h2 class="card-titel text-center">Beverages</h2>
                             <h3 class="card-titel text-center"></h3>
-                            <p class="card-text text-center">Our Cafe have many type drinks to giving more taste to our customer with Latte or Milk Tea for some sweet taste</p>
+                            <p class="card-text text-center" style="line-height: 1.3;">Our Cafe have many type drinks to giving more taste to our customer with Latte or Milk Tea for some sweet taste</p>
                             <a id="btn3" href="menu.php#A11" style="display: block"><button>Order Now</button></a>
                         </div>
                     </div>

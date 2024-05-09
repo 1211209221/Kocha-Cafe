@@ -1,22 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edit Blog | Admin Panel</title>
-        <link rel="stylesheet" href="../style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
-        <link rel="icon" href="../images/logo/logo_icon_2.png">
-        <script src="../script.js"></script>
-        <script src="../gototop.js"></script>
-    </head>
-    <body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog | Admin Panel</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
+    <link rel="icon" href="../images/logo/logo_icon_2.png">
+    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+    <style>
+        .fa {
+            font-size: 1rem;
+            /* Adjust the size as needed */
+        }
+        /* Fixed size for the image */
+        .fixed-image {
+            width: 300px; /* Adjust the width as needed */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
+    <script src="../script.js"></script>
+    <script src="../gototop.js"></script>
+</head>
+
+<body>
     <?php
-        include '../connect.php';
-        include '../gototopbtn.php';
-        include 'navbar.php';
+    include '../connect.php';
+    include '../gototopbtn.php';
+    include 'navbar.php';
+
+    // Check if the ID parameter is set in the URL
+    if (isset($_GET['id'])) {
+        $blog_id = $_GET['id'];
+
+        // Use prepared statement to avoid SQL injection
+        $stmt = $conn->prepare("SELECT * FROM blog WHERE blog_ID = ?");
+        $stmt->bind_param("i", $blog_id); // Assuming the blog ID is an integer
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Fetch the blog data
+            $row = $result->fetch_assoc();
+            // Display form to edit the blog entry
+            ?>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Edit Blog</h1>
+                </div>
+                <form action="blogs-update.php" method="post" enctype="multipart/form-data">
+                    <?php 
+                    echo "<div><img src='" . $row["image"] . "' alt='Blog Image' class='fixed-image' id='blog-image'></div>";
+                    ?>
+                    <input type="hidden" name="blog_id" value="<?php echo $row['blog_ID']; ?>">
+                    <div class="form-group">
+                        <label for="blog_title">Blog Title</label>
+                        <input type="text" class="form-control" id="blog_title" name="blog_title"
+                            value="<?php echo $row['blog_title']; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="blog_contents">Blog Contents</label>
+                        <div id="form-control" style="height: 300px;"><?php echo $row['blog_contents']; ?></div>
+                        <input type="hidden" id="content" name="blog_contents" />
+                    </div>
+                    <div class="form-group">
+                        <label for="blog_type">Blog Type</label>
+                        <select class="form-control" id="blog_type" name="blog_type">
+                            <option value="Discount" <?php if ($row['blog_type'] == "Discount")
+                                echo "selected"; ?>>Discount
+                            </option>
+                            <option value="Updates" <?php if ($row['blog_type'] == "Updates")
+                                echo "selected"; ?>>Updates</option>
+                            <option value="News" <?php if ($row['blog_type'] == "News")
+                                echo "selected"; ?>>News</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="file" name="image" class="upload_image" id="image">
+                        <label class="upload_image_label" for="image"><i class="fas fa-camera"></i></label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Blog</button>
+                </form>
+            </div>
+            <?php
+        } else {
+            // Handle the case where the blog with the given ID is not found
+            echo "Blog not found";
+        }
+
+        $stmt->close();
+    } else {
+        // If ID parameter is not set, display an error message or redirect to another page
+        echo "Blog ID not provided";
+    }
     ?>
-    </body>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        var toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'], // Bold, Italic, Underline, Strikethrough
+            [{ 'color': [] }, { 'background': [] }], // Text Color, Background Color
+            [{ 'align': [] }], // Text Alignment
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Headers
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Ordered and Unordered list
+            ['blockquote', 'code-block'], // Blockquote, Code block
+            ['clean'], // Remove Formatting
+            [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript, Superscript
+            [{ 'size': ['small', false, 'large', 'huge'] }], // Text Size
+            [{ 'indent': '-1' }, { 'indent': '+1' }] // Indent, Outdent
+        ];
+
+        var quill = new Quill('#form-control', {
+            modules: {
+                toolbar: toolbarOptions,
+            },
+            theme: 'snow'
+        });
+
+        quill.on('text-change', function () {
+            var html = quill.root.innerHTML;
+            document.getElementById('content').value = html;
+        });
+
+        // Handle image change event
+        document.getElementById('image').addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('blog-image').setAttribute('src', e.target.result);
+            }
+
+            reader.readAsDataURL(file);
+        });
+
+    </script>
+
+</body>
+
 </html>
