@@ -1231,7 +1231,8 @@
                         function validateAddressForm4() {
                             <?php if (!empty($add_label[0])): ?>
                                 const existingLabels1 = <?php echo json_encode($add_label[0]); ?>;
-                            <?php elseif (!empty($add_label[1])): ?>
+                            <?php endif; ?>
+                            <?php if (!empty($add_label[1])): ?>
                                 const existingLabels2 = <?php echo json_encode($add_label[1]); ?>;
                             <?php endif; ?>
                             const newlabel = document.getElementById("newLabel").value;

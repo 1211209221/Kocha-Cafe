@@ -5863,7 +5863,7 @@ span.openNav:hover{
     }
 	
 	.admin_page .t_presence i{
-		font-size: 13px;
+		font-size: 12px !important;
 	}
     .all_items .t_action i.fa-pen{
         font-size: 12px !important;

@@ -60,7 +60,9 @@
 
                     if (!$response_data["success"]) {
                         $_SESSION['captcharesponse'] = true;
-                        header("Location: {$_SERVER['PHP_SELF']}");
+                        echo '<script>';
+                        echo 'window.location.href = "contactus.php";';
+                        echo '</script>';
                         exit();
                     }
                     else{
@@ -112,7 +114,9 @@
                                 }
                                 if($result === false ||$fileresult === false){
                                     $_SESSION['databasepart'] = true;
-                                    header("Location: {$_SERVER['PHP_SELF']}");
+                                    echo '<script>';
+                                    echo 'window.location.href = "contactus.php";';
+                                    echo '</script>';
                                     exit();
                                 }
                                 
@@ -120,14 +124,18 @@
 
                             if($mail->send()){
                                 $_SESSION['success'] = true;
-                                header("Location: {$_SERVER['PHP_SELF']}");
+                                echo '<script>';
+                                echo 'window.location.href = "contactus.php";';
+                                echo '</script>';
                                 exit();
                             }
 
                         }
                         catch(Exception $e){
                             $_SESSION['error'] = true;
-                            header("Location: {$_SERVER['PHP_SELF']}");
+                            echo '<script>';
+                            echo 'window.location.href = "contactus.php";';
+                            echo '</script>';
                             exit();
                         }
                     }

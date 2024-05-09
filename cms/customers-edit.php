@@ -32,37 +32,25 @@
         }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if(isset($_POST['delete'])){
-                $remove_admin_sql = "UPDATE admin SET trash = 1 WHERE admin_ID = $admin_ID";
-                if ($conn->query($remove_admin_sql) === TRUE) {
-                    $_SESSION['deleteAdmin_success'] = true;
-                    header("Location: admins-all.php");
-                    exit();
-                } else {
-                    $_SESSION['deleteAdmin_error'] = "Error: " . $remove_admin_sql . "<br>" . $conn->error;
-                    header("Location: admins-all.php");
-                    exit();
-                }
-            }
-            else if (isset($_POST['edit_submit'])){
+            if (isset($_POST['edit_submit'])){
                 // Retrieve form data
-                
-
+                $trash = $_POST['cust_trash'];
+                $sql = "UPDATE customer SET trash = 1 WHERE cust_ID = $cust_ID";
                 
 
                 if ($conn->query($sql) === TRUE) {
-                    $_SESSION['editadmin_success'] = true;
-                    header("Location: admins-edit.php?ID=$admin_ID");
+                    $_SESSION['editcust_success'] = true;
+                    header("Location: admins-edit.php?ID=$cust_ID");
                     exit();
                 } else {
-                    $_SESSION['editadmin_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: admins-edit.php?ID=$admin_ID");
+                    $_SESSION['editcust_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                    header("Location: admins-edit.php?ID=$cust_ID");
                     exit();
                 }
             }
         }
 
-        if (isset($_SESSION['editadmin_success']) && $_SESSION['editadmin_success'] === true) {
+        if (isset($_SESSION['editcust_success']) && $_SESSION['editcust_success'] === true) {
             echo '<div class="toast_container">
                     <div id="custom_toast" class="custom_toast true fade_in">
                         <div class="d-flex align-items-center message">
@@ -72,10 +60,10 @@
                     </div>
                 </div>';
 
-            unset($_SESSION['editadmin_success']);
+            unset($_SESSION['editcust_success']);
         }
 
-        if (isset($_SESSION['editadmin_error'])) {
+        if (isset($_SESSION['editcust_error'])) {
             echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast false fade_in">
                             <div class="d-flex align-items-center message">
@@ -85,33 +73,33 @@
                         </div>
                     </div>';
 
-            unset($_SESSION['editadmin_error']);
+            unset($_SESSION['editcust_error']);
         }
-        if (isset($_SESSION['deleteAdmin_success']) && $_SESSION['deleteAdmin_success'] === true) {
-            echo '<div class="toast_container">
-                    <div id="custom_toast" class="custom_toast true fade_in">
-                        <div class="d-flex align-items-center message">
-                            <i class="fas fa-check-circle"></i> Admin successfully removed from admin list!
-                        </div>
-                        <div class="timer"></div>
-                    </div>
-                </div>';
+        // if (isset($_SESSION['deleteAdmin_success']) && $_SESSION['deleteAdmin_success'] === true) {
+        //     echo '<div class="toast_container">
+        //             <div id="custom_toast" class="custom_toast true fade_in">
+        //                 <div class="d-flex align-items-center message">
+        //                     <i class="fas fa-check-circle"></i> Admin successfully removed from admin list!
+        //                 </div>
+        //                 <div class="timer"></div>
+        //             </div>
+        //         </div>';
 
-            unset($_SESSION['deleteAdmin_success']);
-        }
+        //     unset($_SESSION['deleteAdmin_success']);
+        // }
 
-        if (isset($_SESSION['deleteAdmin_error'])) {
-            echo '<div class="toast_container">
-                        <div id="custom_toast" class="custom_toast false fade_in">
-                            <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i>Failed to remove admin. Please try again...
-                            </div>
-                            <div class="timer"></div>
-                        </div>
-                    </div>';
+        // if (isset($_SESSION['deleteAdmin_error'])) {
+        //     echo '<div class="toast_container">
+        //                 <div id="custom_toast" class="custom_toast false fade_in">
+        //                     <div class="d-flex align-items-center message">
+        //                         <i class="fas fa-check-circle"></i>Failed to remove admin. Please try again...
+        //                     </div>
+        //                     <div class="timer"></div>
+        //                 </div>
+        //             </div>';
 
-            unset($_SESSION['deleteAdmin_error']);
-        }
+        //     unset($_SESSION['deleteAdmin_error']);
+        // }
 
         $sql = "SELECT * FROM customer WHERE cust_ID = $cust_ID";
 
@@ -130,38 +118,32 @@
                         </div>
                         
                         <div class='item_details'>
-                            <div class="page_title">Edit Customer<i class="fas fa-pen"></i></div>
+                            <div class="page_title">Customer Information<i class="fas fa-id-card"></i></div>
                             <div class='item_detail_container'>
                                 <label for="cust_username">Username</label>
-                                <input type="text" name="cust_username" id="cust_username" placeholder="Customer Username" value="<?php echo $row['cust_username']; ?>" required>
+                                <input type="text" title="Unable to edit" name="cust_username" id="cust_username" placeholder="Customer Username" value="<?php echo $row['cust_username']; ?>" readonly>
                             </div>
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="cust_phone">Phone Number</label>
-                            <input type="tel" name="cust_phone" id="cust_phone" placeholder="+60123456789" value="<?php echo $row['cust_phone']; ?>" required>
+                            <input type="tel" title="Unable to edit" name="cust_phone" id="cust_phone" placeholder="+60123456789" value="<?php echo $row['cust_phone']; ?>" readonly>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="cust_email">Email Address</label>
-                            <input type="email" name="cust_email" id="cust_email" placeholder="xxx@gmail.com" value="<?php echo $row['cust_email']; ?>" readonly>
+                            <input type="email" title="Unable to edit" name="cust_email" id="cust_email" placeholder="xxx@gmail.com" value="<?php echo $row['cust_email']; ?>" readonly>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
-                        <hr class="mt-1" style="width:100%;">
-                        <div class='item_detail_container'>
-                            <label for="cust_delivery">Delivery Address</label>
-                            <input type="text" name="cust_delivery" id="cust_delivery" placeholder="" value="" >
-                        </div>
-                        <hr class="mt-1" style="width:100%;">
+
                         <div class='item_detail_container'>
                             <label for="cust_trash">Access Mode</label>
                             <select name="cust_trash" id="cust_trash" style="width:100%;">
-                                <option value="0" <?php if ($row['trash'] == "0") echo "selected"; ?>>Accessible</option>
+                                <option value="0" <?php if ($row['trash'] == "0") echo "selected"; ?>>Enabled</option>
                                 <option value="1" <?php if ($row['trash'] == "1") echo "selected"; ?>>Disabled</option>
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save">
-                            <input type="submit" name="delete" class="delete" value="Remove" onclick='return confirmAction("remove this admin");'>
+                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="confirmAction('submit the change');">
                         </div>
                     </div>
                     <a href="customers-all.php" class="back_button2">Back To List</a>

@@ -38,12 +38,12 @@
                 const reviewContainers = document.querySelectorAll('tbody tr');
                 const perPageSelector = document.getElementById('perPage');
                 const pagination = document.getElementById('pagination');
-                const levelFilter = document.getElementById('levelFilter');
+                const phoneFilter = document.getElementById('phoneFilter');
                 const presenceFilter = document.getElementById('presenceFilter');
                 const clearAllButton = document.querySelector('.filter_header .clear');
                 let currentPage = 1;
                 let searchTerm = '';
-                let selectedlevelFilter = 'all';
+                let selectedphoneFilter = 'all';
                 let selectedpresenceFilter = 'all';
 
                 function showPage(pageNumber) {
@@ -62,13 +62,13 @@
                     }
 
                     // Filter cust based on level
-                    if (selectedlevelFilter !== 'all') {
+                    if (selectedphoneFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const level = container.querySelector('.t_level').textContent.trim();
-                            if (selectedlevelFilter === '1') {
-                                return level === 'Admin';
-                            } else if (selectedlevelFilter === '2') {
-                                return level === 'Superadmin';
+                            const phone = container.querySelector('.t_level').textContent.trim();
+                            if (selectedphoneFilter === '1') {
+                                return phone !== '-';
+                            } else if (selectedphoneFilter === '2') {
+                                return phone === '-';
                             }
                         });
                     }
@@ -148,13 +148,13 @@
                         });
                     }
 
-                    if (selectedlevelFilter !== 'all') {
+                    if (selectedphoneFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const level = container.querySelector('.t_level').textContent.trim();
-                            if (selectedlevelFilter === '1') {
-                                return level === 'Admin';
-                            } else if (selectedlevelFilter === '2') {
-                                return level !== 'Superadmin';
+                            const phone = container.querySelector('.t_level').textContent.trim();
+                            if (selectedphoneFilter === '1') {
+                                return phone !== '-';
+                            } else if (selectedphoneFilter === '2') {
+                                return phone === '-';
                             }
                         });
                     }
@@ -221,8 +221,8 @@
                 function clearAllFilters() {
                     // Clear search term
                     searchTerm = '';
-                    levelFilter.value = 'all';
-                    selectedlevelFilter = 'all';
+                    phoneFilter.value = 'all';
+                    selectedphoneFilter = 'all';
                     presenceFilter.value = 'all';
                     selectedpresenceFilter = 'all';
 
@@ -238,8 +238,8 @@
                     createPagination();
                 });
 
-                levelFilter.addEventListener('change', function() {
-                    selectedlevelFilter = levelFilter.value;
+                phoneFilter.addEventListener('change', function() {
+                    selectedphoneFilter = phoneFilter.value;
                     currentPage = 1;
                     showPage(currentPage);
                     createPagination();
@@ -289,19 +289,19 @@
                         </div>
                         <div>
                             <div class="filter_type">
-                                <label for="levelFilter">Filter by Empty Record</label>
-                                <select id="levelFilter">
+                                <label for="phoneFilter">Filter by Phone Record</label>
+                                <select id="phoneFilter">
                                     <option value="all">All</option>
-                                    <option value="1">No record</option>
-                                    <option value="2">Superadmin</option>
+                                    <option value="1">With</option>
+                                    <option value="2">Without</option>
                                 </select>
                             </div>
                             <div class="filter_type">
-                                <label for="presenceFilter">Filter by Access</label>
+                                <label for="presenceFilter">Filter by Status</label>
                                 <select id="presenceFilter">
                                     <option value="all">All</option>
                                     <option value="1">Disabled</option>
-                                    <option value="0">Accessible</option>
+                                    <option value="0">Enabled</option>
                                 </select>
                             </div>
                         </div>
@@ -330,7 +330,7 @@
                                             <th class="t_name">Username</th>
                                             <th class="t_email">Email</th>
                                             <th class="t_level">Phone</th>
-                                            <th class="t_presence">Access</th>
+                                            <th class="t_presence">Status</th>
                                             <th class="t_action act1">Action</th>
                                         </tr>
                                     </thead>
@@ -360,7 +360,7 @@
                                                         echo "<i class='fas fa-ban color-red' style='color: #e77468;'></i>";
                                                     }
                                                     echo "</td>";
-                                                    echo '<td class="t_action act1"><div><a href="customers-edit.php?ID=' . $row['cust_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
+                                                    echo '<td class="t_action act1"><div><a href="customers-edit.php?ID=' . $row['cust_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
                                                     echo "</i></a>
                                                         <input type='hidden' name='cust_ID[]' value='".$row['cust_ID']."'>
                                                         </div>";
