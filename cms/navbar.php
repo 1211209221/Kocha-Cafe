@@ -162,6 +162,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="fas fa-mail-bulk"></i>
                         </div>
                         <span>Message List</span>
+                        <?php
+                            $sql_get_inbox_no = "SELECT * FROM contact_message WHERE markasread = 0 AND trash = 0";
+                            $result_get_inbox_no = $conn->query($sql_get_inbox_no);
+                            if ($result_get_inbox_no->num_rows > 0) {
+                                echo '<div class="notification_circle">' . $result_get_inbox_no->num_rows . '</div>';
+                            }
+                        ?>
                     </a>
                 </div>
             </div>
