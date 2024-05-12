@@ -75,31 +75,7 @@
 
             unset($_SESSION['editcust_error']);
         }
-        // if (isset($_SESSION['deleteAdmin_success']) && $_SESSION['deleteAdmin_success'] === true) {
-        //     echo '<div class="toast_container">
-        //             <div id="custom_toast" class="custom_toast true fade_in">
-        //                 <div class="d-flex align-items-center message">
-        //                     <i class="fas fa-check-circle"></i> Admin successfully removed from admin list!
-        //                 </div>
-        //                 <div class="timer"></div>
-        //             </div>
-        //         </div>';
-
-        //     unset($_SESSION['deleteAdmin_success']);
-        // }
-
-        // if (isset($_SESSION['deleteAdmin_error'])) {
-        //     echo '<div class="toast_container">
-        //                 <div id="custom_toast" class="custom_toast false fade_in">
-        //                     <div class="d-flex align-items-center message">
-        //                         <i class="fas fa-check-circle"></i>Failed to remove admin. Please try again...
-        //                     </div>
-        //                     <div class="timer"></div>
-        //                 </div>
-        //             </div>';
-
-        //     unset($_SESSION['deleteAdmin_error']);
-        // }
+        
 
         $sql = "SELECT * FROM customer WHERE cust_ID = $cust_ID";
 

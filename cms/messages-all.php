@@ -63,6 +63,31 @@
                     }
                 }
             }
+            if (isset($_SESSION['delmsg_success'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast true fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Successfully deleted the message!
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['delmsg_success']);
+            }
+
+            if (isset($_SESSION['delmsg_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delete message. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['delmsg_error']);
+            }
             if (isset($_SESSION['deletemessage_success'])) {
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast true fade_in">
@@ -92,7 +117,121 @@
 
             include 'navbar.php';
         ?>
-        <script>
+        
+        <div class="container-fluid">
+            <div class="col-12 m-auto">
+                <div class="admin_page">
+                     <div class="breadcrumbs">
+                        <a>Admin</a> > <a>Inbox</a> > <a class="active">Message List</a>
+                    </div>
+                    <div class="page_title">All Messages</div>
+                    <div class="filter_selectors">
+                        <div class="menu">
+                            <div class="filter_header">
+                                <div class="d-flex flex-row align-items-baseline">
+                                    <i class="fas fa-sliders-h"></i><span>Filters</span>
+                                </div>
+                                <div class="clear">
+                                    <div>Clear all</div>
+                                </div>
+                            </div>
+                            <hr class="mt-1">
+                        </div>
+                        <div>
+                            <div class="filter_type">
+                                <label for="dateFilter">Sort by Date</label>
+                                <select id="dateFilter">
+                                    <option value="1">Oldest</option>
+                                    <option value="2">Latest</option>
+                                </select>
+                            </div>
+                            <div class="filter_type">
+                                <label for="statusFilter">Filter by Read Status</label>
+                                <select id="statusFilter">
+                                    <option value="all">All</option>
+                                    <option value="1">Mark as read</option>
+                                    <option value="0">Mark as unread</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search_container">
+                        <div class="item_search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search subject...">
+                            <select id="perPage">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                            <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
+                        </div>
+                        <form method='post' name='trash_form' class='trash-form' id='trash_form'>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Message" onclick="return confirmAction('delete the selected message(s)')">
+                        </div>
+                    </div>
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="t_no">No.</th>
+                                            <th class="t_name">Subject</th>
+                                            <th class="t_email">Email</th>
+                                            <th class="t_date">Date</th>
+                                            <th class="t_status">Status</th>
+                                            <th class="t_action act1">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody border="transparent">
+                                        <?php
+                                            $no_count = 0;
+
+                                            $cf_query = "SELECT * FROM contact_message WHERE trash = 0";
+
+                                            $result = $conn->query($cf_query);
+                                            if($result && $result->num_rows > 0){
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $no_count++;
+                                                    $date = date('Y-m-d H:i:s', strtotime($row['CF_time']));
+                                                    if($row['markasread']==1){
+                                                        echo "<tr class='unavailable'"; 
+                                                    }
+                                                    echo "<tr";
+                                                    echo"><td class='t_no'>".$no_count."</td>";
+                                                    echo "<td class='t_name'>".$row['CF_subject']."</td>";
+                                                    echo "<td class='t_email'><a title='Email' href='mailto:" . $row['CF_email'] . "'>" . $row['CF_email'] . "</a></td>";
+                                                    echo "<td class='t_date'>".$date."</td>";
+                                                    echo "<td class='t_status'>".$row['markasread']."</td>";
+                                                    echo '<td class="t_action act1"><div><a class="trash-icon"><i class="fas fa-trash"></i></a><a href="messages-view.php?ID=' . $row['CF_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
+                                                    echo "</i></a>
+                                                        <input type='hidden' name='CF_ID[]' value='".$row['CF_ID']."'>
+                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
+                                                        </div>";
+                                                     echo "</tr>";
+                                                }
+                                            }
+                                            else {
+                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No messages found...</td></tr>";
+                                            }
+                                        $conn->close();
+                                        ?>
+                                        
+                                        </form>
+                                    </tbody> 
+                                </table>
+                        <div class="navigation_container">
+                            <div id="pagination"></div>
+                            <div class="no_results_page">
+                                <span>Showing to of results</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+         <script>
             function confirmAction(message) {
                 return confirm("Are you sure you want to " + message + "?");
             }
@@ -135,26 +274,36 @@
                 let selecteddateFilter = '1';
                 let selectedstatusFilter = 'all';
 
-                function updateURL() {
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('sortByDate', selecteddateFilter);
-                    window.history.pushState({}, '', url);
+                function sortTable() {
+                    var table = document.getElementById("dataTable");
+                    var rows = table.rows;
+
+                    var dataRows = [];
+                    for (var i = 1; i < rows.length; i++) {
+                        var row = rows[i];
+                        var dateCell = row.cells[3]; // Date column
+                        var dateString = dateCell.textContent.trim(); // Get date string from the table cell
+                        var dateObject = new Date(dateString); // Parse date string into Date object
+                        dataRows.push({ row: row, date: dateObject });
+                    }
+
+                    dataRows.sort(function(a, b) {
+                    var dateA = a.date.getTime();
+                    var dateB = b.date.getTime();
+                    if (selecteddateFilter === '1') {
+                        return dateA - dateB; // Ascending order (oldest to latest)
+                    } else if (selecteddateFilter === '2') {
+                        return dateB - dateA; // Descending order (latest to oldest)
+                    }
+                });
+
+                    // Reorder table rows based on sorted dataRows
+                    var tbody = table.querySelector('tbody');
+                    dataRows.forEach(function(dataRow) {
+                        tbody.appendChild(dataRow.row);
+                    });
                 }
 
-                function loadTableDataFromURL() {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const sortByDate = urlParams.get('sortByDate');
-                    if (sortByDate) {
-                        selecteddateFilter = sortByDate;
-                        dateFilter.value = sortByDate;
-                    }
-                    else {
-                        // Set default sorting filter if sortByDate parameter is not present
-                        selecteddateFilter = '1';
-                        dateFilter.value = '1';
-                    }
-                    
-                }
 
                 function showPage(pageNumber) {
                     const perPage = parseInt(perPageSelector.value);
@@ -258,16 +407,6 @@
                         });
                     }
 
-                    if (selecteddateFilter !== '1') {
-                        filteredContainers = filteredContainers.filter(container => {
-                            const date = container.querySelector('.t_date').textContent.trim();
-                            if (selecteddateFilter === '1') {
-                                return ;
-                            } else if (selecteddateFilter === '2') {
-                                return ;
-                            }
-                        });
-                    }
 
                     const totalReviews = reviewContainers.length;
                     const perPage = parseInt(perPageSelector.value);
@@ -315,7 +454,6 @@
                         }
                     });
                     pagination.appendChild(nextButton);
-                    updateURL();
                 }
 
                 function clearAllFilters() {
@@ -328,7 +466,7 @@
 
                     // Trigger filter update
                     currentPage = 1;
-                    updateURL();
+                    //updateURL();
                     showPage(currentPage);
                     createPagination();
                 }
@@ -341,9 +479,10 @@
 
                 dateFilter.addEventListener('change', function() {
                     selecteddateFilter = dateFilter.value;
-                    updateURL();
+                    
                     currentPage = 1;
                     showPage(currentPage);
+                    sortTable();
                     createPagination();
                 });
 
@@ -365,133 +504,12 @@
                     showPage(currentPage);
                     createPagination();
                 });
-                loadTableDataFromURL();
+                
                 showPage(currentPage);
+                sortTable();
                 createPagination();
 
             });
         </script>
-        <div class="container-fluid">
-            <div class="col-12 m-auto">
-                <div class="admin_page">
-                     <div class="breadcrumbs">
-                        <a>Admin</a> > <a>Users</a> > <a class="active">Inbox List</a>
-                    </div>
-                    <div class="page_title">All Inboxs</div>
-                    <div class="filter_selectors">
-                        <div class="menu">
-                            <div class="filter_header">
-                                <div class="d-flex flex-row align-items-baseline">
-                                    <i class="fas fa-sliders-h"></i><span>Filters</span>
-                                </div>
-                                <div class="clear">
-                                    <div>Clear all</div>
-                                </div>
-                            </div>
-                            <hr class="mt-1">
-                        </div>
-                        <div>
-                            <div class="filter_type">
-                                <label for="dateFilter">Sort by Date</label>
-                                <select id="dateFilter">
-                                    <option value="1">Oldest</option>
-                                    <option value="2">Latest</option>
-                                </select>
-                            </div>
-                            <div class="filter_type">
-                                <label for="statusFilter">Filter by Read Status</label>
-                                <select id="statusFilter">
-                                    <option value="all">All</option>
-                                    <option value="1">Mark as read</option>
-                                    <option value="0">Mark as unread</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="search_container">
-                        <div class="item_search">
-                            <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search subject...">
-                            <select id="perPage">
-                                <option value="5">5</option>
-                                <option value="10" selected>10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
-                            <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
-                        </div>
-                        <form method='post' name='trash_form' class='trash-form' id='trash_form'>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Message" onclick="return confirmAction('delete the selected message(s)')">
-                        </div>
-                    </div>
-                            <div class="table-responsive">
-                                <table class="table table-centered table-nowrap mb-0 rounded">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th class="t_no">No.</th>
-                                            <th class="t_name">Subject</th>
-                                            <th class="t_email">Email</th>
-                                            <th class="t_date">Date</th>
-                                            <th class="t_status">Status</th>
-                                            <th class="t_action act1">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody border="transparent">
-                                        <?php
-                                            $no_count = 0;
-                                            $sortByDate = $_GET['sortByDate'];
-
-                                            $cf_query = "SELECT * FROM contact_message WHERE trash = 0";
-
-                                            if (isset($sortByDate)) {
-                                                if ($sortByDate === '1') {
-                                                    // Sort by oldest date
-                                                    $cf_query .= " ORDER BY CF_time ASC";
-                                                } elseif ($sortByDate === '2') {
-                                                    // Sort by latest date
-                                                    $cf_query .= " ORDER BY CF_time DESC";
-                                                }
-                                            }
-                                            $result = $conn->query($cf_query);
-                                            if($result && $result->num_rows > 0){
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $no_count++;
-                                                    if($row['markasread']==1){
-                                                        echo "<tr class='unavailable'"; 
-                                                    }
-                                                    echo "<tr";
-                                                    echo"><td class='t_no'>".$no_count."</td>";
-                                                    echo "<td class='t_name'>".$row['CF_subject']."</td>";
-                                                    echo "<td class='t_email'><a title='Email' href='mailto:" . $row['CF_email'] . "'>" . $row['CF_email'] . "</a></td>";
-                                                    echo "<td class='t_date'>".$row['CF_time']."</td>";
-                                                    echo "<td class='t_status'>".$row['markasread']."</td>";
-                                                    echo '<td class="t_action act1"><div><a href="messages-view.php?ID=' . $row['CF_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
-                                                    echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                                        <input type='hidden' name='CF_ID[]' value='".$row['CF_ID']."'>
-                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
-                                                        </div>";
-                                                     echo "</tr>";
-                                                }
-                                            }
-                                            else {
-                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No messages found...</td></tr>";
-                                            }
-                                        $conn->close();
-                                        ?>
-                                        
-                                        </form>
-                                    </tbody> 
-                                </table>
-                        <div class="navigation_container">
-                            <div id="pagination"></div>
-                            <div class="no_results_page">
-                                <span>Showing to of results</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             </div>
-         </div>
     </body>
 </html>

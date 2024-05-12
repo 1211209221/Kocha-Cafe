@@ -106,10 +106,11 @@
                                     $content = file_get_contents($file_tmp);
                                     $mail->addStringAttachment($content, $filename, 'base64', $filetype);
 
+                                    $escaped_content = mysqli_real_escape_string($conn, $content);
                                     $uploaddate = date("Y-m-d H:i:s");
 
-                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
-                                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, file_content, upload_date, CF_ID) VALUES 
+                                    ('$filename', $filesize, '$filetype', '$escaped_content', '$uploaddate', '$cfid')";
                                     $fileresult =  mysqli_query($conn, $sqlfile);
                                 }
                                 if($result === false ||$fileresult === false){

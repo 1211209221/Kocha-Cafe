@@ -166,7 +166,7 @@
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container' style="position:relative;">
                             <label for="admin_password">Password</label>
-                            <input type="password" name="admin_password" id="admin_password" value="<?php echo $row['admin_pass']; ?>" required><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
+                            <input style="padding-right:30px;" type="password" name="admin_password" id="admin_password" value="<?php echo $row['admin_pass']; ?>" required><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
