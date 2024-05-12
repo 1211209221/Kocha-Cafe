@@ -126,7 +126,7 @@
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="cust_phone">Phone Number</label>
-                            <input type="tel" title="Unable to edit" name="cust_phone" id="cust_phone" placeholder="+60123456789" value="<?php echo $row['cust_phone']; ?>" readonly>
+                            <input type="tel" title="Unable to edit" name="cust_phone" id="cust_phone" placeholder="+60123456789" value="<?php echo !empty($row['cust_phone']) ? $row['cust_phone'] : "-"; ?>" readonly>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
@@ -134,7 +134,51 @@
                             <input type="email" title="Unable to edit" name="cust_email" id="cust_email" placeholder="xxx@gmail.com" value="<?php echo $row['cust_email']; ?>" readonly>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class='item_detail_container'>
+                            <label for="delivery">Delivery Address</label>
+                            <div name="delivery" title="Unable to edit" id="delivery" style="width:100%;border: #e9ecef 1px solid;background-color: #e9ecef;border-radius: 7px;font-size: 18px;padding: 2px 5px;">
+                                <?php
+                                    //take out addresses
+                                    $get_address = "SELECT cust_address FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                                        $address_result = $conn->query($get_address);
+                                        $address_row = mysqli_fetch_assoc($address_result);
 
+                                        if(!empty($address_row['cust_address'])){
+                                            $addresses = explode("},{", $address_row['cust_address']);
+                                            $addresses = array_filter($addresses, 'strlen');
+                                            //count the address
+                                            $numAddresses = count($addresses);
+                                            $i=1;
+                                            foreach($addresses as $address){
+                                                //remove the outside{}
+                                                $address= trim($address, "{}");
+                                                //split
+                                                $details = explode(",", $address);
+
+                                                $address_label = trim($details[0], "()");
+                                                $address_no = trim($details[1], "()");
+                                                $address_street = trim($details[2], "()");
+                                                $address_area = trim($details[3], "()");
+                                                $address_postcode = trim($details[4], "()");
+                                                $address_state = trim($details[5], "()");
+                                                //combine the address
+                                                $combined_address = $address_no.', '.$address_street.', '.$address_area.', '.$address_postcode.', '.$address_state.', Malaysia';
+
+                                                //display
+                                                echo '<span style="font-weight:600;font-size:16px;padding-left: 3px;">'.$address_label.'</span>
+                                                    <span style="display:block;font-size: 16px;background-color: #ffffff;padding: 3px;border-radius: 5px;margin: 2px;">'.$combined_address.'</span>
+                                                    '; 
+                                                $i++; 
+                                            }
+                                        }else{
+                                            echo '
+                                            <tr><td class="no_items"><i class="far fa-ghost"></i>No address filled...</td></tr>
+                                            ';
+                                        }
+                                ?>
+                            </div>
+                        </div>
+                        <hr style="width:100%;">
                         <div class='item_detail_container'>
                             <label for="cust_trash">Access Mode</label>
                             <select name="cust_trash" id="cust_trash" style="width:100%;">

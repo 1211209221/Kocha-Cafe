@@ -23,6 +23,9 @@
             table tr .t_date{
                 width: 9%;
             }
+            table .t_status{
+                display:none;
+            }
         </style>
     <?php
             include '../connect.php';
@@ -49,41 +52,41 @@
                         }
                     }
                     if ($FailedUpdate == 0) {
-                        $_SESSION['deleteAdmin_success'] = true;
-                        header("Location: admins-all.php");
+                        $_SESSION['deletemessage_success'] = true;
+                        header("Location: messages-all.php");
                         exit();
                     }
                     else{
-                        $_SESSION['deleteAdmin_error'] = true;
-                        header("Location: admins-all.php");
+                        $_SESSION['deletemessage_error'] = true;
+                        header("Location: messages-all.php");
                         exit();
                     }
                 }
             }
-            if (isset($_SESSION['deleteAdmin_success'])) {
+            if (isset($_SESSION['deletemessage_success'])) {
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast true fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Successfully deleted selected admin(s)!
+                                    <i class="fas fa-check-circle"></i>Successfully deleted selected message(s)!
                                 </div>
                                 <div class="timer"></div>
                             </div>
                         </div>';
 
-                unset($_SESSION['deleteAdmin_success']);
+                unset($_SESSION['deletemessage_success']);
             }
 
-            if (isset($_SESSION['deleteAdmin_error'])) {
+            if (isset($_SESSION['deletemessage_error'])) {
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete admin(s). Please try again...
+                                    <i class="fas fa-check-circle"></i>Failed to delete message(s). Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
                         </div>';
 
-                unset($_SESSION['deleteAdmin_error']);
+                unset($_SESSION['deletemessage_error']);
             }
 
 
@@ -124,13 +127,34 @@
                 const reviewContainers = document.querySelectorAll('tbody tr');
                 const perPageSelector = document.getElementById('perPage');
                 const pagination = document.getElementById('pagination');
-                const levelFilter = document.getElementById('levelFilter');
-                const presenceFilter = document.getElementById('presenceFilter');
+                const dateFilter = document.getElementById('dateFilter');
+                const statusFilter = document.getElementById('statusFilter');
                 const clearAllButton = document.querySelector('.filter_header .clear');
                 let currentPage = 1;
                 let searchTerm = '';
-                let selectedlevelFilter = 'all';
-                let selectedpresenceFilter = 'all';
+                let selecteddateFilter = '1';
+                let selectedstatusFilter = 'all';
+
+                function updateURL() {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('sortByDate', selecteddateFilter);
+                    window.history.pushState({}, '', url);
+                }
+
+                function loadTableDataFromURL() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const sortByDate = urlParams.get('sortByDate');
+                    if (sortByDate) {
+                        selecteddateFilter = sortByDate;
+                        dateFilter.value = sortByDate;
+                    }
+                    else {
+                        // Set default sorting filter if sortByDate parameter is not present
+                        selecteddateFilter = '1';
+                        dateFilter.value = '1';
+                    }
+                    
+                }
 
                 function showPage(pageNumber) {
                     const perPage = parseInt(perPageSelector.value);
@@ -147,26 +171,15 @@
                         });
                     }
 
-                    // Filter admin based on level
-                    if (selectedlevelFilter !== 'all') {
-                        filteredContainers = filteredContainers.filter(container => {
-                            const level = container.querySelector('.t_level').textContent.trim();
-                            if (selectedlevelFilter === '1') {
-                                return level === 'Admin';
-                            } else if (selectedlevelFilter === '2') {
-                                return level === 'Superadmin';
-                            }
-                        });
-                    }
 
-                    // Filter admin based on presence
-                    if (selectedpresenceFilter !== 'all') {
+                    // Filter status
+                    if (selectedstatusFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const presence = container.querySelector('.t_presence i')
-                            if (selectedpresenceFilter === '0') {
-                                return presence.classList.contains('fa-circle') && presence.classList.contains('color-red');
-                            } else if (selectedpresenceFilter === '1') {
-                                return presence.classList.contains('fa-circle')  && presence.classList.contains('color-green');
+                            const status = container.querySelector('.t_status').textContent.trim();
+                            if (selectedstatusFilter === '0') {
+                                return status === "0";
+                            } else if (selectedstatusFilter === '1') {
+                                return status === "1";
                             }
                         });
                     }
@@ -192,7 +205,6 @@
                         container.querySelector('.t_no').textContent = i + 1;
                     }
 
-                    // Update active page button
                     // Update active page button
                     const pageButtons = pagination.querySelectorAll('.page-button');
                     pageButtons.forEach(button => {
@@ -234,24 +246,25 @@
                         });
                     }
 
-                    if (selectedlevelFilter !== 'all') {
+
+                    if (selectedstatusFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const level = container.querySelector('.t_level').textContent.trim();
-                            if (selectedlevelFilter === '1') {
-                                return level === 'Admin';
-                            } else if (selectedlevelFilter === '2') {
-                                return level !== 'Superadmin';
+                            const status = container.querySelector('.t_status').textContent.trim();
+                            if (selectedstatusFilter === '0') {
+                                return status === "0";
+                            } else if (selectedstatusFilter === '1') {
+                                return status === "1";
                             }
                         });
                     }
 
-                    if (selectedpresenceFilter !== 'all') {
+                    if (selecteddateFilter !== '1') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const presence = container.querySelector('.t_presence i')
-                            if (selectedpresenceFilter === '0') {
-                                return presence.classList.contains('fa-circle') && presence.classList.contains('color-red');
-                            } else if (selectedpresenceFilter === '1') {
-                                return presence.classList.contains('fa-circle')  && presence.classList.contains('color-green');
+                            const date = container.querySelector('.t_date').textContent.trim();
+                            if (selecteddateFilter === '1') {
+                                return ;
+                            } else if (selecteddateFilter === '2') {
+                                return ;
                             }
                         });
                     }
@@ -302,18 +315,20 @@
                         }
                     });
                     pagination.appendChild(nextButton);
+                    updateURL();
                 }
 
                 function clearAllFilters() {
                     // Clear search term
                     searchTerm = '';
-                    levelFilter.value = 'all';
-                    selectedlevelFilter = 'all';
-                    presenceFilter.value = 'all';
-                    selectedpresenceFilter = 'all';
+                    dateFilter.value = '1';
+                    selecteddateFilter = '1';
+                    statusFilter.value = 'all';
+                    selectedstatusFilter = 'all';
 
                     // Trigger filter update
                     currentPage = 1;
+                    updateURL();
                     showPage(currentPage);
                     createPagination();
                 }
@@ -324,15 +339,16 @@
                     createPagination();
                 });
 
-                levelFilter.addEventListener('change', function() {
-                    selectedlevelFilter = levelFilter.value;
+                dateFilter.addEventListener('change', function() {
+                    selecteddateFilter = dateFilter.value;
+                    updateURL();
                     currentPage = 1;
                     showPage(currentPage);
                     createPagination();
                 });
 
-                presenceFilter.addEventListener('change', function() {
-                    selectedpresenceFilter = presenceFilter.value;
+                statusFilter.addEventListener('change', function() {
+                    selectedstatusFilter = statusFilter.value;
                     currentPage = 1;
                     showPage(currentPage);
                     createPagination();
@@ -349,9 +365,10 @@
                     showPage(currentPage);
                     createPagination();
                 });
-
+                loadTableDataFromURL();
                 showPage(currentPage);
                 createPagination();
+
             });
         </script>
         <div class="container-fluid">
@@ -375,14 +392,20 @@
                         </div>
                         <div>
                             <div class="filter_type">
-                                <label for="levelFilter">Sort by Date</label>
-                                <select id="levelFilter">
-                                    <option value="all">All</option>
+                                <label for="dateFilter">Sort by Date</label>
+                                <select id="dateFilter">
                                     <option value="1">Oldest</option>
                                     <option value="2">Latest</option>
                                 </select>
                             </div>
-                            
+                            <div class="filter_type">
+                                <label for="statusFilter">Filter by Read Status</label>
+                                <select id="statusFilter">
+                                    <option value="all">All</option>
+                                    <option value="1">Mark as read</option>
+                                    <option value="0">Mark as unread</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="search_container">
@@ -410,22 +433,39 @@
                                             <th class="t_name">Subject</th>
                                             <th class="t_email">Email</th>
                                             <th class="t_date">Date</th>
+                                            <th class="t_status">Status</th>
                                             <th class="t_action act1">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody border="transparent">
                                         <?php
                                             $no_count = 0;
+                                            $sortByDate = $_GET['sortByDate'];
+
                                             $cf_query = "SELECT * FROM contact_message WHERE trash = 0";
+
+                                            if (isset($sortByDate)) {
+                                                if ($sortByDate === '1') {
+                                                    // Sort by oldest date
+                                                    $cf_query .= " ORDER BY CF_time ASC";
+                                                } elseif ($sortByDate === '2') {
+                                                    // Sort by latest date
+                                                    $cf_query .= " ORDER BY CF_time DESC";
+                                                }
+                                            }
                                             $result = $conn->query($cf_query);
                                             if($result && $result->num_rows > 0){
                                                 while ($row = $result->fetch_assoc()) {
                                                     $no_count++;
+                                                    if($row['markasread']==1){
+                                                        echo "<tr class='unavailable'"; 
+                                                    }
                                                     echo "<tr";
                                                     echo"><td class='t_no'>".$no_count."</td>";
                                                     echo "<td class='t_name'>".$row['CF_subject']."</td>";
                                                     echo "<td class='t_email'><a title='Email' href='mailto:" . $row['CF_email'] . "'>" . $row['CF_email'] . "</a></td>";
                                                     echo "<td class='t_date'>".$row['CF_time']."</td>";
+                                                    echo "<td class='t_status'>".$row['markasread']."</td>";
                                                     echo '<td class="t_action act1"><div><a href="messages-view.php?ID=' . $row['CF_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
                                                     echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
                                                         <input type='hidden' name='CF_ID[]' value='".$row['CF_ID']."'>
