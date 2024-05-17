@@ -28,6 +28,39 @@
             $admin_level = $_POST['admin_level'];
 
             $admin_password = password_hash($admin_password, PASSWORD_DEFAULT);
+
+            //compare username and email first
+            $check_query = "SELECT * FROM admin";
+            $result = $conn->query($check_query);
+            $username_exists = false;
+            $email_exists = false;
+
+            while ($row = $result->fetch_assoc()) {
+                // Check if the username matches and it's not the user's own username
+                if ($admin_username === $row['admin_username']) {
+                    $username_exists = true;
+                }
+
+                if($admin_email === $row['admin_email']){
+                    $email_exists = true;
+                }
+            }
+
+            if($username_exists > 0 && $email_exists > 0){
+                $_SESSION['update_match'] = 'both match';
+                header("Location: admins-add.php");
+                exit();
+            }
+            else if($email_exists > 0){
+                $_SESSION['update_match'] = 'email match';
+                header("Location: admins-add.php");
+                exit();
+            }
+            else if($username_exists > 0){
+                $_SESSION['update_match'] = 'username match';
+                header("Location: admins-add.php");
+                exit();
+            }
             
             // Construct the SQL query to insert 
             $sqladmin = "INSERT INTO admin (admin_name, admin_username, admin_phno, admin_pass, admin_email, admin_level) VALUES ('$admin_name', '$admin_username', '$admin_phone', '$admin_password', '$admin_email', '$admin_level')";
@@ -72,6 +105,28 @@
 
         include 'navbar.php';
     ?>
+    <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    <?php
+                    if (isset($_SESSION['update_match'])) {
+                        if ($_SESSION['update_match'] == 'both match') {
+                            echo 'document.getElementById("user-error").innerText = "*The username has been used by other.*";';
+                            echo 'document.getElementById("email-error").innerText = "*The email has been used by other.*";';
+                        }
+                        else if($_SESSION['update_match'] == 'username match'){
+                            echo 'document.getElementById("user-error").innerText = "*The username has been used by other.*";';
+                        }
+                        else if($_SESSION['update_match'] == 'email match'){
+                            echo 'document.getElementById("email-error").innerText = "*The email has been used by other.*";';
+                        }
+
+                        // Clear the session variable after displaying the message
+                        unset($_SESSION['update_match']);
+                    }
+
+                    ?>
+                });
+            </script>
     <style>
         @media (max-width: 768px) {
             .edit_items .item_details .fa-eye-slash, .edit_items .item_details .fa-eye {
@@ -104,12 +159,12 @@
                             <label for="admin_username">Username</label>
                             <input type="text" name="admin_username" id="admin_username" placeholder="adminxxx123" required></textarea>
                         </div>
-                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class="address-error" id="user-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_email">Email Address</label>
                             <input type="email" name="admin_email" id="admin_email" placeholder="xxx@gmail.com" required>
                         </div>
-                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class="address-error" id="email-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container' style="position:relative;">
                             <label for="admin_password">Password</label>
                             <input type="password" name="admin_password" id="admin_password" required><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>

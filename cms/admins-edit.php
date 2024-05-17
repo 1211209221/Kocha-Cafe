@@ -50,27 +50,82 @@
                 $admin_phno = $_POST['admin_phone'];
                 $admin_username = $_POST['admin_username'];
                 $admin_email = $_POST['admin_email'];
-                $admin_password = $_POST['admin_password'];
+
+                if(!empty($_POST['admin_password'])){
+                    $admin_password = $_POST['admin_password'];
+                    //validate
+                    if(strlen($admin_password) < 8){
+                        $_SESSION['update_match'] = 'notmeetrequirement';
+                        header("Location: admins-edit.php?ID=$admin_ID");
+                        exit();
+                    }
+                    $admin_password = password_hash($admin_password, PASSWORD_DEFAULT);
+
+                }
+                else{
+                    $pass_query = "SELECT admin_pass FROM admin WHERE admin_ID = $admin_ID";
+                    $pass_result = $conn->query($pass_query);
+                    if ($pass_result->num_rows > 0) {
+                        $row = $pass_result->fetch_assoc();
+                        $admin_password = $row['admin_pass'];
+                        
+                    }
+                }
+
                 $admin_level = $_POST['admin_level'];
-                $admin_password = password_hash($admin_password, PASSWORD_DEFAULT);
 
-                $sql = "UPDATE admin 
-                SET admin_name = '$admin_name', 
-                    admin_phno = '$admin_phno', 
-                    admin_username = '$admin_username', 
-                    admin_email = '$admin_email', 
-                    admin_pass = '$admin_password', 
-                    admin_level = '$admin_level'
-                WHERE admin_ID = $admin_ID";
+                //compare username and email first
+                $check_username_query = "SELECT * FROM admin WHERE admin_ID != $admin_ID";
+                $result = $conn->query($check_username_query);
+                $username_exists = false;
+                $email_exists = false;
 
-                if ($conn->query($sql) === TRUE) {
-                    $_SESSION['editadmin_success'] = true;
+                while ($row = $result->fetch_assoc()) {
+                    // Check if the username matches and it's not the user's own username
+                    if ($admin_username === $row['admin_username'] && $admin_ID != $row['admin_ID']) {
+                        $username_exists = true;
+                    }
+
+                    if($admin_email === $row['admin_email'] && $admin_ID != $row['admin_ID']){
+                        $email_exists = true;
+                    }
+                }
+
+                if($username_exists > 0 && $email_exists > 0){
+                    $_SESSION['update_match'] = 'both match';
                     header("Location: admins-edit.php?ID=$admin_ID");
                     exit();
-                } else {
-                    $_SESSION['editadmin_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                }
+                else if($email_exists > 0){
+                    $_SESSION['update_match'] = 'email match';
                     header("Location: admins-edit.php?ID=$admin_ID");
                     exit();
+                }
+                else if($username_exists > 0){
+                    $_SESSION['update_match'] = 'username match';
+                    header("Location: admins-edit.php?ID=$admin_ID");
+                    exit();
+                }
+                else{
+                    //update
+                    $sql = "UPDATE admin 
+                    SET admin_name = '$admin_name', 
+                        admin_phno = '$admin_phno', 
+                        admin_username = '$admin_username', 
+                        admin_email = '$admin_email', 
+                        admin_pass = '$admin_password', 
+                        admin_level = '$admin_level'
+                    WHERE admin_ID = $admin_ID";
+
+                    if ($conn->query($sql) === TRUE) {
+                        $_SESSION['editadmin_success'] = true;
+                        header("Location: admins-edit.php?ID=$admin_ID");
+                        exit();
+                    } else {
+                        $_SESSION['editadmin_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                        header("Location: admins-edit.php?ID=$admin_ID");
+                        exit();
+                    }
                 }
             }
         }
@@ -133,6 +188,31 @@
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){  
     ?>
+    <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    <?php
+                    if (isset($_SESSION['update_match'])) {
+                        if ($_SESSION['update_match'] == 'both match') {
+                            echo 'document.getElementById("user-error").innerText = "*The username has been used by other.*";';
+                            echo 'document.getElementById("email-error").innerText = "*The email has been used by other.*";';
+                        }
+                        else if($_SESSION['update_match'] == 'username match'){
+                            echo 'document.getElementById("user-error").innerText = "*The username has been used by other.*";';
+                        }
+                        else if($_SESSION['update_match'] == 'email match'){
+                            echo 'document.getElementById("email-error").innerText = "*The email has been used by other.*";';
+                        }
+                        else{
+                            echo 'document.getElementById("pass-error").innerText = "*Password must be at least 8 characters long.*";';
+                        }
+
+                        // Clear the session variable after displaying the message
+                        unset($_SESSION['update_match']);
+                    }
+
+                    ?>
+                });
+            </script>
     <div class="container-fluid container">
         <div class="col-12 m-auto">
             <div class="edit_items add_items">
@@ -155,20 +235,20 @@
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
+                            <label for="admin_email">Email Address</label>
+                            <input type="email" title="Read-only" name="admin_email" id="admin_email" placeholder="xxx@gmail.com" value="<?php echo $row['admin_email']; ?>" readonly>
+                        </div>
+                        <div class="address-error" id="email-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class='item_detail_container'>
                             <label for="admin_username">Username</label>
                             <input type="text" name="admin_username" id="admin_username" placeholder="adminxxx123" value="<?php echo $row['admin_username']; ?>" required></textarea>
                         </div>
-                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
-                        <div class='item_detail_container'>
-                            <label for="admin_email">Email Address</label>
-                            <input type="email" name="admin_email" id="admin_email" placeholder="xxx@gmail.com" value="<?php echo $row['admin_email']; ?>" required>
-                        </div>
-                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class="address-error" id="user-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container' style="position:relative;">
-                            <label for="admin_password">Password</label>
-                            <input style="padding-right:30px;" type="password" name="admin_password" id="admin_password" value="<?php echo $row['admin_pass']; ?>" required><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
+                            <label for="admin_password">New Password</label>
+                            <input style="padding-right:30px;" type="password" name="admin_password" id="admin_password" ><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
                         </div>
-                        <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
+                        <div class="address-error" id="pass-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_level">Admin Level</label>
                             <select name="admin_level" id="admin_level" style="width:100%;">
@@ -177,7 +257,7 @@
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save">
+                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick='return confirmAction("save the changes");'>
                             <input type="submit" name="delete" class="delete" value="Remove" onclick='return confirmAction("remove this admin");'>
                         </div>
                     </div>
@@ -288,16 +368,12 @@
                 clearError1(document.getElementById("admin_email"));
             }
 
-            if (admin_password.trim() === "") {
-                errorDisplay1(document.getElementById("admin_password"), "*Password cannot be empty.*");
-                    valid = false;
-            }
-            else if (admin_password.length < 8) {
-                errorDisplay1(document.getElementById("admin_password"), "*Password must be at least 8 characters long.*");
-                valid = false;
-            } else {
-                clearError1(document.getElementById("admin_password"));
-            }                
+            // if (admin_password.length < 8) {
+            //     errorDisplay1(document.getElementById("admin_password"), "*Password must be at least 8 characters long.*");
+            //     valid = false;
+            // } else {
+            //     clearError1(document.getElementById("admin_password"));
+            // }                
                             
             // Return the overall validity of the form
             return valid;

@@ -64,13 +64,13 @@
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
             $CF_ID = $_GET['ID'];
-            //     $sqlread = "UPDATE contact_message SET markasread = 1 WHERE CF_ID = $CF_ID";
-            //     if ($conn->query($sqlread) === TRUE) {
-            //         // The update was successful
-            //     } else {
-            //         // There was an error with the SQL query
-            //         echo "Error updating record: " . $conn->error;
-            //     }
+                $sqlread = "UPDATE contact_message SET markasread = 1 WHERE CF_ID = $CF_ID";
+                if ($conn->query($sqlread) === TRUE) {
+                    // The update was successful
+                } else {
+                    // There was an error with the SQL query
+                    echo "Error updating record: " . $conn->error;
+                }
         }
             
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -82,11 +82,11 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['editmsg_success'] = true;
-                    header("Location: messages-view.php?ID=$CF_ID");
+                    header("Location: messages-all.php");
                     exit();
                 } else {
                     $_SESSION['editmsg_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: messages-view.php?ID=$CF_ID");
+                    header("Location: messages-all.php");
                     exit();
                 }
             }
@@ -106,31 +106,6 @@
             }
         }
 
-        if (isset($_SESSION['editmsg_success']) && $_SESSION['editmsg_success'] === true) {
-            echo '<div class="toast_container">
-                    <div id="custom_toast" class="custom_toast true fade_in">
-                        <div class="d-flex align-items-center message">
-                            <i class="fas fa-check-circle"></i> Message change saved!
-                        </div>
-                        <div class="timer"></div>
-                    </div>
-                </div>';
-
-            unset($_SESSION['editmsg_success']);
-        }
-
-        if (isset($_SESSION['editmsg_error'])) {
-            echo '<div class="toast_container">
-                        <div id="custom_toast" class="custom_toast false fade_in">
-                            <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i>Failed to update message. Please try again...
-                            </div>
-                            <div class="timer"></div>
-                        </div>
-                    </div>';
-
-            unset($_SESSION['editmsg_error']);
-        }
         
 
         $sqlall = "SELECT * FROM contact_message WHERE CF_ID = $CF_ID";
@@ -230,7 +205,7 @@
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="confirmAction('submit the change');">
+                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('mark this message as unread');">
                             <input type="submit" name="delete" class="delete" value="Delete" onclick='return confirmAction("delete this message");'>
                         </div>
                     </div>
