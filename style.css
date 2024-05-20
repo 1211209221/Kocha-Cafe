@@ -6157,8 +6157,13 @@ span.openNav:hover{
     background-color: #ffd5d5 !important;
     transition: 0.15s !important;
 }
-.admin_page .table tbody tr.delete td, .admin_page .table tbody tr.delete td i, .admin_page .table tbody tr.delete td a{
+.admin_page .table tbody tr.delete td, .admin_page .table tbody tr.delete td i, .admin_page .table tbody tr.delete td a
+{
     color: #ed796d !important;
+}
+.admin_page .table tbody tr.delete td span{
+	color: #ed796d !important;
+	border-color: #ed796d !important;
 }
 .admin_page .table .tr div {
     overflow: unset;

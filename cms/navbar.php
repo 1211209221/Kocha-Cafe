@@ -124,6 +124,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class="fas fa-clipboard-list-check"></i>
                         </div>
                         <span>Order List</span>
+                        <?php
+                            $sql_get_order_no = "SELECT * FROM customer_orders WHERE tracking_stage != 3 AND trash = 0";
+                            $result_get_order_no = $conn->query($sql_get_order_no);
+                            if ($result_get_order_no->num_rows > 0) {
+                                echo '<div class="notification_circle">' . $result_get_order_no->num_rows . '</div>';
+                            }
+                        ?>
                     </a>
                 </div>
             </div>

@@ -14,14 +14,102 @@
     </head>
     <body>
     <style>
+            table tr .t_no{
+                display:none;
+            }
+            table tr .t_id{
+                width: 9%;
+                padding-left:15px !important;
+                border-top-left-radius: 7px;
+                border-bottom-left-radius: 7px;
+                
+            }
+            table tbody tr .t_id{
+                font-size:16px;
+            }
             table tr .t_name{
+                width: 10%;
+            }
+            table tr .t_item{
                 width: 15%;
             }
             table tr .t_status{
-                width: 9%;
+                width: 8%;
+                text-align:center;
             }
             table tr .t_date{
-                width: 9%;
+                width: 10%;
+            }
+            table tbody tr .t_date{
+                font-size:16px;
+            }
+            .sta-queue{
+                padding: 2px 5px;
+                border: 2px solid #ff984f;
+                border-radius: 15px;
+                font-size: 16px;
+                color: #ff984f;
+                display: ruby-text;
+                margin: 3px;
+            }
+            .sta-prepare{
+                padding: 2px 5px;
+                border: 2px solid #6d98bc;
+                border-radius: 15px;
+                font-size: 16px;
+                color: #6d98bc;
+                display: ruby-text;
+                margin: 3px;
+            }
+            .sta-deliver{
+                padding: 2px 5px;
+                border: 2px solid #00b7c6;
+                border-radius: 15px;
+                font-size: 16px;
+                color: #00b7c6;
+                display: ruby-text;
+                margin: 3px;
+            }
+            .sta-receive{
+                padding: 2px 5px;
+                border: 2px solid #5a9498;
+                border-radius: 15px;
+                font-size: 16px;
+                color: #5a9498;
+                display: ruby-text;
+                margin: 3px;
+            }
+            .t_status p{
+                margin:unset;
+            }
+            .t_status i{
+                margin-right:5px;
+                font-size: 14px;
+            }
+            @media (max-width: 575px) {
+                table tr .t_id{
+                    padding-left:8px !important;
+                }
+                table tbody tr .t_date{
+                    font-size: 14px;
+                }
+                table tr .t_item{
+                    display:none;
+                }
+                .t_status p{
+                    display:none;
+                }
+                .t_status i{
+                    margin:3px;
+                    font-size:13px;
+                }
+                table tbody tr .t_id{
+                    font-size:14px;
+                }
+            }
+            @media (max-width: 480px) {
+                
+
             }
             
         </style>
@@ -177,8 +265,9 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th class="t_no">No.</th>
-                                            <th class="t_name">Order ID</th>
+                                            <th class="t_id">ID</th>
                                             <th class="t_name">User</th>
+                                            <th class="t_item">Items</th>
                                             <th class="t_date">Date</th>
                                             <th class="t_status">Status</th>
                                             <th class="t_action act1">Action</th>
@@ -200,7 +289,8 @@
                                                     }
                                                     echo "<tr";
                                                     echo"><td class='t_no'>".$no_count."</td>";
-                                                    echo "<td class='t_name'>".$row['order_ID']."</td>";
+                                                    $order_id = "K_".$row['order_ID'];
+                                                    echo "<td class='t_id'>".$order_id."</td>";
                                                     $cust_query = "SELECT cust_username FROM customer WHERE trash = 0 AND cust_ID = ".$row['cust_ID'];
                                                     $query_result = $conn->query($cust_query);
                                                     $query_row = $query_result->fetch_assoc();
@@ -211,18 +301,19 @@
                                                         $username = "User is disabled.";
                                                     }
                                                     echo "<td class='t_name'>".$username."</td>";
+                                                    echo "<td class='t_item'>...</td>";
                                                     echo "<td class='t_date'>".$date."</td>";
                                                     if($row['tracking_stage']==0){
-                                                        echo "<td class='t_status'>Queueing</td>";
+                                                        echo "<td class='t_status'><span class='sta-queue'><i class='fas fa-boxes'></i><p>Queueing</p></span></td>";
                                                     }
                                                     else if($row['tracking_stage']==1){
-                                                        echo "<td class='t_status'>Preparing</td>";
+                                                        echo "<td class='t_status'><span class='sta-prepare'><i class='fas fa-box-open'></i><p>Preparing</p></span></td>";
                                                     }
                                                     else if($row['tracking_stage']==2){
-                                                        echo "<td class='t_status'>Delivering</td>";
+                                                        echo "<td class='t_status'><span class='sta-deliver'><i class='fas fa-truck-loading'></i><p>Delivering</p></span></td>";
                                                     }
                                                     else{
-                                                        echo "<td class='t_status'>Received</td>";
+                                                        echo "<td class='t_status'><span class='sta-receive'><i class='fas fa-check-square'></i><p>Received</p></span></td>";
                                                     }
                                                     echo '<td class="t_action act1"><div><a class="trash-icon"><i class="fas fa-trash"></i></a><a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
                                                     echo "</i></a>
@@ -301,7 +392,7 @@
                     var dataRows = [];
                     for (var i = 1; i < rows.length; i++) {
                         var row = rows[i];
-                        var dateCell = row.cells[3]; // Date column
+                        var dateCell = row.cells[4]; // Date column
                         var dateString = dateCell.textContent.trim(); // Get date string from the table cell
                         var dateObject = new Date(dateString); // Parse date string into Date object
                         dataRows.push({ row: row, date: dateObject });

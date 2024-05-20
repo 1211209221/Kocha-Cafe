@@ -20,9 +20,7 @@
             session_start();
             
             if($_SERVER['REQUEST_METHOD'] == "POST"){
-                echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
+                
                 if (isset($_POST['submit_trash_items'])) {
                     if (isset($_POST['CF_ID']) && isset($_POST['trash_item'])) {
                         $CF_ids = $_POST['CF_ID'];
@@ -183,6 +181,7 @@
                 table tbody tr .t_name{
                     font-size:15px;
                 }
+                
                 table tbody tr .t_email{
                     font-size:15px;
                 }
