@@ -194,7 +194,7 @@
                 ['clean'], // Remove Formatting
                 [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript, Superscript
                 [{ 'size': ['small', false, 'large', 'huge'] }], // Text Size
-                [{ 'indent': '-1' }, { 'indent': '+1' }] // Indent, Outdent
+                [{ 'indent': '-1' }, { 'indent': '+1' }]
             ];
 
             var quill = new Quill('#editor', {
