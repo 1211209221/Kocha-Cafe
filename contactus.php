@@ -60,7 +60,9 @@
 
                     if (!$response_data["success"]) {
                         $_SESSION['captcharesponse'] = true;
-                        header("Location: {$_SERVER['PHP_SELF']}");
+                        echo '<script>';
+                        echo 'window.location.href = "contactus.php";';
+                        echo '</script>';
                         exit();
                     }
                     else{
@@ -104,15 +106,18 @@
                                     $content = file_get_contents($file_tmp);
                                     $mail->addStringAttachment($content, $filename, 'base64', $filetype);
 
+                                    $escaped_content = mysqli_real_escape_string($conn, $content);
                                     $uploaddate = date("Y-m-d H:i:s");
 
-                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, upload_date, CF_ID) VALUES 
-                                    ('$filename', $filesize, '$filetype', '$uploaddate', '$cfid')";
+                                    $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, file_content, upload_date, CF_ID) VALUES 
+                                    ('$filename', $filesize, '$filetype', '$escaped_content', '$uploaddate', '$cfid')";
                                     $fileresult =  mysqli_query($conn, $sqlfile);
                                 }
                                 if($result === false ||$fileresult === false){
                                     $_SESSION['databasepart'] = true;
-                                    header("Location: {$_SERVER['PHP_SELF']}");
+                                    echo '<script>';
+                                    echo 'window.location.href = "contactus.php";';
+                                    echo '</script>';
                                     exit();
                                 }
                                 
@@ -120,14 +125,18 @@
 
                             if($mail->send()){
                                 $_SESSION['success'] = true;
-                                header("Location: {$_SERVER['PHP_SELF']}");
+                                echo '<script>';
+                                echo 'window.location.href = "contactus.php";';
+                                echo '</script>';
                                 exit();
                             }
 
                         }
                         catch(Exception $e){
                             $_SESSION['error'] = true;
-                            header("Location: {$_SERVER['PHP_SELF']}");
+                            echo '<script>';
+                            echo 'window.location.href = "contactus.php";';
+                            echo '</script>';
                             exit();
                         }
                     }

@@ -125,6 +125,13 @@ session_start();
                             <i class="fas fa-clipboard-list-check"></i>
                         </div>
                         <span>Order List</span>
+                        <?php
+                            $sql_get_order_no = "SELECT * FROM customer_orders WHERE tracking_stage != 3 AND trash = 0";
+                            $result_get_order_no = $conn->query($sql_get_order_no);
+                            if ($result_get_order_no->num_rows > 0) {
+                                echo '<div class="notification_circle">' . $result_get_order_no->num_rows . '</div>';
+                            }
+                        ?>
                     </a>
                 </div>
             </div>
@@ -163,6 +170,13 @@ session_start();
                             <i class="fas fa-mail-bulk"></i>
                         </div>
                         <span>Message List</span>
+                        <?php
+                            $sql_get_inbox_no = "SELECT * FROM contact_message WHERE markasread = 0 AND trash = 0";
+                            $result_get_inbox_no = $conn->query($sql_get_inbox_no);
+                            if ($result_get_inbox_no->num_rows > 0) {
+                                echo '<div class="notification_circle">' . $result_get_inbox_no->num_rows . '</div>';
+                            }
+                        ?>
                     </a>
                 </div>
             </div>

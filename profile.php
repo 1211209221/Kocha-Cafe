@@ -16,6 +16,7 @@
     </head>
 
     <body>
+        
         <?php
             include 'connect.php';
             include 'top.php';
@@ -289,9 +290,8 @@
                 if ($conn->query($update_query) === TRUE) {
                     // Password updated successfully
                     $_SESSION['delete_acc_success'] = true;
-                    echo '<script>';
-                    echo 'window.location.href = "profile.php";';
-                    echo '</script>';
+                    session_destroy();
+                    header("Location: index.php");
                     exit();
                 } else {
                     // Error updating password
@@ -307,6 +307,26 @@
                 $ph = $_POST['pn'];
 
                 $phone_with_country_code = "+60" . $ph;
+
+                $check_username_query = "SELECT * FROM customer WHERE cust_username = '$un' AND cust_ID != $cust_ID";
+                $result = $conn->query($check_username_query);
+                $username_exists = false;
+
+                while ($row = $result->fetch_assoc()) {
+                    // Check if the username matches and it's not the user's own username
+                    if ($un === $row['cust_username'] && $cust_ID != $row['cust_ID']) {
+                        $username_exists = true;
+                        break;
+                    }
+                }
+
+                if($username_exists > 0){
+                    $_SESSION['update_pro_wrong'] = 'Incorrect username';
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                }
 
                 $update_username = "UPDATE customer SET cust_username = '$un' WHERE cust_ID = $cust_ID AND trash = 0";
                 $update_phone = "UPDATE customer SET cust_phone = '$phone_with_country_code' WHERE cust_ID = $cust_ID AND trash = 0";
@@ -324,6 +344,8 @@
                     echo '</script>';
                     exit();
                 }
+                
+                
             }
             if (isset($_SESSION['update_pro_success']) && $_SESSION['update_pro_success'] === true) {
                 echo '<div class="toast_container">
@@ -408,7 +430,7 @@
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
                             <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i> Profile successfully deleted!
+                                <i class="fas fa-check-circle"></i> Delivery address is successfully deleted!
                             </div>
                             <div class="timer"></div>
                         </div>
@@ -434,7 +456,7 @@
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
                             <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i> Profile successfully updated!
+                                <i class="fas fa-check-circle"></i> Delivery address is successfully updated!
                             </div>
                             <div class="timer"></div>
                         </div>
@@ -446,7 +468,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update address. Please try again...
+                                    <i class="fas fa-check-circle"></i>Failed to update delivery address. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -500,6 +522,16 @@
                         // Clear the session variable after displaying the message
                         unset($_SESSION['password_verification']);
                     }
+                    if (isset($_SESSION['update_pro_wrong'])) {
+                        if ($_SESSION['update_pro_wrong'] == 'Incorrect username') {
+                            echo 'document.getElementById(\'id01\').style.display=\'flex\';';
+                            echo 'document.getElementById("un-error").innerText = "Username is used by others!";';
+                        }
+
+                        // Clear the session variable after displaying the message
+                        unset($_SESSION['update_pro_wrong']);
+                    }
+
                     ?>
                 });
             </script>
@@ -518,7 +550,7 @@
                       <div class="pcontainer">
                         <label for="uname"><b><i class="fas fa-user-edit"></i>Username</b></label>
                         <input type="text" id="uname" name="uname" value="<?php echo $name;?>" required>
-                        <span class="address-error"></span>
+                        <span class="address-error" id="un-error"></span>
                   
                         <label for="pn"><b><i class="fas fa-phone-alt"></i> Phone Number</b></label>
                         <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone_without_country_code;?>" required></div>
@@ -1231,7 +1263,8 @@
                         function validateAddressForm4() {
                             <?php if (!empty($add_label[0])): ?>
                                 const existingLabels1 = <?php echo json_encode($add_label[0]); ?>;
-                            <?php elseif (!empty($add_label[1])): ?>
+                            <?php endif; ?>
+                            <?php if (!empty($add_label[1])): ?>
                                 const existingLabels2 = <?php echo json_encode($add_label[1]); ?>;
                             <?php endif; ?>
                             const newlabel = document.getElementById("newLabel").value;
@@ -1458,7 +1491,7 @@
                             </ul>
                         </div>
                         <div class="logout-opt">
-                        <a href="logout.php" style="text-decoration:none;color:#E2857B;"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                        <a href="logout.php" style="text-decoration:none;color:#E2857B;border:none;"><i class="fas fa-sign-out-alt"></i> Log Out</a>
                         </div>
                     </div>
                     <div class="right-detail">

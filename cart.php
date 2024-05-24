@@ -298,9 +298,57 @@
                             exit();
                     }
 
-                    $order_date = date('Y-m-d');
+                    //create order id
+                    function generate_order_id($conn) {
+                        // Get the current timestamp and format it as Ymd
+                        $timestamp = date('Ymd');
+                    
+                        // Fetch the last order ID from the database
+                        $sql = "SELECT order_ID FROM customer_orders ORDER BY order_ID DESC LIMIT 1";
+                        $result = $conn->query($sql);
+                    
+                        if ($result->num_rows > 0) {
+                            // Get the last order ID
+                            $row = $result->fetch_assoc();
+                            $lastOrderID = $row['order_ID'];
+                    
+                            if ($lastOrderId) {
+                                // Separate the date part and the increment part from the last order ID
+                                $lastDate = substr($lastOrderId, 0, 8); // Extract the first 8 characters as the date part
+                                $lastIncrement = intval(substr($lastOrderId, 8)); // Extract the remaining characters as the increment part
+                                
+                                // Get the current date in Ymd format
+                                $currentDate = date('Ymd');
+                                
+                                if ($lastDate !== $currentDate) {
+                                    // Reset the increment to 1 for a new day
+                                    $increment = 1;
+                                } else {
+                                    // Increment the order number if it's the same day
+                                    $increment = $lastIncrement + 1;
+                                }
+
+                            } else {
+                                // Initialize the first order ID if no ID is found
+                                $currentDate = date('Ymd');
+                                $increment = 1;
+                            }
+                    
+                            // Ensure the incrementing part is 5 digits
+                            $newIncrementPart = str_pad($increment, 5, '0', STR_PAD_LEFT); // 5 digits for the incremental part
+                            $orderID = $timestamp . $newIncrementPart;
+                        }
+                    
+                        return $orderID;
+                    }
+                    // Generate the new order ID
+                    $newOrderID = generate_order_id($conn);
+
+
+                    //update
+                    $order_date = date('Y-m-d H:i:s');
                     // Construct the SQL query to insert menu item data
-                    $sql_cart = "INSERT INTO customer_orders (order_contents,order_date,cust_ID) VALUES ('$string','$order_date','$cust_ID')";
+                    $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents,order_date,cust_ID) VALUES ('$newOrderID','$string','$order_date','$cust_ID')";
 
                     if(!empty($string)){
                         if ($conn->query($sql_cart) === TRUE) {
@@ -317,6 +365,7 @@
                     }
                 }
             }
+
 
             if (isset($_SESSION['saveCart_success']) && $_SESSION['saveCart_success'] === true) {
                 echo '<div class="toast_container">
@@ -391,14 +440,258 @@
             // $conn->close();
         ?>
         <script>
+            //for payment
+            <?php
+                    //take out point from database to compare
+                    $get_point = "SELECT cust_points FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                    $point_result = $conn->query($get_point);
+                    $point_row = $point_result->fetch_assoc();
+                    if($point_row && !empty($point_row['cust_points'])){
+                        $point = $point_row['cust_points'];
+                    }
+                    else{
+                        $point = 0;
+                    }
+                ?>
             document.addEventListener("DOMContentLoaded", function() {
-                const updateTotal = (input) => {
+                //for payment form
+                const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points");
+                formElements1.forEach(element => {
+                    element.addEventListener("input", function () {
+                        validateForm1();
+                    });
+                });
+                document.getElementById("submit_order").addEventListener("click", function (event) {
+                    // Validate form fields
+                    if (!validateForm1()) {
+                        // Prevent form submission if validation fails
+                        event.preventDefault();
+                    }
+                });
+                
+            });
+
+            function validateForm1(){
+                const holder_name = document.getElementById("holder_name").value;
+                let card_number = document.getElementById("card_number").value;
+                const CVV = document.getElementById("CVV").value;
+                let redeem_points = document.getElementById("redeem_points").value;
+                const selectlocation = document.getElementById("selectlocation");
+                const maxPoints = <?php echo $point; ?>;
+                var letters = /^[a-zA-Z-' ]*$/;
+                let valid = true;
+
+                redeem_points = redeem_points.replace(/\D/g, '');
+                
+                if(card_number.trim() === ""){
+                    errorDisplay(document.getElementById("card_number"), "*Card number is required.");
+                    valid = false;
+                }
+                else {
+                    clearError(document.getElementById("card_number"));
+                    
+                }
+
+                if(holder_name.trim() === ""){
+                    errorDisplay(document.getElementById("holder_name"), "*Please fill your holder name.*");
+                    valid = false;
+                }
+                else if(!holder_name.match(letters)){
+                    errorDisplay(document.getElementById("holder_name"), "*Only letters and white space allowed.*");
+                    valid = false;
+                }
+                else{
+                    clearError(document.getElementById("holder_name"));
+                }
+
+                if(CVV.trim()==="" && document.getElementById("expiry_date").value.trim() ===""){
+                    errorDisplay1(document.getElementById("expiry_date"), "*Please fill expiry date and CVV.*");
+                    valid = false;
+                }
+                else if(CVV.trim()===""){
+                    errorDisplay1(document.getElementById("expiry_date"), "*Please fill CVV.*");
+                    valid = false;
+                }
+                else if(document.getElementById("expiry_date").value.trim() ===""){
+                    errorDisplay1(document.getElementById("expiry_date"), "*Please fill expiry date.*");
+                    valid = false;
+                }
+                else if(!limitExpiryDate(expiry_date)){
+                    errorDisplay1(document.getElementById("expiry_date"), "*Invalid expiry date. Use MM/YY format.");
+                    valid = false;
+                }
+                else{
+                    clearError1(document.getElementById("expiry_date"));
+                }
+
+                
+                if(redeem_points.trim()>maxPoints){
+                    errorDisplay1(document.getElementById("redeem_points"), "*Exceeded points.*");
+                }
+                else{
+                    clearError1(document.getElementById("redeem_points"));
+                }
+
+                if(selectlocation.value === ""){
+                    errorDisplay1(document.getElementById("selectlocation"), "*Please select a location.");
+                }
+                else{
+                    clearError1(document.getElementById("selectlocation"));
+                }
+
+                formatCardNumber(document.getElementById("card_number"));
+                limitLength(document.getElementById("CVV"), 3);
+
+                valid = true;
+
+            }
+
+            function formatCardNumber(input) {
+                // Remove all non-digit characters
+                let cardNumber = input.value.replace(/\D/g, '');
+
+                // Add a space every 4 digits
+                cardNumber = cardNumber.replace(/(.{4})/g, '$1 ').trim();
+
+                // Set the formatted value back to the input field
+                input.value = cardNumber;
+
+                // Limit to 19 characters (16 digits + 3 spaces)
+                if (input.value.length > 19) {
+                    input.value = input.value.slice(0, 19);
+                }
+            }
+            
+
+            function limitLength(input, maxLength) {
+                input.value = input.value.replace(/[^0-9\/]/g, '');
+                if (input.value.length > maxLength) {
+                    input.value = input.value.slice(0, maxLength);
+                }
+            }
+
+            function limitExpiryDate(input) {
+                const maxLength = 5;
+                
+                if (input.value.length > maxLength) {
+                    input.value = input.value.slice(0, maxLength);
+                }
+                // Remove any non-numeric characters except for '/'
+                input.value = input.value.replace(/[^0-9\/]/g, '');
+
+                // Auto-format MM/YY
+                if (input.value.length === 2 && !input.value.includes("/")) {
+                    input.value = input.value + "/";
+                }
+
+                const parts = input.value.split('/');
+                if (parts.length === 2) {
+                    valid = false;
+                    const month = parseInt(parts[0]);
+                    const year = parseInt(parts[1]);
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the current year
+                    if (isNaN(month) || isNaN(year) || month < 1 || month > 12 || year < currentYear || year > currentYear + 20) {
+                        
+                        valid = false;
+                    } else {
+                        valid = true;
+                    }
+                    return valid;
+                }
+
+            }
+
+            function errorDisplay(input, message) {
+                const errorElement = input.nextElementSibling;
+                errorElement.innerText = message;
+                errorElement.classList.remove('hidden');
+                input.classList.add('error-color');
+            }
+            function clearError(input) {
+                const errorElement = input.nextElementSibling;
+                errorElement.innerText = "";
+                errorElement.classList.add('hidden');
+                input.classList.remove('error-color');
+            }
+            function errorDisplay1(input, message) {
+                const errorElement = input.parentNode.nextElementSibling;
+                errorElement.innerText = message;
+                errorElement.classList.remove('hidden');
+                input.classList.add('error-color');
+            }
+
+            // Function to clear error message
+            function clearError1(input) {
+                const errorElement = input.parentNode.nextElementSibling;
+                errorElement.innerText = "";
+                errorElement.classList.add('hidden');
+                input.classList.remove('error-color');
+            }
+
+
+            document.addEventListener("DOMContentLoaded", function() {
+            const expandSpans = document.querySelectorAll('.expand');
+            expandSpans.forEach(span => {
+                span.addEventListener('click', function() {
+                    const itemBottom = this.closest('.item_container').querySelector('.item_bottom');
+                    itemBottom.classList.toggle('expand');
+
+                    // Toggle the expand/collapse icon
+                    const icon = this.querySelector('i');
+                    icon.classList.toggle('fa-angle-down');
+                    icon.classList.toggle('fa-angle-up');
+
+                    if (itemBottom.classList.contains('expand')) {
+                        const containerHeight = itemBottom.scrollHeight;
+                        itemBottom.style.maxHeight = containerHeight + 20 + 'px';
+                    } else {
+                        itemBottom.style.maxHeight = null; // Reset max-height when collapsing
+                    }
+                });
+            });
+        });
+
+       document.addEventListener("DOMContentLoaded", function() {
+            //other
+            const updateTotal = (input) => {
                     const parent = input.parentElement.parentElement;
                     const price = parseFloat(parent.querySelector(".price").textContent.replace('RM ', ''));
                     const quantity = parseInt(input.value);
                     const total = price * quantity;
                     parent.querySelector(".price_sum").value = "RM " + total.toFixed(2);
                 };
+
+                const updateSubtotal = () => {
+                    const priceSumElements = document.querySelectorAll('.price_sum');
+                    let subtotal = 0;
+                    priceSumElements.forEach(priceSumElement => {
+                        const priceSumText = priceSumElement.value.replace('RM ', '');
+                        subtotal += parseFloat(priceSumText);
+                    });
+                    const subtotalDiv = document.querySelector('.subtotal');
+                    subtotalDiv.textContent = "RM " + subtotal.toFixed(2);
+                };
+                
+                //point
+                const updatePoint = () => {
+                    const redeem_points = document.getElementById("redeem_points").value;
+                    let points_converted = document.querySelector('.points_converted');
+
+                    // Remove '-RM ' from the value
+                    const pointsValue = parseFloat(points_converted.textContent.replace('-RM ', ''));
+
+                    if(redeem_points >= 0 && redeem_points <= <?php echo $point; ?>) {
+                        // Calculate the new point value based on the redeem_points input
+                        const point = 0.10 * redeem_points;
+                        // Update the text content of points_converted element
+                        points_converted.textContent = "-RM " + point.toFixed(2);
+                    }
+                }
+
+                document.getElementById("redeem_points").addEventListener("input", updatePoint);
+
+                updatePoint();
 
                 const selects = document.querySelectorAll('.custom_select');
                 selects.forEach(select => {
@@ -420,17 +713,6 @@
                     select.dispatchEvent(new Event('change'));
                 });
 
-                const updateSubtotal = () => {
-                    const priceSumElements = document.querySelectorAll('.price_sum');
-                    let subtotal = 0;
-                    priceSumElements.forEach(priceSumElement => {
-                        const priceSumText = priceSumElement.value.replace('RM ', '');
-                        subtotal += parseFloat(priceSumText);
-                    });
-                    const subtotalDiv = document.querySelector('.subtotal');
-                    subtotalDiv.textContent = "RM " + subtotal.toFixed(2);
-                };
-                
 
                 const quantityInputs = document.querySelectorAll(".quantity_input");
 
@@ -474,32 +756,44 @@
                     updateTotal(input);
                     updateSubtotal();
                 });
-            });
 
+                const updateTotalPrice = () => {
+                    // Get the elements containing subtotal, points, discount, and total price
+                    let subtotal = parseFloat(document.querySelector('.subtotal').textContent.replace('RM ', ''));
+                    let points = parseFloat(document.querySelector('.points_converted').textContent.replace('-RM ', ''));
+                    let discount = parseFloat(document.querySelector('.discounted').textContent.replace('-RM ', ''));
+                    let totalPriceElement = document.querySelector('.price_total');
 
-            document.addEventListener("DOMContentLoaded", function() {
-            const expandSpans = document.querySelectorAll('.expand');
-            expandSpans.forEach(span => {
-                span.addEventListener('click', function() {
-                    const itemBottom = this.closest('.item_container').querySelector('.item_bottom');
-                    itemBottom.classList.toggle('expand');
+                    // Calculate the total price
+                    let totalPrice = subtotal - points - discount;
 
-                    // Toggle the expand/collapse icon
-                    const icon = this.querySelector('i');
-                    icon.classList.toggle('fa-angle-down');
-                    icon.classList.toggle('fa-angle-up');
+                    // Update the total price displayed on the page
+                    totalPriceElement.textContent = "RM " + totalPrice.toFixed(2);
+                };
 
-                    if (itemBottom.classList.contains('expand')) {
-                        const containerHeight = itemBottom.scrollHeight;
-                        itemBottom.style.maxHeight = containerHeight + 20 + 'px';
-                    } else {
-                        itemBottom.style.maxHeight = null; // Reset max-height when collapsing
-                    }
-                });
-            });
-        });
+                updateTotalPrice();
+                
+                // document.getElementById("redeem_points").addEventListener("input", updateTotalPrice);
+                // document.querySelector('.subtotal').addEventListener("DOMSubtreeModified", updateTotalPrice);
+                // document.querySelector('.discounted').addEventListener("DOMSubtreeModified", updateTotalPrice);
+                // document.querySelector('.points_converted').addEventListener("DOMSubtreeModified", updateTotalPrice);
+                
+                //another way to update the total except DOMSubtreeModified
+                const observer = new MutationObserver(updateTotalPrice);
 
-       document.addEventListener("DOMContentLoaded", function() {
+                // Define the options for the observer
+                const observerOptions = {
+                    subtree: true, // Observe changes to descendant elements
+                    characterData: true, // Observe changes to the text content of the elements
+                    childList: true // Observe changes to the child nodes of the elements
+                };
+
+                // Observe changes to the subtotal, points, and voucher discount elements
+                observer.observe(document.querySelector('.subtotal'), observerOptions);
+                observer.observe(document.querySelector('.discounted'), observerOptions);
+                observer.observe(document.querySelector('.points_converted'), observerOptions);
+                
+                //next
             const trashButtons = document.querySelectorAll('.item_container .remove_item');
 
             trashButtons.forEach(trashButton => {
@@ -529,6 +823,7 @@
 
                             // After removing an item container, update the count
                             updateCartItemCount();
+                            updateSubtotal();
                         } else {
                             console.error('No value found for row_ID input.');
                         }
@@ -569,39 +864,39 @@
                 form.submit();
             });
 
-            function toggleActive(element) {
-                // Remove active class from all divs inside payment_method
-                var paymentMethods = document.querySelectorAll('.payment_method div');
-                paymentMethods.forEach(function(item) {
-                    item.classList.remove('active');
-                });
+            // function toggleActive(element) {
+            //     // Remove active class from all divs inside payment_method
+            //     var paymentMethods = document.querySelectorAll('.payment_method div');
+            //     paymentMethods.forEach(function(item) {
+            //         item.classList.remove('active');
+            //     });
 
-                // Add active class to the clicked div
-                element.classList.add('active');
+            //     // Add active class to the clicked div
+            //     element.classList.add('active');
 
-                // Remove active class from all payment_details containers
-                var paymentDetails = document.querySelectorAll('.payment_details');
-                paymentDetails.forEach(function(item) {
-                    item.classList.remove('active');
-                });
+            //     // Remove active class from all payment_details containers
+            //     var paymentDetails = document.querySelectorAll('.payment_details');
+            //     paymentDetails.forEach(function(item) {
+            //         item.classList.remove('active');
+            //     });
 
-                // Get the corresponding payment details container and add active class
-                var paymentMethod = element.classList.contains('credit_card') ? 'credit_card' : 'paypal';
-                var correspondingPaymentDetails = document.querySelector('.payment_details.' + paymentMethod);
-                correspondingPaymentDetails.classList.add('active');
+            //     // Get the corresponding payment details container and add active class
+            //     var paymentMethod = element.classList.contains('credit_card') ? 'credit_card' : 'paypal';
+            //     var correspondingPaymentDetails = document.querySelector('.payment_details.' + paymentMethod);
+            //     correspondingPaymentDetails.classList.add('active');
 
-                // Remove 'required' attribute from all inputs
-                var allInputs = document.querySelectorAll('.payment_details input');
-                allInputs.forEach(function(input) {
-                    input.removeAttribute('required');
-                });
+            //     // Remove 'required' attribute from all inputs
+            //     var allInputs = document.querySelectorAll('.payment_details input');
+            //     allInputs.forEach(function(input) {
+            //         input.removeAttribute('required');
+            //     });
 
-                // Add 'required' attribute to inputs in the active payment details container
-                var activeInputs = correspondingPaymentDetails.querySelectorAll('input');
-                activeInputs.forEach(function(input) {
-                    input.setAttribute('required', true);
-                });
-            }
+            //     // Add 'required' attribute to inputs in the active payment details container
+            //     var activeInputs = correspondingPaymentDetails.querySelectorAll('input');
+            //     activeInputs.forEach(function(input) {
+            //         input.setAttribute('required', true);
+            //     });
+            // }
 
             function toggleInputVisibility(selectElement) {
                 var inputField = document.querySelector('.location_edit .new_location');
@@ -813,46 +1108,60 @@
                                                     </div>
                                                     <hr>
                                                     <div class="payment_method">
-                                                        <div class=" credit_card active" onclick="toggleActive(this)"><i class="fas fa-credit-card"></i>Credit Card</div>
-                                                        <div class=" paypal" onclick="toggleActive(this)"><i class="fab fa-paypal"></i>Paypal</div>
+                                                        <div class=" credit_card active"><i class="fas fa-credit-card"></i>Credit / Debit Card</div>
                                                     </div>
                                                     <div class="payment_details credit_card active">
                                                         <span>Card Holder</span>
                                                         <input type="text" name="holder_name" id="holder_name" placeholder="Name Surname" onkeypress="return event.keyCode != 13;" required>
+                                                        <div class="address-error" style="justify-content: left;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                         <span>Card Number</span>
-                                                        <input type="text" name="card_number" id="card_number" placeholder="1111 1111 1111 1111" onkeypress="return event.keyCode != 13;" required>
+                                                        <input type="text" name="card_number" id="card_number" placeholder="1111 1111 1111 1111" maxlength="19" oninput="formatCardNumber(this)" onkeypress="return event.keyCode != 13;" required>
+                                                        <div class="address-error" style="justify-content: left;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                         <div>
                                                             <span>Expiry Date</span><span>CVV</span>
                                                         </div>
                                                         <div>
-                                                            <input type="text" name="expiry_date" id="expiry_date" placeholder="MM/YY" onkeypress="return event.keyCode != 13;" required>
-                                                            <input type="text" name="CVV" id="CVV" placeholder="123" onkeypress="return event.keyCode != 13;" required>
+                                                            <input type="text" name="expiry_date" id="expiry_date" placeholder="MM/YY" maxlength="5" oninput="limitExpiryDate(this)" onkeypress="return event.keyCode != 13;" required>
+                                                            <input type="text" name="CVV" id="CVV" placeholder="123" maxlength="3" oninput="limitLength(this, 3)" onkeypress="return event.keyCode != 13;" required>
                                                         </div>
+                                                        <div class="address-error" style="justify-content: left;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                     </div>
-                                                    <div class="payment_details paypal">
-                                                        <span>Email</span>
-                                                        <input type="text" name="paypal_email" id="paypal_email" placeholder="Email" onkeypress="return event.keyCode != 13;">
-                                                        <span>Password</span>
-                                                        <input type="text" name="paypal_password" id="paypal_password" placeholder="Password" onkeypress="return event.keyCode != 13;">
-                                                    </div>
+                                                    
                                                     <hr>
                                                     <div class="payment_location">
                                                         <div class="location_select">
                                                             <i class="fas fa-map-marker-alt"></i>
-                                                            <select onchange="toggleInputVisibility(this)" required>
+                                                            <select id="selectlocation" onchange="toggleInputVisibility(this)" required>
                                                                 <option value="" selected disabled>Select delivery address...</option>';
                                                                     $addresses_str = trim($row_payment['cust_address'], "{}");
-                                                                    $addresses_array = explode("},{", $addresses_str);
+                                                                    $addresses = explode("},{", $addresses_str);
+                                                                    $addresses = array_filter($addresses, 'strlen');
+                                                                    $numAddresses = count($addresses);
 
-                                                                    foreach ($addresses_array as $address) {
-                                                                        echo "<option>". $address . "</option>";
+                                                                    for($i = 0; $i < $numAddresses; $i++){
+                                                                        // Get the address components for the current iteration
+                                                                        $address = trim($addresses[$i], "{}");
+                                                                        $address_components = explode(",", $address);
+                                                
+                                                                        // Assign the extracted address components to variables
+                                                                        $address_label = trim($address_components[0], "()");
+                                                                        $address_no = trim($address_components[1], "()");
+                                                                        $address_building = trim($address_components[2], "()");
+                                                                        $address_street = trim($address_components[3], "()");
+                                                                        $address_postcode = trim($address_components[4], "()");
+                                                                        $address_state = trim($address_components[5], "()");
+                                        
+                                                                        $addressall = $address_label." ~ ".$address_no.", ".$address_building.", ".$address_street.", ".$address_postcode.", ".$address_state.", Malaysia";
+                                                                        echo "<option value = ".$i.">". $addressall . "</option>";
+                                                                        
                                                                     }
                                                                 echo '<option value="different">Choose a different address...</option>
                                                             </select>
                                                         </div>
+                                                        <div class="address-error" style="margin-top:3px;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                         <div class="location_edit">
                                                             <i class="fas fa-pencil"></i>
-                                                            <input type="text" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
+                                                            <input type="text" id="newlocation" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -870,9 +1179,10 @@
                                                             <div>
                                                                 <i class="fas fa-usd-circle"></i><span>Redeem Points</span>
                                                             </div>
-                                                            <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" step="0.10" value="0.00" onkeypress="return event.keyCode != 13;">
+                                                            <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" value="0" onkeypress="return event.keyCode != 13;">
                                                         </div>
-                                                        <div class="description">Conversion rate is RM 1.00 per every 25 points. You currently have '.$row_payment['cust_points'].' points.</div>
+                                                        <div class="address-error" style="margin-top:3px;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
+                                                        <div class="description">Conversion rate is RM 0.10 per every 1 point. You currently have '.$row_payment['cust_points'].' points.</div>
                                                     </div>
                                                 </div> 
                                                 <div class="order_summary_container">
@@ -886,20 +1196,21 @@
                                                     <div class="order_summary_details">
                                                         <div class="d-flex justify-content-between">
                                                             <span>Subtotal</span>
-                                                            <div class="subtotal">RM 0.00</div>
+                                                            <div id="sub" class="subtotal">RM 0.00</div>
                                                         </div>
                                                         <div class="d-flex justify-content-between">
                                                             <span>Discount</span>
-                                                            <div class="discounted">-RM 2.00</div>
+                                                            <div id="vou" class="discounted">-RM 0.00</div>
                                                         </div>
                                                         <div class="d-flex justify-content-between">
                                                             <span>Points</span>
-                                                            <div class="points_converted">-RM 4.00</div>
+                                                            <div id="pts" class="points_converted">-RM 0.00</div>
                                                         </div>
+                                                        <div class="description" style="margin-top: 5px;font-size: 14px;line-height: 1.1;color: #244f53;">After payment, you can earn </div>
                                                         <hr>
                                                         <div class="d-flex justify-content-between align-items-end">
                                                             <span class="grand_total">Grand Total</span>
-                                                            <div class="price_total">RM 64.00</div>
+                                                            <div class="price_total">RM 0.00</div>
                                                         </div>
                                                     </div>
                                                 </div>
