@@ -26,6 +26,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
         }
 
         .header {
@@ -50,12 +51,15 @@
             background-color: white;
             border-radius: 20px;
             position: relative;
+            overflow: hidden; /* Ensures the image doesn't overflow the container */
         }
 
         .post img {
             width: 100%;
             height: auto;
             border-radius: 20px 20px 0 0;
+            object-fit: cover; /* Ensures the image covers the entire container */
+            max-height: 200px; /* Set maximum height */
         }
 
         .post h2 {
@@ -66,121 +70,26 @@
             margin-top: 5px;
         }
 
-        .post button {
-            padding: 10px 20px;
-            background-color: #36676A;
-            border: none;
-            cursor: pointer;
-            color: white;
-            border-radius: 5px;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-            margin-top: 10px;
-        }
-
-        .post button:hover {
-            background-color: #E2857B;
-        }
-
-
-        .breadcrumbs {
-            margin-bottom: 20px;
-        }
-
-        .page_title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .big_container {
-            margin-bottom: 20px;
-        }
-
-        .container_header {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .container_header i {
-            margin-right: 10px;
-        }
-
-        .navigation_container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .no_results_page {
-            font-size: 14px;
-        }
-
-        .select1,
-        .select2 {
-            width: 200px;
-            margin-bottom: 10px;
-        }
-
-        .input2 {
-            width: 200px;
-            margin-bottom: 10px;
-        }
-
-        .button_1,
-        .button_2 {
-            padding: 10px 20px;
-            background-color: #007bff;
-            border: none;
-            cursor: pointer;
-            color: white;
-            margin-right: 10px;
-        }
-
-        .icon_button1,
-        .icon_button2 {
-            padding: 5px;
-            background-color: #007bff;
-            border: none;
-            cursor: pointer;
-            color: white;
-            margin-right: 10px;
-            border-radius: 50%;
-            font-size: 16px;
-            /* Adjusted font size for the pen icon */
-        }
-
-        .admin_page {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-        }
-
-        /* New Style for Blog Type Button */
         .blog_type_button {
-            padding: 10px 20px;
+            font-weight: 800;
+            padding: 4px 15px;
             /* Increased padding for better button appearance */
-            background-color: #36676A;
+            background-color: #E2857B;
             /* Green color */
             border: none;
             cursor: pointer;
             color: white;
             margin-top: 10px;
             border-radius: 5px;
-            width: 100%;
+            width: 100px;
             /* Make the button fill the width of its container */
             text-align: center;
             /* Center-align the text */
             box-sizing: border-box;
             /* Include padding and border in button's total width */
             position: absolute;
-            bottom: 0;
-            left: 0;
+            top: 20px;
+            right: 20px;
         }
 
         .blog_type_button:hover {
@@ -225,7 +134,8 @@
                 echo "0 results";
             }
             ?>
-
+        </div>
+    </div>
 </body>
 
 </html>

@@ -16,41 +16,45 @@ if ($data === false) {
 $error_message = ""; // Initialize error message variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    if (isset($_POST["admin_username"]) && isset($_POST["admin_pass"])) {
+        $username = $_POST["admin_username"];
+        $password = $_POST["admin_pass"];
 
-    // Using prepared statements to prevent SQL injection
-    $sql = "SELECT * FROM adminlogin WHERE username=? AND password=?";
-    $stmt = mysqli_prepare($data, $sql);
+        // Using prepared statements to prevent SQL injection
+        $sql = "SELECT * FROM adminlogin WHERE username=? AND password=?";
+        $stmt = mysqli_prepare($data, $sql);
 
-    // Bind parameters to the prepared statement
-    mysqli_stmt_bind_param($stmt, "ss", $username, $password);
+        // Bind parameters to the prepared statement
+        mysqli_stmt_bind_param($stmt, "ss", $username, $password);
 
-    // Execute the prepared statement
-    mysqli_stmt_execute($stmt);
+        // Execute the prepared statement
+        mysqli_stmt_execute($stmt);
 
-    // Get result set
-    $result = mysqli_stmt_get_result($stmt);
+        // Get result set
+        $result = mysqli_stmt_get_result($stmt);
 
-    // Check if any rows were returned
-    if (mysqli_num_rows($result) > 0) {
-        // Fetch the row
-        $row = mysqli_fetch_assoc($result);
-        
-        // Check for admin type
-        if ($row["admintype"] == "superadmin") {
-            $_SESSION["username"] = $username;
-            header("location:dashboard.php");
-            exit(); // Terminate script execution after redirection
-        } elseif ($row["admintype"] == "admin") {
-            $_SESSION["username"] = $username;
-            header("location:dashboard.php");
-            exit(); // Terminate script execution after redirection
+        // Check if any rows were returned
+        if (mysqli_num_rows($result) > 0) {
+            // Fetch the row
+            $row = mysqli_fetch_assoc($result);
+
+            // Check for admin type
+            if ($row["admintype"] == "superadmin") {
+                $_SESSION["username"] = $username;
+                header("location:dashboard.php");
+                exit(); // Terminate script execution after redirection
+            } elseif ($row["admintype"] == "admin") {
+                $_SESSION["username"] = $username;
+                header("location:dashboard.php");
+                exit(); // Terminate script execution after redirection
+            } else {
+                $error_message = "Invalid admin level";
+            }
         } else {
-            $error_message = "Invalid admin type";
+            $error_message = "Username or password incorrect";
         }
     } else {
-        $error_message = "Username or password incorrect";
+        $error_message = "Please enter both username and password";
     }
 }
 
@@ -59,12 +63,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="adminlogin/css/logo_icon.png"/>
+    <link rel="icon" type="image/png" href="adminlogin/css/logo_icon.png" />
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="adminlogin/vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
@@ -86,78 +90,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" type="text/css" href="adminlogin/css/main.css">
     <!--===============================================================================================-->
 </head>
+
 <body>
 
-<div class="limiter">
-    <div class="container-login100">
-        <div class="wrap-login100">
-            <form class="login100-form validate-form" method="POST" action="">
-                <span class="login100-form-title p-b-26">
-                    <img src="adminlogin/css/logo_1.png" alt="" style="width: 150px; height: auto;">
-                </span>
-                <span class="login100-form-title p-b-48">
-					Admin Login
-                </span>
-
-                <div class="wrap-input100 validate-input">
-                    <input class="input100" type="text" name="username">
-                    <span class="focus-input100" data-placeholder="username"></span>
-                </div>
-
-                <div class="wrap-input100 validate-input" data-validate="Enter password">
-                    <span class="btn-show-pass">
-                        <i class="zmdi zmdi-eye"></i>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <form class="login100-form validate-form" method="POST" action="">
+                    <span class="login100-form-title p-b-26">
+                        <img src="adminlogin/css/logo_1.png" alt="" style="width: 150px; height: auto;">
                     </span>
-                    <input class="input100" type="password" name="password" required oninput="hideError('password_error')">
-                    <span class="focus-input100" data-placeholder="Password"></span>
-                    <?php if(isset($password_error) && empty($_POST["login"])) { echo "<div id='password_error' class='alert alert-danger'>$password_error</div>"; } ?>
-                </div>
+                    <span class="login100-form-title p-b-48">
+                        Admin Login
+                    </span>
 
-                <div class="container-login100-form-btn">
-                    <div class="wrap-login100-form-btn">
-                        <div class="login100-form-bgbtn"></div>
-                        <button class="login100-form-btn" name="login">
-							Login
-                        </button>
+                    <div class="wrap-input100 validate-input">
+                        <input class="input100" type="text" name="admin_username" required>
+                        <span class="focus-input100" data-placeholder="username"></span>
                     </div>
-                </div>
-                <?php
+
+                    <div class="wrap-input100 validate-input" data-validate="Enter password">
+                        <span class="btn-show-pass">
+                            <i class="zmdi zmdi-eye"></i>
+                        </span>
+                        <input class="input100" type="password" name="admin_pass" required oninput="hideError('password_error')">
+                        <span class="focus-input100" data-placeholder="Password"></span>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <div class="wrap-login100-form-btn">
+                            <div class="login100-form-bgbtn"></div>
+                            <button class="login100-form-btn" name="login">
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                    <?php
                     if (!empty($error_message)) {
                         echo "<div class='alert alert-danger'>$error_message</div>";
                     }
-                ?>
-            </form>
+                    ?>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="dropDownSelect1"></div>
+    <div id="dropDownSelect1"></div>
 
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/bootstrap/js/popper.js"></script>
-<script src="adminlogin/vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/daterangepicker/moment.min.js"></script>
-<script src="adminlogin/vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/vendor/countdowntime/countdowntime.js"></script>
-<!--===============================================================================================-->
-<script src="adminlogin/js/main.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/bootstrap/js/popper.js"></script>
+    <script src="adminlogin/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/daterangepicker/moment.min.js"></script>
+    <script src="adminlogin/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="adminlogin/js/main.js"></script>
 
-<script>
-    function hideError(errorId) {
-        var errorElement = document.getElementById(errorId);
-        if (errorElement) {
-            errorElement.style.display = "none";
+    <script>
+        function hideError(errorId) {
+            var errorElement = document.getElementById(errorId);
+            if (errorElement) {
+                errorElement.style.display = "none";
+            }
         }
-    }
-</script>
+    </script>
 
 </body>
+
 </html>
