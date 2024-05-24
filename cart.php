@@ -205,7 +205,6 @@
                     else{
                         $item_options_selected = "";
                     }
-                    
 
                     $additional_price_values = [];
                     $option_names = [];
@@ -295,11 +294,12 @@
                         $string = '';
                         $_SESSION['submitOrderEmpty_error'] = true;
                         header("Location: cart.php");
-                            exit();
+                        exit();
                     }
 
                     //create order id
                     function generate_order_id($conn) {
+                        date_default_timezone_set('Asia/Kuala_Lumpur');
                         // Get the current timestamp and format it as Ymd
                         $timestamp = date('Ymd');
                     
@@ -312,10 +312,10 @@
                             $row = $result->fetch_assoc();
                             $lastOrderID = $row['order_ID'];
                     
-                            if ($lastOrderId) {
+                            if ($lastOrderID) {
                                 // Separate the date part and the increment part from the last order ID
-                                $lastDate = substr($lastOrderId, 0, 8); // Extract the first 8 characters as the date part
-                                $lastIncrement = intval(substr($lastOrderId, 8)); // Extract the remaining characters as the increment part
+                                $lastDate = substr($lastOrderID, 0, 8); // Extract the first 8 characters as the date part
+                                $lastIncrement = intval(substr($lastOrderID, 8)); // Extract the remaining characters as the increment part
                                 
                                 // Get the current date in Ymd format
                                 $currentDate = date('Ymd');
@@ -362,6 +362,11 @@
                             header("Location: cart.php");
                             exit();
                         }
+                    }
+                    else{
+                        $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        header("Location: cart.php");
+                        exit();
                     }
                 }
             }
@@ -461,13 +466,13 @@
                         validateForm1();
                     });
                 });
-                document.getElementById("submit_order").addEventListener("click", function (event) {
-                    // Validate form fields
-                    if (!validateForm1()) {
-                        // Prevent form submission if validation fails
-                        event.preventDefault();
-                    }
-                });
+                // document.getElementById("submit_order").addEventListener("click", function (event) {
+                //     // Validate form fields
+                //     if (!validateForm1()) {
+                //         // Prevent form submission if validation fails
+                //         event.preventDefault();
+                //     }
+                // });
                 
             });
 
@@ -763,12 +768,24 @@
                     let points = parseFloat(document.querySelector('.points_converted').textContent.replace('-RM ', ''));
                     let discount = parseFloat(document.querySelector('.discounted').textContent.replace('-RM ', ''));
                     let totalPriceElement = document.querySelector('.price_total');
+                    let earn_point = document.getElementById('earn_point');
 
                     // Calculate the total price
                     let totalPrice = subtotal - points - discount;
 
                     // Update the total price displayed on the page
                     totalPriceElement.textContent = "RM " + totalPrice.toFixed(2);
+
+                    if (totalPrice > 20 && totalPrice < 50) {
+                        earn_point.innerHTML = "5"; // Set the integer value
+                    } else if(totalPrice >= 50 && totalPrice < 80){
+                        earn_point.innerHTML = "10"; 
+                    }else if(totalPrice > 80){
+                        earn_point.innerHTML = "50"; 
+                    }else{
+                        earn_point.innerHTML = "0";
+                    }
+                    
                 };
 
                 updateTotalPrice();
@@ -1040,10 +1057,10 @@
                                                                         </div>
                                                                         <div class="number">
                                                                             <span class="minus">-</span>
-                                                                            <input type="text" value="'.$item_qty.'" name="quantity_input[]" id="quantity_input" class="quantity_input"/>
+                                                                            <input type="text" value="'.$item_qty.'" name="quantity_input[]" class="quantity_input"/>
                                                                             <span class="plus">+</span>
                                                                         </div>
-                                                                        <input id="price_sum col-2" class="price_sum" name="price_sum[]" value="">
+                                                                        <input class="price_sum" name="price_sum[]" value="">
                                                                         <div class="icons col-1">
                                                                             <div class="remove_item"><i class="far fa-times"></i></div>
                                                                         </div>
@@ -1078,7 +1095,7 @@
                                                                             }echo '</select></div>';
                                                                         }
                                                                     }
-                                                                        echo '<div class="customization"><span class="custom_title">Extra Requests</span><textarea name="item_request[]" id="item_request">'.$item_request.'</textarea></div>
+                                                                        echo '<div class="customization"><span class="custom_title">Extra Requests</span><textarea name="item_request[]">'.$item_request.'</textarea></div>
                                                                         </div>';
                                                                     echo ' 
                                                                 </div>';
@@ -1206,7 +1223,7 @@
                                                             <span>Points</span>
                                                             <div id="pts" class="points_converted">-RM 0.00</div>
                                                         </div>
-                                                        <div class="description" style="margin-top: 5px;font-size: 14px;line-height: 1.1;color: #244f53;">After payment, you can earn </div>
+                                                        <div class="description" style="margin-top: 5px;font-size: 14px;line-height: 1.1;color: #244f53;">After payment, you can earn <span id="earn_point" style="font-size: 14px;line-height: 1.1;color: #244f53;"></span> point(s).</div>
                                                         <hr>
                                                         <div class="d-flex justify-content-between align-items-end">
                                                             <span class="grand_total">Grand Total</span>

@@ -137,6 +137,10 @@
             include 'navbar.php';
         ?>
         <style>
+            .search_container{
+                display: flex !important;
+                align-items: flex-end !important;
+            }
             table tr .t_no{
                 display:none;
             }
@@ -175,6 +179,11 @@
                 }
                 table tbody tr .t_date{
                     font-size: 14px;
+                }
+            }
+            @media (max-width: 768px) {
+                .admin_page .trash-form {
+                    display: block;
                 }
             }
             @media (max-width: 480px) {

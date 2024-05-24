@@ -13,7 +13,103 @@
         <script src="../gototop.js"></script>
     </head>
     <body>
+    <?php
+            session_start();
+            include '../connect.php';
+            include '../gototopbtn.php';
+
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $order_IDs = $_POST['order_ID'];
+                $trashes = $_POST['trash_item'];
+
+                if(isset($_POST['submit_trash_items'])){
+                    $FailedUpdate = 0;
+
+                    for($i=0;$i<count($order_IDs);$i++){
+                        $order_ID = $order_IDs[$i];
+                        $trash = $trashes[$i];
+
+                        $trash_sql = "UPDATE customer_orders SET trash = {$trash} WHERE order_ID = $order_ID AND trash = 0";
+                        
+                        if ($conn->query($trash_sql) !== TRUE) {
+                            $FailedUpdate = 1;
+                            break;
+                        }
+                    }
+                    if ($FailedUpdate == 0) {
+                        $_SESSION['deleteorder_success'] = true;
+                        // echo '<script>';
+                        // echo 'window.location.href = "orders-all.php";';
+                        // echo '</script>';
+                        header("Location: orders-all.php");
+                        exit();
+                    }
+                    else{
+                        $_SESSION['deleteorder_error'] = true;
+                        header("Location: orders-all.php");
+                        exit();
+                    }
+                }
+            }
+            if (isset($_SESSION['delmsg_success'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast true fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Successfully deleted the message!
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['delmsg_success']);
+            }
+
+            if (isset($_SESSION['delmsg_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delete message. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['delmsg_error']);
+            }
+            if (isset($_SESSION['deleteorder_success'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast true fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Successfully deleted selected order(s)!
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['deleteorder_success']);
+            }
+
+            if (isset($_SESSION['deleteorder_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to delete order(s). Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['deleteorder_error']);
+            }
+
+
+            include 'navbar.php';
+        ?>
     <style>
+            .search_container{
+                display: flex !important;
+                align-items: flex-end !important;
+            }
             table tr .t_no{
                 display:none;
             }
@@ -32,6 +128,17 @@
             }
             table tr .t_item{
                 width: 15%;
+                font-size:16px;
+            }
+            table tr .t_item ul{
+                list-style: none;
+                padding: 0;
+                margin:5px 0px 5px 0px;
+            }
+            table tr .t_item ul li span{
+                font-weight:400;
+                color: #8a8a8a;
+                padding-left:22px;
             }
             table tr .t_status{
                 width: 8%;
@@ -79,12 +186,36 @@
                 display: ruby-text;
                 margin: 3px;
             }
+            .otheritem{
+                color: #5a9498;
+                font-size: 13px;
+                margin: 0 5px 0px 3px;
+                font-weight:500;
+            }
+            .otheritem:hover{
+                transform:scale(1.035);
+                transition: 0.15s;
+                color:#000;
+            }
             .t_status p{
                 margin:unset;
             }
             .t_status i{
                 margin-right:5px;
                 font-size: 14px;
+            }
+            .t_status span{
+                font-size:14px
+            }
+            @media (max-width: 768px) {
+                .admin_page .trash-form {
+                    display: block;
+                }
+            }
+            @media (max-width: 480px) {
+                table tr .t_name{
+                    display:none;
+                }
             }
             @media (max-width: 575px) {
                 table tr .t_id{
@@ -93,9 +224,7 @@
                 table tbody tr .t_date{
                     font-size: 14px;
                 }
-                table tr .t_item{
-                    display:none;
-                }
+                
                 .t_status p{
                     display:none;
                 }
@@ -107,242 +236,25 @@
                     font-size:14px;
                 }
             }
-            @media (max-width: 480px) {
-                
-
-            }
-            
-        </style>
-    <?php
-            include '../connect.php';
-            include '../gototopbtn.php';
-
-            session_start();
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                $CF_IDs = $_POST['CF_ID'];
-                $trashes = $_POST['trash_item'];
-
-                if(isset($_POST['submit_trash_items'])){
-                    $FailedUpdate = 0;
-
-                    for($i=0;$i<count($CF_IDs);$i++){
-                        $CF_ID = $CF_IDs[$i];
-                        $trash = $trashes[$i];
-
-                        $trash_sql = "UPDATE contact_message SET trash = {$trash} WHERE CF_ID = $CF_ID AND trash = 0";
-                        
-                        if ($conn->query($trash_sql) !== TRUE) {
-                            $FailedUpdate = 1;
-                            break;
-                        }
-                    }
-                    if ($FailedUpdate == 0) {
-                        $_SESSION['deletemessage_success'] = true;
-                        header("Location: messages-all.php");
-                        exit();
-                    }
-                    else{
-                        $_SESSION['deletemessage_error'] = true;
-                        header("Location: messages-all.php");
-                        exit();
-                    }
+            @media (max-width: 800px) {
+                table tr .t_item ul li span{
+                    padding-left:3px;
+                }
+                table tr .t_item{
+                    display:none;
                 }
             }
-            if (isset($_SESSION['delmsg_success'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast true fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Successfully deleted the message!
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
+            @media (max-width: 1040px){
+                
+                .admin_page .t_action .fa-trash {
+                    margin-left: unset;
+                }
 
-                unset($_SESSION['delmsg_success']);
-            }
-
-            if (isset($_SESSION['delmsg_error'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast false fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete message. Please try again...
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
-
-                unset($_SESSION['delmsg_error']);
-            }
-            if (isset($_SESSION['deletemessage_success'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast true fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Successfully deleted selected message(s)!
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
-
-                unset($_SESSION['deletemessage_success']);
-            }
-
-            if (isset($_SESSION['deletemessage_error'])) {
-                echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast false fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete message(s). Please try again...
-                                </div>
-                                <div class="timer"></div>
-                            </div>
-                        </div>';
-
-                unset($_SESSION['deletemessage_error']);
-            }
-
-
-            include 'navbar.php';
-        ?>
-        
-        <div class="container-fluid">
-            <div class="col-12 m-auto">
-                <div class="admin_page">
-                     <div class="breadcrumbs">
-                        <a>Admin</a> > <a>Orders</a> > <a class="active">Order List</a>
-                    </div>
-                    <div class="page_title">All Orders</div>
-                    <div class="filter_selectors">
-                        <div class="menu">
-                            <div class="filter_header">
-                                <div class="d-flex flex-row align-items-baseline">
-                                    <i class="fas fa-sliders-h"></i><span>Filters</span>
-                                </div>
-                                <div class="clear">
-                                    <div>Clear all</div>
-                                </div>
-                            </div>
-                            <hr class="mt-1">
-                        </div>
-                        <div>
-                            <div class="filter_type">
-                                <label for="dateFilter">Sort by Date</label>
-                                <select id="dateFilter">
-                                    <option value="1">Oldest</option>
-                                    <option value="2">Latest</option>
-                                </select>
-                            </div>
-                            <div class="filter_type">
-                                <label for="statusFilter">Filter by Order Status</label>
-                                <select id="statusFilter">
-                                    <option value="all">All</option>
-                                    <option value="0">Queueing</option>
-                                    <option value="1">Preparing</option>
-                                    <option value="2">Delivering</option>
-                                    <option value="3">Received</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="search_container">
-                        <div class="item_search">
-                            <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search order ID...">
-                            <select id="perPage">
-                                <option value="5">5</option>
-                                <option value="10" selected>10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
-                            <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
-                        </div>
-                        <form method='post' name='trash_form' class='trash-form' id='trash_form'>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction('delete the selected order(s)')">
-                        </div>
-                    </div>
-                            <div class="table-responsive">
-                                <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th class="t_no">No.</th>
-                                            <th class="t_id">ID</th>
-                                            <th class="t_name">User</th>
-                                            <th class="t_item">Items</th>
-                                            <th class="t_date">Date</th>
-                                            <th class="t_status">Status</th>
-                                            <th class="t_action act1">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody border="transparent">
-                                        <?php
-                                            $no_count = 0;
-
-                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0";
-
-                                            $result = $conn->query($cf_query);
-                                            if($result && $result->num_rows > 0){
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $no_count++;
-                                                    $date = date('Y-m-d H:i:s', strtotime($row['order_date']));
-                                                    if($row['tracking_stage']==3){
-                                                        echo "<tr class='unavailable'"; 
-                                                    }
-                                                    echo "<tr";
-                                                    echo"><td class='t_no'>".$no_count."</td>";
-                                                    $order_id = "K_".$row['order_ID'];
-                                                    echo "<td class='t_id'>".$order_id."</td>";
-                                                    $cust_query = "SELECT cust_username FROM customer WHERE trash = 0 AND cust_ID = ".$row['cust_ID'];
-                                                    $query_result = $conn->query($cust_query);
-                                                    $query_row = $query_result->fetch_assoc();
-                                                    if($query_row && !empty($query_row['cust_username'])){
-                                                        $username = $query_row['cust_username'];
-                                                    }
-                                                    else{
-                                                        $username = "User is disabled.";
-                                                    }
-                                                    echo "<td class='t_name'>".$username."</td>";
-                                                    echo "<td class='t_item'>...</td>";
-                                                    echo "<td class='t_date'>".$date."</td>";
-                                                    if($row['tracking_stage']==0){
-                                                        echo "<td class='t_status'><span class='sta-queue'><i class='fas fa-boxes'></i><p>Queueing</p></span></td>";
-                                                    }
-                                                    else if($row['tracking_stage']==1){
-                                                        echo "<td class='t_status'><span class='sta-prepare'><i class='fas fa-box-open'></i><p>Preparing</p></span></td>";
-                                                    }
-                                                    else if($row['tracking_stage']==2){
-                                                        echo "<td class='t_status'><span class='sta-deliver'><i class='fas fa-truck-loading'></i><p>Delivering</p></span></td>";
-                                                    }
-                                                    else{
-                                                        echo "<td class='t_status'><span class='sta-receive'><i class='fas fa-check-square'></i><p>Received</p></span></td>";
-                                                    }
-                                                    echo '<td class="t_action act1"><div><a class="trash-icon"><i class="fas fa-trash"></i></a><a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
-                                                    echo "</i></a>
-                                                        <input type='hidden' name='order_ID[]' value='".$row['order_ID']."'>
-                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
-                                                        </div>";
-                                                     echo "</tr>";
-                                                }
-                                            }
-                                            else {
-                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No messages found...</td></tr>";
-                                            }
-                                        $conn->close();
-                                        ?>
-                                        
-                                        </form>
-                                    </tbody> 
-                                </table>
-                        <div class="navigation_container">
-                            <div id="pagination"></div>
-                            <div class="no_results_page">
-                                <span>Showing to of results</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             </div>
-         </div>
-         <script>
+            } 
+            
+        </style>
+    
+        <script>
             function confirmAction(message) {
                 return confirm("Are you sure you want to " + message + "?");
             }
@@ -426,7 +338,7 @@
                     // Filter items based on search term
                     if (searchTerm) {
                         filteredContainers = filteredContainers.filter(container => {
-                            const itemName = container.querySelector('.t_name').textContent.toLowerCase();
+                            const itemName = container.querySelector('.t_id').textContent.toLowerCase();
                             return itemName.includes(searchTerm.toLowerCase());
                         });
                     }
@@ -435,12 +347,18 @@
                     // Filter status
                     if (selectedstatusFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const status = container.querySelector('.t_status').textContent.trim();
+                            const status = container.querySelector('.t_status i');
                             if (selectedstatusFilter === '0') {
-                                return status === "0";
+                                return status.classList.contains('fa-boxes');
                             } else if (selectedstatusFilter === '1') {
-                                return status === "1";
+                                return status.classList.contains('fa-box-full');
+                            }else if (selectedstatusFilter === '2') {
+                                return status.classList.contains('fa-truck-loading');
+                            }else if (selectedstatusFilter === '3') {
+                                return status.classList.contains('fa-box-check');
                             }
+
+                            
                         });
                     }
 
@@ -509,12 +427,18 @@
 
                     if (selectedstatusFilter !== 'all') {
                         filteredContainers = filteredContainers.filter(container => {
-                            const status = container.querySelector('.t_status').textContent.trim();
+                            const status = container.querySelector('.t_status i');
                             if (selectedstatusFilter === '0') {
-                                return status === "0";
+                                return status.classList.contains('fa-boxes');
                             } else if (selectedstatusFilter === '1') {
-                                return status === "1";
+                                return status.classList.contains('fa-box-full');
+                            }else if (selectedstatusFilter === '2') {
+                                return status.classList.contains('fa-truck-loading');
+                            }else if (selectedstatusFilter === '3') {
+                                return status.classList.contains('fa-box-check');
                             }
+
+                            
                         });
                     }
 
@@ -575,9 +499,8 @@
                     statusFilter.value = 'all';
                     selectedstatusFilter = 'all';
 
-                    // Trigger filter update
                     currentPage = 1;
-                    //updateURL();
+                    sortTable();
                     showPage(currentPage);
                     createPagination();
                 }
@@ -622,5 +545,196 @@
 
             });
         </script>
+        <div class="container-fluid">
+            <div class="col-12 m-auto">
+                <div class="admin_page">
+                     <div class="breadcrumbs">
+                        <a>Admin</a> > <a>Orders</a> > <a class="active">Order List</a>
+                    </div>
+                    <div class="page_title">All Orders</div>
+                    <div class="filter_selectors">
+                        <div class="menu">
+                            <div class="filter_header">
+                                <div class="d-flex flex-row align-items-baseline">
+                                    <i class="fas fa-sliders-h"></i><span>Filters</span>
+                                </div>
+                                <div class="clear">
+                                    <div>Clear all</div>
+                                </div>
+                            </div>
+                            <hr class="mt-1">
+                        </div>
+                        <div>
+                            <div class="filter_type">
+                                <label for="dateFilter">Sort by Date</label>
+                                <select id="dateFilter">
+                                    <option value="1">Oldest</option>
+                                    <option value="2">Latest</option>
+                                </select>
+                            </div>
+                            <div class="filter_type">
+                                <label for="statusFilter">Filter by Order Status</label>
+                                <select id="statusFilter">
+                                    <option value="all">All</option>
+                                    <option value="0">Queueing</option>
+                                    <option value="1">Preparing</option>
+                                    <option value="2">Delivering</option>
+                                    <option value="3">Received</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <form method='post' name='trash_form' class='trash-form' id='trash_form'>
+                    <div class="search_container">
+                        <div class="item_search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search order ID...">
+                            <select id="perPage">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                            <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction('delete the selected order(s)')">
+                        </div>
+                    </div>
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="t_no">No.</th>
+                                            <th class="t_id">ID</th>
+                                            <th class="t_name">User</th>
+                                            <th class="t_item">Items</th>
+                                            <th class="t_date">Date</th>
+                                            <th class="t_status">Status</th>
+                                            <th class="t_action act1">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody border="transparent">
+                                        <?php
+                                            $no_count = 0;
+
+                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0";
+
+                                            $result = $conn->query($cf_query);
+                                            if($result && $result->num_rows > 0){
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $no_count++;
+                                                    $date = date('Y-m-d H:i:s', strtotime($row['order_date']));
+                                                    if($row['tracking_stage']==3){
+                                                        echo "<tr class='unavailable'"; 
+                                                    }
+                                                    echo "<tr";
+                                                    echo"><td class='t_no'>".$no_count."</td>";
+                                                    $order_id = "K_".$row['order_ID'];
+                                                    echo "<td class='t_id'>".$order_id."</td>";
+                                                    $cust_query = "SELECT cust_username FROM customer WHERE trash = 0 AND cust_ID = ".$row['cust_ID'];
+                                                    $query_result = $conn->query($cust_query);
+                                                    $query_row = $query_result->fetch_assoc();
+                                                    if($query_row && !empty($query_row['cust_username'])){
+                                                        $username = $query_row['cust_username'];
+                                                    }
+                                                    else{
+                                                        $username = "User is disabled.";
+                                                    }
+                                                    echo "<td class='t_name'>".$username."</td>";
+                                                    echo "<td class='t_item'><ul>";
+                                                    $oid = $row['order_ID'];
+                                                    $sql_get_cart = "SELECT order_contents FROM customer_orders WHERE order_ID = $oid  AND trash = 0";
+                                                    $result_get_cart = $conn->query($sql_get_cart);
+                                                    if ($result_get_cart->num_rows > 0) {
+                                                        while ($row_get_cart = $result_get_cart->fetch_assoc()) {
+                                                            $items[] = "";
+                                                            $items = explode("},{", $row_get_cart['order_contents']);
+                                                            $items = array_filter($items, 'strlen');
+                                                            $j = 0;
+                                                            if (count($items) != 0){
+                                                                foreach ($items as $item) {
+                                                                    $j++;
+                                                                    $item = trim($item, "{}");
+                                                                    $details = explode(",", $item);
+                
+                                                                    $item_ID = trim($details[0], "()");
+                                                                    $item_name = trim($details[1], "()");
+                                                                    $item_price = trim($details[2], "()");
+                                                                    $item_qty = trim($details[3], "()");
+                                                                    $item_sumprice = trim($details[4], "()");
+                                                                    $item_request = trim($details[5], "()");
+                                                                    $item_custom = implode(',', array_slice($details, 6));
+                                                                    preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
+                                                                    
+                                                                    echo '<li>' . $item_qty . ' x  ' . $item_name;
+
+                                                                    if (!empty($matches[1])) {
+                                                                        foreach ($matches[1] as $match) {
+                                                                            $customs = explode(',', $match);
+                                                                            if (count($customs) >= 2) {
+                                                                                $custom_key = trim($customs[0]);
+                                                                                $custom_value = trim($customs[1]);
+                                                                                if (!empty($custom_key) && !empty($custom_value)) {
+                                                                                    echo '<br><span>' . $custom_value . '</span>';
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if(!empty($item_request)){
+                                                                        echo '<br><span>' . $item_request . '</span>';
+
+                                                                    }
+                                                                    if(count($items)>3 && $j>2){
+                                                                        echo '<br><a class="otheritem" title="View all" href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-ellipsis-h"></i></a>';
+                                                                        break;
+                                                                    }
+                                                                    echo '</li>';
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    echo "</ul></td>";
+                                                    echo "<td class='t_date'>".$date."</td>";
+                                                    if($row['tracking_stage']==0){
+                                                        echo "<td class='t_status'><span class='sta-queue'><i class='fas fa-boxes'></i><p>Queueing</p></span></td>";
+                                                    }
+                                                    else if($row['tracking_stage']==1){
+                                                        echo "<td class='t_status'><span class='sta-prepare'><i class='fas fa-box-full'></i><p>Preparing</p></span></td>";
+                                                    }
+                                                    else if($row['tracking_stage']==2){
+                                                        echo "<td class='t_status'><span class='sta-deliver'><i class='fas fa-truck-loading'></i><p>Delivering</p></span></td>";
+                                                    }
+                                                    else{
+                                                        echo "<td class='t_status'><span class='sta-receive'><i class='fas fa-box-check'></i><p>Received</p></span></td>";
+                                                    }
+                                                    echo '<td class="t_action act1"><div><a class="trash-icon"><i class="fas fa-trash"></i></a><a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
+                                                    echo "</i></a>
+                                                        <input type='hidden' name='order_ID[]' value='".$row['order_ID']."'>
+                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
+                                                        </div>";
+                                                     echo "</tr>";
+                                                }
+                                            }
+                                            else {
+                                                echo "<tr><td class='no_items' colspan='7'><i class='far fa-ghost'></i>No orders found...</td></tr>";
+                                            }
+                                        $conn->close();
+                                        ?>
+                                        
+                                        </form>
+                                    </tbody> 
+                                </table>
+                        <div class="navigation_container">
+                            <div id="pagination"></div>
+                            <div class="no_results_page">
+                                <span>Showing to of results</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
     </body>
 </html>
