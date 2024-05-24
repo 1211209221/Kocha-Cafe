@@ -36,8 +36,7 @@
     // Check if the ID parameter is set in the URL
     if (isset($_GET['id'])) {
         $blog_id = $_GET['id'];
-
-        // Use prepared statement to avoid SQL injection
+        
         $stmt = $conn->prepare("SELECT * FROM blog WHERE blog_ID = ?");
         $stmt->bind_param("i", $blog_id); // Assuming the blog ID is an integer
         $stmt->execute();

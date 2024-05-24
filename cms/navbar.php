@@ -1,5 +1,6 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
+session_start();
 ?>
 <style>
     body {
@@ -208,7 +209,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </div>
             <div class="page_container">
-                <a>
+                <a href="logout.php">
                     <div>
                         <i class="fas fa-sign-out-alt"></i>
                     </div>
@@ -240,97 +241,86 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         </div>
                     </div>
                     <div class="icons">
-                        <a class="profile" id="admintype"><i class="far fa-user"></i><span id="username"></span></a>
+                        <a class="profile" id="admintype">
+                            <i class="far fa-user"></i>
+                            <span id="username">
+                                <?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>
+                            </span>
+                        </a>
                     </div>
-                    <script>
-                        function updateUsername() {
-                            // Check if user is admin (you can replace this with your logic)
-                            var isAdmin = true; // Example: Assume the user is admin for demonstration purposes
-
-                            // Get the username element
-                            var usernameElement = document.getElementById('username');
-
-                            // If user is admin, update the username
-                            if (isAdmin) {
-                                // Set the admin username
-                                usernameElement.innerHTML = '<i class="far fa-user"></i><span>Admin</span>';
-                            }
-                        }
-
-                        // Call the function when the page loads
-                        updateUsername();
-                    </script>
                 </div>
             </div>
         </div>
-        <script>
-            function toggleNav() {
-                var sidenav = document.getElementById("adminSidenav");
-                var subPagesContainers = document.querySelectorAll("[id*=subPages]");
-                var filter_darken = document.getElementById("filter_darken");
-                var isOpen = sidenav.classList.contains("expand");
+    </div>
 
-                subPagesContainers.forEach(function (subPages) {
-                    var isToggled = subPages.classList.contains("toggled");
+    <script>
+        function toggleNav() {
+            var sidenav = document.getElementById("adminSidenav");
+            var subPagesContainers = document.querySelectorAll("[id*=subPages]");
+            var filter_darken = document.getElementById("filter_darken");
+            var isOpen = sidenav.classList.contains("expand");
 
-                    if (!isOpen && isToggled) {
-                        setTimeout(function () {
-                            subPages.style.maxHeight = subPages.scrollHeight + "px";
-                        }, 1);
-                    }
-                });
-
-                if (!isOpen) {
-                    sidenav.classList.add("expand");
-                    filter_darken.classList.add("appear");
-                } else {
-                    sidenav.classList.remove("expand");
-                    filter_darken.classList.remove("appear");
-                }
-            }
-
-
-            window.onload = function () {
-                var subPages = document.querySelector("[id*=subPages]");
-                var activeMenuItem = subPages.querySelector(".subPage.active-menu");
+            subPagesContainers.forEach(function (subPages) {
                 var isToggled = subPages.classList.contains("toggled");
-                if (isToggled) {
-                    subPages.style.maxHeight = "auto";
-                }
-                else if (activeMenuItem) {
-                    subPages.style.maxHeight = subPages.scrollHeight + "px";
-                }
-                else {
-                    subPages.style.maxHeight = null;
 
-                }
-            }
-
-            window.onload = function () {
-                var subPagesContainers = document.querySelectorAll("[id^=subPages]");
-
-                subPagesContainers.forEach(function (subPages) {
-                    var activeMenuItem = subPages.querySelector(".subPage.active-menu");
-                    if (activeMenuItem) {
+                if (!isOpen && isToggled) {
+                    setTimeout(function () {
                         subPages.style.maxHeight = subPages.scrollHeight + "px";
-                    } else {
-                        subPages.style.maxHeight = null;
-                    }
-                });
-            }
-
-            function toggleSubPages(anchor, containerIndex) {
-                var sidenav = anchor.closest(".admin_sidenav");
-                var subPages = sidenav.querySelector("#subPages" + containerIndex);
-                var isOpen = sidenav.classList.contains("expand");
-                var isToggled = subPages.classList.contains("toggled");
-
-                if (subPages.style.maxHeight || isToggled) {
-                    subPages.style.maxHeight = null;
-                    subPages.classList.remove("toggled");
-                } else {
-                    subPages.style.maxHeight = subPages.scrollHeight + "px";
-                    subPages.classList.add("toggled");
+                    }, 1);
                 }
+            });
+
+            if (!isOpen) {
+                sidenav.classList.add("expand");
+                filter_darken.classList.add("appear");
+            } else {
+                sidenav.classList.remove("expand");
+                filter_darken.classList.remove("appear");
             }
-        </script>
+        }
+
+
+        window.onload = function () {
+            var subPages = document.querySelector("[id*=subPages]");
+            var activeMenuItem = subPages.querySelector(".subPage.active-menu");
+            var isToggled = subPages.classList.contains("toggled");
+            if (isToggled) {
+                subPages.style.maxHeight = "auto";
+            }
+            else if (activeMenuItem) {
+                subPages.style.maxHeight = subPages.scrollHeight + "px";
+            }
+            else {
+                subPages.style.maxHeight = null;
+
+            }
+        }
+
+        window.onload = function () {
+            var subPagesContainers = document.querySelectorAll("[id^=subPages]");
+
+            subPagesContainers.forEach(function (subPages) {
+                var activeMenuItem = subPages.querySelector(".subPage.active-menu");
+                if (activeMenuItem) {
+                    subPages.style.maxHeight = subPages.scrollHeight + "px";
+                } else {
+                    subPages.style.maxHeight = null;
+                }
+            });
+        }
+
+        function toggleSubPages(anchor, containerIndex) {
+            var sidenav = anchor.closest(".admin_sidenav");
+            var subPages = sidenav.querySelector("#subPages" + containerIndex);
+            var isOpen = sidenav.classList.contains("expand");
+            var isToggled = subPages.classList.contains("toggled");
+
+            if (subPages.style.maxHeight || isToggled) {
+                subPages.style.maxHeight = null;
+                subPages.classList.remove("toggled");
+            } else {
+                subPages.style.maxHeight = subPages.scrollHeight + "px";
+                subPages.classList.add("toggled");
+            }
+        }
+    </script>

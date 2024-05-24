@@ -56,7 +56,7 @@
             <div class="row" style="margin-top: 100px ;">
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/dishes2.jpg" alt="">
+                        <img class="card-image-top" src="./images/dishes2.jpg" alt="" style="height: 250px;">
                         <div class="card-img-overlay">
                             <h1 class="card-titel">Side Dishes</h1>
                             <p class="card-text">Having some little snacks and fries in your meal</p>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/main2.jpg" alt="">
+                        <img class="card-image-top" src="./images/main2.jpg" alt="" style="height: 250px;">
                         <div class="card-img-overlay">
                             <h1 class="card-titel">Iconic Dishes</h1>
                             <p class="card-text">Special cuisine always in Kocha Cafe</p>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/card3.png" alt="" height="230px">
+                        <img class="card-image-top" src="./images/card3.png" alt="" style="height: 250px;">
                         <div class="card-img-overlay">
                             <h1 class="card-titel">Fast Delivery</h1>
                             <p class="card-text">You can wait your food arrived once you ordered</p>
@@ -107,7 +107,7 @@
             <div class="row" style="margin-bottom: 50px;">
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/dishes3.jpg" alt="">
+                        <img class="card-image-top" src="./images/dishes3.jpg" alt="" style="height: 250px;">
                         <div class="card-body">
                             <h2 class="card-titel text-center">Main Dishes</h2>
                             <h3 class="card-titel text-center"></h3>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/juices.jpg" alt="">
+                        <img class="card-image-top" src="./images/juices.jpg" alt="" style="height: 250px;">
                         <div class="card-body">
                             <h2 class="card-titel text-center">Beverages</h2>
                             <h3 class="card-titel text-center"></h3>
@@ -129,7 +129,7 @@
                 </div>
                 <div class="col-md-4 py-3 py-md-0">
                     <div class="card">
-                        <img class="card-image-top" src="./images/salad.jpg" alt="">
+                        <img class="card-image-top" src="./images/salad.jpg" alt="" style="height: 250px;">
                         <div class="card-body">
                             <h2 class="card-titel text-center">Side Dishes</h2>
                             <h3 class="card-titel text-center"></h3>
