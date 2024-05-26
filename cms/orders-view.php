@@ -78,6 +78,7 @@
             margin: 10px;
             border-radius: 10px;
             width: 100%;
+            padding-bottom: 40px;
         }
         .requirement span{
             color: #8f8f8f;
@@ -116,6 +117,32 @@
         }
         .file-box a:active{
             color: #000;
+        }
+        .requirement p{
+            margin:unset;
+        }
+        .done_btn{
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            background-color: #5a9498;
+            border: none;
+            outline: none;
+            padding: 3px 5px;
+            border-radius: 7px;
+            width: 100%;
+            margin-top: 5px;
+            position: absolute;
+            bottom: 0px;
+            text-align:center;
+            cursor:pointer;
+        }
+        .done_btn:hover{
+            outline:none;
+            background-color:#36676A;
+            transform: scale(1.05);
+            transition:0.15s;
         }
         @media (max-width: 770px) {
             .item-detail{
@@ -183,7 +210,10 @@
                                 <div style="display: flex;width: 100%;"><input type="tel" title="Unable to edit" name="phone" id="phone" value="<?php echo $phone; ?>" readonly>
                                 <a class="replybtn" title='Call' href='tel:<?php echo $phone; ?>'>Call<i class="fas fa-phone"></i></a></div>
                             </div>
-                            
+                            <div class='item_detail_container'>
+                                <label for="address">Delivery Address</label>
+                                <div style="width:100%;color: initial;border: #e9ecef 1px solid;background-color: #e9ecef;border-radius: 7px;font-size: 18px;padding: 2px 5px;display:flex;flex-wrap:wrap;justify-content: space-between;" title="Unable to edit" name="address" id="address"><?php echo $row['order_address']; ?></div>
+                            </div>
                             <hr style="width:100%;">
                         <div class='item_detail_container'>
                             <div name="delivery" id="delivery" style="width:100%;border: #e9ecef 1px solid;background-color: #e9ecef;border-radius: 7px;font-size: 18px;padding: 10px;display:flex;flex-wrap:wrap;justify-content: space-between;">
@@ -194,6 +224,7 @@
                                 $sql_get_cart = "SELECT order_contents FROM customer_orders WHERE order_ID = $order_ID  AND trash = 0";
                                 $result_get_cart = $conn->query($sql_get_cart);
                                 if ($result_get_cart->num_rows > 0) {
+                                    $i=1;
                                     while ($row_get_cart = $result_get_cart->fetch_assoc()) {
                                         $items[] = "";
                                         $items = explode("},{", $row_get_cart['order_contents']);
@@ -215,9 +246,10 @@
                                                 //take out item pic
                                                 $sql = "SELECT * FROM menu_items WHERE item_ID = '$item_ID' AND trash = 0";
                                                 $result = $conn->query($sql);
+                                                
                                                 if ($result->num_rows > 0) {
                                                     while ($rows = $result->fetch_assoc()){
-                                                        $sql2 = "SELECT * FROM menu_images WHERE image_ID = {$rows['item_ID']}  AND trash = 0 LIMIT 1";
+                                                        $sql2 = "SELECT * FROM menu_images WHERE image_ID = {$rows['item_ID']} AND trash = 0 LIMIT 1";
                                                         $result2 = $conn->query($sql2);
                                                         while ($row2 = $result2->fetch_assoc()) {
                                                             $image_data = $row2["data"];
@@ -225,11 +257,11 @@
                                                             $base64 = base64_encode($image_data);
                                                             $src = "data:$mime_type;base64,$base64";
 
-                                                            //display all item from customer order
-                                                            echo '<div class="item-detail">
+                                                            // Display all items from customer order
+                                                            echo '<div class="item-detail" id="item'.$i.'">
                                                                 <img src="'.$src.'" class="item_image">
-                                                                <div class="requirement">
-                                                                    '.$item_qty.' x '.$item_name;
+                                                                <div class="requirement" style="position:relative;">'.
+                                                                    $item_qty.' x '.$item_name;
                                                                     if (!empty($matches[1])) {
                                                                         foreach ($matches[1] as $match) {
                                                                             $customs = explode(',', $match);
@@ -244,13 +276,12 @@
                                                                     }
                                                                     if(!empty($item_request)){
                                                                         echo '<br><span>- ' . $item_request . '</span>';
-
                                                                     }
-                                                            
-                                                                    
-                                                            echo '</div>
+                                                            echo '<p class="done_btn" onclick="toggleSaturation(\'item'.$i.'\')">Done</p></div>
                                                             </div>';
+                                                            ++$i;
                                                         }
+                                                        
                                                     }
                                                 }
 
@@ -297,6 +328,34 @@
                     }
                   
                 </script>
+                <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        applySavedSaturation();
+    });
+
+    function applySavedSaturation() {
+        var itemDetailDivs = document.querySelectorAll('.item-detail');
+        itemDetailDivs.forEach(function(div) {
+            var id = div.id;
+            if (localStorage.getItem(id) === 'saturated') {
+                div.style.filter = 'saturate(0.2)';
+            } else {
+                div.style.filter = 'saturate(1)';
+            }
+        });
+    }
+
+    function toggleSaturation(id) {
+        var itemDetailDiv = document.getElementById(id);
+        if (itemDetailDiv.style.filter === 'saturate(0.2)') {
+            itemDetailDiv.style.filter = 'saturate(1)';
+            localStorage.setItem(id, 'normal');
+        } else {
+            itemDetailDiv.style.filter = 'saturate(0.2)';
+            localStorage.setItem(id, 'saturated');
+        }
+    }
+</script>
             
     </body>
 </html>

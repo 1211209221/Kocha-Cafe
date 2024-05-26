@@ -66,6 +66,7 @@
                         exit();
                     }
                     else{
+                        date_default_timezone_set('Asia/Kuala_Lumpur');
                         $cfdate = date("Y-m-d H:i:s");
                         $sql = "INSERT INTO contact_message (CF_name, CF_phno, CF_email, CF_subject, CF_message, CF_time) VALUES 
                         ('$name', '$phno', '$email', '$subject', '$message', '$cfdate')";
@@ -107,6 +108,7 @@
                                     $mail->addStringAttachment($content, $filename, 'base64', $filetype);
 
                                     $escaped_content = mysqli_real_escape_string($conn, $content);
+                                    date_default_timezone_set('Asia/Kuala_Lumpur');
                                     $uploaddate = date("Y-m-d H:i:s");
 
                                     $sqlfile = "INSERT INTO cf_files (filename, filesize, filetype, file_content, upload_date, CF_ID) VALUES 

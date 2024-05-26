@@ -40,6 +40,15 @@
             transform: scale(1.1);
             transition:0.15s;
         }
+        .file-box{
+            min-width: 46%;
+            margin: 5px;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
         .file-box a{
             color: #5a9498;
             font-weight: 600;
@@ -148,7 +157,7 @@
                             </div>
                             <div class='item_detail_container'>
                                 <label for="message">Message</label>
-                                <textarea rows="7" title="Unable to edit" name="message" id="message" readonly><?php echo $row['CF_message']; ?></textarea>
+                                <textarea rows="10" title="Unable to edit" name="message" id="message" readonly><?php echo $row['CF_message']; ?></textarea>
                             </div>
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                             <div class='submit_buttons' style="display: flex;justify-content: center;">
@@ -177,12 +186,7 @@
                                                 // Assuming CF_ID is a foreign key linking to another table, you can access it as well if needed
                                         
                                                 // Output the file information with a link to open the file
-                                                echo "<div class='file-box' style='min-width: 46%;
-                                                margin: 5px;
-                                                background: #ffffff;
-                                                padding: 8px;
-                                                border-radius: 5px;
-                                                font-size: 16px;'><i class='fas fa-file' style='margin-right:5px;'></i>";
+                                                echo "<div class='file-box'><i class='fas fa-file' style='margin-right:5px;'></i>";
                                                 echo "<a title='Download' href='download.php?file_id=" . urlencode($fileId) . "&filename=" . urlencode($filename) . "'>$filename</a><br>"; // Link to the file location
                                                 echo "<span style='font-size:15px;'>$fileSize btyes</span><br>";
                                                 echo "</div>";

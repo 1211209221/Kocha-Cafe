@@ -193,6 +193,13 @@
                         $item_requests = "";
                     }
 
+                    if (!empty($_POST['address'])) {
+                        $add = $_POST['address'];
+                        if ($add == 'different') {
+                            $add = $_POST['new_location'];
+                        }
+                    }
+
                     $verify_item = $_POST['verify_item'];
                     $verify_item_array = explode(",", $verify_item);
 
@@ -348,7 +355,7 @@
                     //update
                     $order_date = date('Y-m-d H:i:s');
                     // Construct the SQL query to insert menu item data
-                    $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents,order_date,cust_ID) VALUES ('$newOrderID','$string','$order_date','$cust_ID')";
+                    $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents, order_address, order_date,cust_ID) VALUES ('$newOrderID','$string','$add','$order_date','$cust_ID')";
 
                     if(!empty($string)){
                         if ($conn->query($sql_cart) === TRUE) {
@@ -1148,7 +1155,7 @@
                                                     <div class="payment_location">
                                                         <div class="location_select">
                                                             <i class="fas fa-map-marker-alt"></i>
-                                                            <select id="selectlocation" onchange="toggleInputVisibility(this)" required>
+                                                            <select id="selectlocation" onchange="toggleInputVisibility(this)" name="address" required>
                                                                 <option value="" selected disabled>Select delivery address...</option>';
                                                                     $addresses_str = trim($row_payment['cust_address'], "{}");
                                                                     $addresses = explode("},{", $addresses_str);
@@ -1169,7 +1176,9 @@
                                                                         $address_state = trim($address_components[5], "()");
                                         
                                                                         $addressall = $address_label." ~ ".$address_no.", ".$address_building.", ".$address_street.", ".$address_postcode.", ".$address_state.", Malaysia";
-                                                                        echo "<option value = ".$i.">". $addressall . "</option>";
+                                                                        $addressnolabel = $address_no.", ".$address_building.", ".$address_street.", ".$address_postcode.", ".$address_state.", Malaysia";
+                                                                        
+                                                                        echo '<option value="'.htmlspecialchars($addressnolabel).'">'. htmlspecialchars($addressall) . '</option>';
                                                                         
                                                                     }
                                                                 echo '<option value="different">Choose a different address...</option>
@@ -1178,7 +1187,7 @@
                                                         <div class="address-error" style="margin-top:3px;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                         <div class="location_edit">
                                                             <i class="fas fa-pencil"></i>
-                                                            <input type="text" id="newlocation" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
+                                                            <input type="text" id="newlocation" name="new_location" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
                                                         </div>
                                                     </div>
                                                     <hr>

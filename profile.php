@@ -35,6 +35,7 @@
             }
             else{
                 $phone = "";
+                $phone_without_country_code="";
             }
 
             $get_name = "SELECT cust_username FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
