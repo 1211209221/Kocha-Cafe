@@ -51,30 +51,31 @@
                     }
                 }
             }
-            if (isset($_SESSION['delmsg_success'])) {
+            if (isset($_SESSION['delorder_success']) && $_SESSION['delorder_success'] === true) {
                 echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast true fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Successfully deleted the message!
-                                </div>
-                                <div class="timer"></div>
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Order is deleted successfully!
                             </div>
-                        </div>';
-
-                unset($_SESSION['delmsg_success']);
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+    
+                unset($_SESSION['delorder_success']);
             }
-
-            if (isset($_SESSION['delmsg_error'])) {
+    
+            if (isset($_SESSION['delorder_error'])) {
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete message. Please try again...
+                                    <i class="fas fa-check-circle"></i>Failed to delete order. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
                         </div>';
-
-                unset($_SESSION['delmsg_error']);
+                echo '<div class="error_message">' . $_SESSION['delorder_error'] . '</div>';
+    
+                unset($_SESSION['delorder_error']);
             }
             if (isset($_SESSION['deleteorder_success'])) {
                 echo '<div class="toast_container">

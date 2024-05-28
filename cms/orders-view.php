@@ -29,33 +29,60 @@
             if (isset($_POST['edit_submit'])){
                 // Retrieve form data
                 $readstatus = $_POST['readstatus'];
-                $sql = "UPDATE contact_message SET markasread = '$readstatus' WHERE CF_ID = $CF_ID";
+                $sql = "UPDATE customer_orders SET tracking_stage = '$readstatus' WHERE order_ID = $order_ID";
                 
 
                 if ($conn->query($sql) === TRUE) {
-                    $_SESSION['editmsg_success'] = true;
-                    header("Location: messages-all.php");
+                    $_SESSION['updateorder_success'] = true;
+                    header("Location: orders-view.php?ID=$order_ID");
                     exit();
                 } else {
-                    $_SESSION['editmsg_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: messages-all.php");
+                    $_SESSION['updateorder_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                    header("Location: orders-view.php?ID=$order_ID");
                     exit();
                 }
             }
             if (isset($_POST['delete'])){
                 $trash = $_POST['delete'];
-                $sql = "UPDATE contact_message SET trash = 1, markasread = 1 WHERE CF_ID = $CF_ID";
+                $sql = "UPDATE customer_orders SET trash = 1 WHERE order_ID = $order_ID";
 
                 if ($conn->query($sql) === TRUE) {
-                    $_SESSION['delmsg_success'] = true;
-                    header("Location: messages-all.php");
+                    $_SESSION['delorder_success'] = true;
+                    header("Location: orders-all.php");
                     exit();
                 } else {
-                    $_SESSION['delmsg_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: messages-all.php");
+                    $_SESSION['delorder_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                    header("Location: orders-all.php");
                     exit();
                 }
             }
+        }
+
+        if (isset($_SESSION['updateorder_success']) && $_SESSION['updateorder_success'] === true) {
+            echo '<div class="toast_container">
+                    <div id="custom_toast" class="custom_toast true fade_in">
+                        <div class="d-flex align-items-center message">
+                            <i class="fas fa-check-circle"></i> Tracking status updated!
+                        </div>
+                        <div class="timer"></div>
+                    </div>
+                </div>';
+
+            unset($_SESSION['updateorder_success']);
+        }
+
+        if (isset($_SESSION['updateorder_error'])) {
+            echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast false fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i>Failed to update tracking status. Please try again...
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+            echo '<div class="error_message">' . $_SESSION['updateorder_error'] . '</div>';
+
+            unset($_SESSION['updateorder_error']);
         }
 
     ?>
@@ -277,7 +304,7 @@
                                                                     if(!empty($item_request)){
                                                                         echo '<br><span>- ' . $item_request . '</span>';
                                                                     }
-                                                            echo '<p class="done_btn" onclick="toggleSaturation(\'item'.$i.'\')">Done</p></div>
+                                                            echo '<p class="done_btn" onclick="toggleSaturation(\'item'.$i.'\')">Mark as Done</p></div>
                                                             </div>';
                                                             ++$i;
                                                         }
@@ -317,7 +344,7 @@
                 <?php
                 }
                 } else {
-                    echo "No inbox found";
+                    echo "No orders found";
                 }
 
                 $conn->close();

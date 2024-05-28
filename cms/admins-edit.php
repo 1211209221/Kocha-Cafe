@@ -153,6 +153,8 @@
                         </div>
                     </div>';
 
+            echo '<div class="error_message">' . $_SESSION['editadmin_error'] . '</div>';
+
             unset($_SESSION['editadmin_error']);
         }
         if (isset($_SESSION['deleteAdmin_success']) && $_SESSION['deleteAdmin_success'] === true) {
@@ -177,6 +179,7 @@
                             <div class="timer"></div>
                         </div>
                     </div>';
+            echo '<div class="error_message">' . $_SESSION['deleteAdmin_error'] . '</div>';
 
             unset($_SESSION['deleteAdmin_error']);
         }
