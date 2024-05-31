@@ -1836,124 +1836,124 @@
                             <h5 class="title"><i class="fas fa-history"></i> Order History</h5>
                             <div class="table-responsive" style="max-height: 400px; overflow-y: auto; position: relative;">
                         <style>
-            table tr .t_no {
-                display: none;
-            }
-            table tr .t_id {
-                width: 15%;
-                padding-left: 15px !important;
-                border-top-left-radius: 7px;
-                border-bottom-left-radius: 7px;
-            }
-            table tbody tr .t_id {
-                font-size: 16px;
-            }
-            table tr .t_date {
-                width: 20%;
-            }
-            table tbody tr .t_date {
-                font-size: 16px;
-            }
-            table tr .t_item {
-                width: 35%;
-                font-size: 16px;
-            }
-            table tr .t_item ul {
-                list-style: none;
-                padding: 0;
-                margin: 5px 0;
-            }
-            table tr .t_item ul li span {
-                font-weight: 400;
-                color: #8a8a8a;
-                padding-left: 22px;
-            }
-            table tr .t_price {
-                width: 15%;
-            }
-            table tr .t_status {
-                width: 15%;
-                text-align: center;
-            }
-            .status-queue {
-                color: orange;
-            }
-            .status-prepare {
-                color: blue;
-            }
-            .status-deliver {
-                color: green;
-            }
-            .status-receive {
-                color: purple;
-            }
-            .status-icon {
-                margin-right: 5px;
-                font-size: 14px;
-            }
-            .status-text {
-                font-size: 14px;
-            }
-            .item-details {
-                margin-bottom: 8px;
-            }
-            .item-remark, .item-sauce {
-                display: block;
-                margin-left: 10px;
-                color: #888;
-                font-size: 12px;
-            }
-            .table-responsive::-webkit-scrollbar {
-                width: 8px;
-            }
-            .table-responsive::-webkit-scrollbar-thumb {
-                background: #888;
-                border-radius: 4px;
-            }
-            .table-responsive::-webkit-scrollbar-thumb:hover {
-                background: #555;
-            }
-            .table thead th {
-                position: sticky;
-                top: 0;
-                background-color: #fff;
-                z-index: 1;
-                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-            }
-            .table-container {
-                width: 100%;
-                margin: 20px auto;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background-color: #fff;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-            thead {
-                background-color: #f9f9f9;
-            }
-            thead th {
-                padding: 15px;
-                text-align: left;
-                font-weight: bold;
-                font-size: 14px;
-                color: #333;
-            }
-            tbody tr {
-                border-bottom: 1px solid #eee;
-            }
-            tbody tr:hover {
-                background-color: #f1f1f1;
-            }
-            tbody td {
-                padding: 15px;
-                font-size: 14px;
-                color: #555;
-            }
-        </style>
+                            table tr .t_no {
+                                display: none;
+                            }
+                            table tr .t_id {
+                                width: 15%;
+                                padding-left: 15px !important;
+                                border-top-left-radius: 7px;
+                                border-bottom-left-radius: 7px;
+                            }
+                            table tbody tr .t_id {
+                                font-size: 16px;
+                            }
+                            table tr .t_date {
+                                width: 20%;
+                            }
+                            table tbody tr .t_date {
+                                font-size: 16px;
+                            }
+                            table tr .t_item {
+                                width: 35%;
+                                font-size: 16px;
+                            }
+                            table tr .t_item ul {
+                                list-style: none;
+                                padding: 0;
+                                margin: 5px 0;
+                            }
+                            table tr .t_item ul li span {
+                                font-weight: 400;
+                                color: #8a8a8a;
+                                padding-left: 22px;
+                            }
+                            table tr .t_price {
+                                width: 15%;
+                            }
+                            table tr .t_status {
+                                width: 15%;
+                                text-align: center;
+                            }
+                            .status-queue {
+                                color: orange;
+                            }
+                            .status-prepare {
+                                color: blue;
+                            }
+                            .status-deliver {
+                                color: green;
+                            }
+                            .status-receive {
+                                color: purple;
+                            }
+                            .status-icon {
+                                margin-right: 5px;
+                                font-size: 14px;
+                            }
+                            .status-text {
+                                font-size: 14px;
+                            }
+                            .item-details {
+                                margin-bottom: 8px;
+                            }
+                            .item-remark, .item-sauce {
+                                display: block;
+                                margin-left: 10px;
+                                color: #888;
+                                font-size: 12px;
+                            }
+                            .table-responsive::-webkit-scrollbar {
+                                width: 8px;
+                            }
+                            .table-responsive::-webkit-scrollbar-thumb {
+                                background: #888;
+                                border-radius: 4px;
+                            }
+                            .table-responsive::-webkit-scrollbar-thumb:hover {
+                                background: #555;
+                            }
+                            .table thead th {
+                                position: sticky;
+                                top: 0;
+                                background-color: #fff;
+                                z-index: 1;
+                                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+                            }
+                            .table-container {
+                                width: 100%;
+                                margin: 20px auto;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                background-color: #fff;
+                                border-radius: 8px;
+                                overflow: hidden;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                            }
+                            thead {
+                                background-color: #f9f9f9;
+                            }
+                            thead th {
+                                padding: 15px;
+                                text-align: left;
+                                font-weight: bold;
+                                font-size: 14px;
+                                color: #333;
+                            }
+                            tbody tr {
+                                border-bottom: 1px solid #eee;
+                            }
+                            tbody tr:hover {
+                                background-color: #f1f1f1;
+                            }
+                            tbody td {
+                                padding: 15px;
+                                font-size: 14px;
+                                color: #555;
+                            }
+                        </style>
 
                             <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
                                 <thead class="thead-light">
