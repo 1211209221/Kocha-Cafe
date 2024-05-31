@@ -5,7 +5,7 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+        <link rel="stylesheet" type="text/css" href="contact.css">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
@@ -200,6 +200,66 @@
                         }
                     }
 
+                    if (!empty($_POST['holder_name'])) {
+                        $holder_name = $_POST['holder_name'];
+                    }
+                    else{
+                        $holder_name = "";
+                    }
+
+                    if (!empty($_POST['card_number'])) {
+                        $card_number = $_POST['card_number'];
+                        // Remove spaces from the card number
+                        $card_number_cleaned = str_replace(' ', '', $card_number);
+                        $last_four_digits = substr($card_number_cleaned, -4);//save last 4 digit into database
+                    }
+                    else{
+                        $last_four_digits = 0;
+                    }
+
+                    //remember to decrease the point that user want to spend
+                    if (!empty($_POST['redeem_points'])) {
+                        $redeem_points = $_POST['redeem_points'];
+                    }
+                    else{
+                        $redeem_points = 0;
+                    }
+                    
+                    if (!empty($_POST['earn_point_value'])) {
+                        $earn_point_value = $_POST['earn_point_value'];
+                    }
+                    else{
+                        $earn_point_value = 0;
+                    }
+
+                    //take out point from user table
+                    $get_pt = "SELECT cust_points FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                    $pt_result = $conn->query($get_pt);
+                    $pt_row = $pt_result->fetch_assoc();
+                    
+                    if($pt_row['cust_points']){
+                        //add session
+                        $currentpoint = $pt_row['cust_points'];
+                    }
+                    else{
+                        $currentpoint = 0;
+                    }
+                    $resultafterpay = $currentpoint - $redeem_points + $earn_point_value;
+
+                    if (!empty($_POST['sub'])) {
+                        $subtotal = $_POST['sub'];
+                    }
+                    else{
+                        $subtotal = 0;
+                    }
+
+                    if (!empty($_POST['totalprice'])) {
+                        $totalprice = $_POST['totalprice'];
+                    }
+                    else{
+                        $totalprice = 0;
+                    }
+
                     $verify_item = $_POST['verify_item'];
                     $verify_item_array = explode(",", $verify_item);
 
@@ -304,6 +364,18 @@
                         exit();
                     }
 
+                    //before that, check whether got filled ph no
+                    $get_ph = "SELECT cust_phone FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                    $ph_result = $conn->query($get_ph);
+                    $ph_row = $ph_result->fetch_assoc();
+                    
+                    if(empty($ph_row['cust_phone'])){
+                        //add session
+                        $_SESSION['no_phone'] = "nophone";
+                        header("Location: cart.php");
+                        exit();
+                    }
+
                     //create order id
                     function generate_order_id($conn) {
                         date_default_timezone_set('Asia/Kuala_Lumpur');
@@ -355,10 +427,13 @@
                     //update
                     $order_date = date('Y-m-d H:i:s');
                     // Construct the SQL query to insert menu item data
-                    $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents, order_address, order_date,cust_ID) VALUES ('$newOrderID','$string','$add','$order_date','$cust_ID')";
+                    $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents, order_subtotal, order_total, order_address, order_date,cust_ID) VALUES ('$newOrderID','$string', $subtotal, $totalprice, '$add','$order_date','$cust_ID')";
+                    $payment = "INSERT INTO payment (payment_name, payment_items, payment_subtotal, payment_total, payment_cardnum, payment_time,cust_ID) VALUES ('$holder_name','$string',$subtotal, $totalprice,'$last_four_digits','$order_date','$cust_ID')";
+                    //update point
+                    $update_point = "UPDATE customer SET cust_points = $resultafterpay  WHERE cust_ID = $cust_ID AND trash = 0";
 
                     if(!empty($string)){
-                        if ($conn->query($sql_cart) === TRUE) {
+                        if ($conn->query($sql_cart) === TRUE && $conn->query($update_point) && $conn->query($payment)) {
                             $sql_empty_cart = "UPDATE customer SET cust_cart = '' WHERE cust_ID = $cust_ID";
                             $conn->query($sql_empty_cart);
                             $_SESSION['submitOrder_success'] = true;
@@ -376,6 +451,56 @@
                         exit();
                     }
                 }
+                else if(isset($_POST['update-profile'])){
+                    $ph = $_POST['pn'];
+    
+                    $phone_with_country_code = "+60" . $ph;
+    
+                
+                    $update_phone = "UPDATE customer SET cust_phone = '$phone_with_country_code' WHERE cust_ID = $cust_ID AND trash = 0";
+    
+                    if($conn->query($update_phone) === TRUE) {
+                        $_SESSION['update_pro_success'] = true;
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
+                        exit();
+                    } else {
+                        $_SESSION['update_pro_error'] = "Error updating record: " . $conn->error;
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
+                        exit();
+                    }
+                    
+                    
+                }
+            }
+            if (isset($_SESSION['update_pro_success']) && $_SESSION['update_pro_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Phone number successfully updated!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['update_pro_success']);
+            }
+            if (isset($_SESSION['update_pro_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to update phone number. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['update_pro_error'] . '</div>';
+
+                unset($_SESSION['update_pro_error']);
             }
 
 
@@ -452,6 +577,58 @@
             // $conn->close();
         ?>
         <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    <?php
+                    if (isset($_SESSION['no_phone'])) {
+                        if ($_SESSION['no_phone'] == 'nophone') {
+                            echo 'document.getElementById(\'id01\').style.display=\'flex\';';
+                        } 
+
+                        // Clear the session variable after displaying the message
+                        unset($_SESSION['no_phone']);
+                    }
+
+                    ?>
+                });
+            </script>
+        <style>
+            .btm-pt{
+                display:flex;
+                position: relative;
+            } 
+            .btm-pt #tooltip{
+                right: -5px;
+                top: 3px;
+                z-index:10;
+            }
+            .btm-pt .tooltip-content{
+                    left: -310%;
+                    top: -130%;
+                    width: 160px;
+                    position: absolute;
+                    font-size: 13px !important;
+                    text-align: justify;
+                    transform: translate(-50%);
+                    background-color: #000000db;
+                    color: #fff !important;
+                    padding: 5px 10px;
+                    border-radius: 7px;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: opacity 0.5s ease;
+                }
+            .btm-pt .tooltip-content::before{
+                    content: "";
+                    position: absolute;
+                    left: 108%;
+                    top: 33%;
+                    transform: translate(-50%);
+                    border: 13px solid;
+                    border-color: #0000 #0000 #0000 #000;
+                }
+
+        </style>
+        <script>
             //for payment
             <?php
                     //take out point from database to compare
@@ -468,11 +645,25 @@
             document.addEventListener("DOMContentLoaded", function() {
                 //for payment form
                 const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points");
+                const formElements2 = document.querySelectorAll("#pn");
                 formElements1.forEach(element => {
                     element.addEventListener("input", function () {
                         validateForm1();
                     });
                 });
+                formElements2.forEach(element => {
+                    element.addEventListener("input", function () {
+                        validateForm2();
+                    });
+                });
+                document.getElementById("updateprofile").addEventListener("click", function (event) {
+                    // Validate form fields
+                    if (!validateForm2()) {
+                        // Prevent form submission if validation fails
+                        event.preventDefault();
+                    }
+                });
+
                 // document.getElementById("submit_order").addEventListener("click", function (event) {
                 //     // Validate form fields
                 //     if (!validateForm1()) {
@@ -482,6 +673,35 @@
                 // });
                 
             });
+            
+            function validateForm2() {
+                            
+                            const pn = document.getElementById("pn").value;
+
+                            let valid = true;
+      
+
+                            // Validate both passwords are not empty and match
+                            if (pn.trim() === "") {
+                                errorDisplay1(document.getElementById("pn"), "*Phone Number cannot be empty.*");
+                                valid = false;
+                            } else if (pn.length < 9) {
+                                errorDisplay1(document.getElementById("pn"), "*Please fill the valid phone number.*");
+                                valid = false;
+                            }else if (pn.charAt(0) === '0') {
+                                errorDisplay1(document.getElementById("pn"), "*Please remove the first 0 in front.*");
+                                valid = false;
+                            }else if (!/^\d+$/.test(pn)) {
+                                errorDisplay1(document.getElementById("pn"), "*Please enter only digits in the phone number.*");
+                                valid = false;
+                            } 
+                            else {
+                                clearError1(document.getElementById("pn"));
+                            }
+                            
+                            // Return the overall validity of the form
+                            return valid;
+                        }
 
             function validateForm1(){
                 const holder_name = document.getElementById("holder_name").value;
@@ -497,6 +717,10 @@
                 
                 if(card_number.trim() === ""){
                     errorDisplay(document.getElementById("card_number"), "*Card number is required.");
+                    valid = false;
+                }
+                else if(card_number.trim().length!=19){
+                    errorDisplay(document.getElementById("card_number"), "*Please fill in 16 digits.*");
                     valid = false;
                 }
                 else {
@@ -676,6 +900,7 @@
 
                 const updateSubtotal = () => {
                     const priceSumElements = document.querySelectorAll('.price_sum');
+                    let sub = document.getElementById('sub');
                     let subtotal = 0;
                     priceSumElements.forEach(priceSumElement => {
                         const priceSumText = priceSumElement.value.replace('RM ', '');
@@ -683,6 +908,7 @@
                     });
                     const subtotalDiv = document.querySelector('.subtotal');
                     subtotalDiv.textContent = "RM " + subtotal.toFixed(2);
+                    sub.value = subtotal.toFixed(2);
                 };
                 
                 //point
@@ -776,21 +1002,28 @@
                     let discount = parseFloat(document.querySelector('.discounted').textContent.replace('-RM ', ''));
                     let totalPriceElement = document.querySelector('.price_total');
                     let earn_point = document.getElementById('earn_point');
+                    let earnPointInput = document.getElementById('earn_point_input');
+                    let totalprice = document.getElementById('totalprice');
 
                     // Calculate the total price
                     let totalPrice = subtotal - points - discount;
 
                     // Update the total price displayed on the page
                     totalPriceElement.textContent = "RM " + totalPrice.toFixed(2);
+                    totalprice.value = totalPrice.toFixed(2);
 
                     if (totalPrice > 20 && totalPrice < 50) {
                         earn_point.innerHTML = "5"; // Set the integer value
+                        earnPointInput.value= "5";
                     } else if(totalPrice >= 50 && totalPrice < 80){
-                        earn_point.innerHTML = "10"; 
+                        earn_point.innerHTML = "10";
+                        earnPointInput.value = "10";  
                     }else if(totalPrice > 80){
                         earn_point.innerHTML = "50"; 
+                        earnPointInput.value = "50"; 
                     }else{
                         earn_point.innerHTML = "0";
+                        earnPointInput.value = "0"; 
                     }
                     
                 };
@@ -981,6 +1214,29 @@
                     <div class="breadcrumbs">
                         <a href="index.php">Home</a> > <a class="active">Cart</a>
                     </div>
+                    <div id="id01" class="modal">
+                    <form class="profile-edit-content animate" action="" method="post">
+                        <div class="xcontainer">
+                            <span class="txt">Note <i class="fas fa-comment-exclamation"></i></span>
+                            <span onclick="document.getElementById('id01').style.display='none'" class="closeedit" title="Close Modal">&times;</span>
+                          </div>
+                      <div class="pcontainer">
+                        <p style="margin-bottom:unset;margin: 5px 10px 0;">You haven't fill your <b style="color:#e2857b;">phone number</b></p>
+                        <p style="margin-top:5px;margin: 5px 10px 0;text-align: justify;">Please fill your phone number as it is <b style="color:#e2857b;">important</b> to contact your whenever there is a problem regarding order.</p>
+                  
+                        <label for="pn"><b><i class="fas fa-phone-alt"></i> Phone Number</b></label>
+                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" required></div>
+                        <span class="address-error"></span>
+                          
+                        <button type="submit" id="updateprofile" name="update-profile" class="edit-profile-btn" style="outline: none;">Done</button>
+                        
+                      </div>
+                  
+                      <div class="pcontainer" style="background-color:#f3f3f3; height: 80px;">
+                        <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById('id01').style.display='none'">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
                     <form id="cartForm" method="post">
                         <div class="row d-flex justify-content-between pb-1">
                             <div class="col-12 col-lg-8">
@@ -995,8 +1251,13 @@
                                             $items = explode("},{", $row_get_cart['cust_cart']);
                                             $items = array_filter($items, 'strlen');
 
-                                            echo '<div class="p-0 d-flex justify-content-end"><input type="submit" name="update_cart" id="update_cart" value="Save Changes"></div>
+                                            echo '<div class="p-0 d-flex justify-content-end"><input type="submit" name="update_cart" id="update_cart" title="Click to save changes" value="Save Changes" style="font-weight:800;"></div>
                                             </div>
+                                            <span style="
+                                            color: #6c757d;
+                                            font-size: 14px;
+                                            margin-left: 5px;
+                                        ">* All items are included SST tax.</span>
                                             <hr><div class="cart_container">';
                                             
                                             $j = 0;
@@ -1069,7 +1330,7 @@
                                                                         </div>
                                                                         <input class="price_sum" name="price_sum[]" value="">
                                                                         <div class="icons col-1">
-                                                                            <div class="remove_item"><i class="far fa-times"></i></div>
+                                                                            <div class="remove_item" title="Remove item"><i class="far fa-times"></i></div>
                                                                         </div>
                                                                     </div>';
                                                                     echo '<div class="item_bottom">';
@@ -1208,8 +1469,7 @@
                                                             <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" value="0" onkeypress="return event.keyCode != 13;">
                                                         </div>
                                                         <div class="address-error" style="margin-top:3px;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
-                                                        <div class="description">Conversion rate is RM 0.10 per every 1 point. You currently have '.$row_payment['cust_points'].' points.</div>
-                                                    </div>
+                                                            <div class="description">Conversion rate is RM 0.10 per every 1 point. You currently have '.$row_payment['cust_points'].' points.</div>                                                    </div>
                                                 </div> 
                                                 <div class="order_summary_container">
                                                     <div class="justify-content-between d-flex align-items-center">
@@ -1222,7 +1482,8 @@
                                                     <div class="order_summary_details">
                                                         <div class="d-flex justify-content-between">
                                                             <span>Subtotal</span>
-                                                            <div id="sub" class="subtotal">RM 0.00</div>
+                                                            <div class="subtotal">RM 0.00</div>
+                                                            <input type="hidden" id="sub" name="sub">
                                                         </div>
                                                         <div class="d-flex justify-content-between">
                                                             <span>Discount</span>
@@ -1232,15 +1493,24 @@
                                                             <span>Points</span>
                                                             <div id="pts" class="points_converted">-RM 0.00</div>
                                                         </div>
-                                                        <div class="description" style="margin-top: 5px;font-size: 14px;line-height: 1.1;color: #244f53;">After payment, you can earn <span id="earn_point" style="font-size: 14px;line-height: 1.1;color: #244f53;"></span> point(s).</div>
+                                                        <div class="btm-pt">
+                                                        <div class="description" style="margin-top: 5px;font-size: 14px;line-height: 1.1;color: #244f53;">After payment, you can earn <span id="earn_point" style="font-size: 14px;line-height: 1.1;color: #244f53;"></span> point(s).
+                                                            <input type="hidden" id="earn_point_input" name="earn_point_value">
+                                                        </div>
+                                                            <div id="tooltip">
+                                                                <i class="far fa-question-circle"></i>
+                                                                <span class="tooltip-content">You can earn:<br>~ 5 pts every up to RM 20 <br>~ 10 pts every up to RM 50<br>~ 50 pts every up to RM 80<br>purchase.</span>
+                                                            </div>
+                                                        </div>
                                                         <hr>
                                                         <div class="d-flex justify-content-between align-items-end">
                                                             <span class="grand_total">Grand Total</span>
                                                             <div class="price_total">RM 0.00</div>
+                                                            <input type="hidden" id="totalprice" name="totalprice">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="submit" name="submit_order" id="submit_order" class="submit_order">
+                                                <input type="submit" id="submit_order" name="submit_order" class="submit_order">
                                                 <div class="cancel_button">Cancel</div> 
                                             </div>
                                         </div>';

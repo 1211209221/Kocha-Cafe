@@ -2658,9 +2658,9 @@ input:focus, select:focus, textarea:focus{
 
 .cart .payment_points .description{
 	margin-top: 8px;
-	font-size: 15px;
-	line-height: 1.1;
-	color: #244f53;
+    font-size: 15px;
+    line-height: 1.1;
+    color: #244f53;
 }
 
 .cart .order_summary_container{

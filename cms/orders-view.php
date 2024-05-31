@@ -88,29 +88,11 @@
     ?>
     
     <style>
-        .item-detail{
-            width: 46%;
-            display: flex;
-            background-color: #fff;
-            border-radius: 10px;
-            margin:10px;
-        }
         .item_image{
             width: 50%;
             max-height: 80px;
             max-width: 80px;
-            margin: 10px;
-        }
-        .requirement{
-            margin: 10px;
-            border-radius: 10px;
-            width: 100%;
-            padding-bottom: 40px;
-        }
-        .requirement span{
-            color: #8f8f8f;
-            font-size: 16px;
-            padding-left: 15px;
+            margin: 3px;
         }
         .replybtn{
             width: 50%;
@@ -138,15 +120,64 @@
             transform: scale(1.1);
             transition:0.15s;
         }
-        .file-box a{
-            color: #5a9498;
-            font-weight: 600;
+        table{
+            font-weight: 800;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #495057;
         }
-        .file-box a:active{
-            color: #000;
+        table .thead-light th {
+            color: #495057;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
         }
-        .requirement p{
-            margin:unset;
+        table th{
+            padding: 6px !important;
+            font-size:17px;
+            border-top: 0px !important;
+            border-bottom: 0px solid white !important;
+        }
+        table th:last-child, table td:last-child{
+            border-top-right-radius: 7px;
+            border-bottom-right-radius: 7px;
+        }
+        table td {
+            padding: 8px 5px !important;
+            vertical-align: middle;
+            border-top: 0px !important;
+        }
+        table tr .t_no {
+            width: 5%;
+            padding-left: 15px !important;
+            border-top-left-radius: 7px;
+            border-bottom-left-radius: 7px;
+        }
+        table .t_qty, table .t_action, table .t_no, table .t_pic{
+            text-align:center;
+            vertical-align:middle;
+        }
+        table .t_action i{
+            cursor: pointer;
+        }
+        table .t_action .fas{
+            color:#5a9498;
+        }
+        table .t_action i:hover{
+            color:#5a9498;
+            transform: scale(1.15);
+            transition:0.15s;
+        }
+        table tr:nth-child(even) {
+            border-top-right-radius: 7px;
+            background-color: #f4f8fa;
+        }
+        table tr:nth-child(odd) {
+            background-color: white;
+        }
+        table tr span{
+            font-size: 15px;
+            font-weight: 400;
+            color: gray;
         }
         .done_btn{
             display: block;
@@ -171,18 +202,20 @@
             transform: scale(1.05);
             transition:0.15s;
         }
-        @media (max-width: 770px) {
-            .item-detail{
-                width: 100%
-            }
+        table tr.saturated:nth-child(odd) {
+            background-color: #cad2d2 !important;
+            filter: saturate(0.2);
+        }
+        table tr.saturated:nth-child(even) {
+            background-color: #c0c7c7 !important;
+            filter: saturate(0.2);
         }
 
-        @media (max-width: 500px) {
-            .file-box{
-            width: 100%;
-            
+        @media (max-width: 600px) {
+            table .t_pic{
+                display:none;
             }
-    }
+        }
     </style>
     <?php
     $sqlall = "SELECT * FROM customer_orders WHERE order_ID = $order_ID";
@@ -243,7 +276,18 @@
                             </div>
                             <hr style="width:100%;">
                         <div class='item_detail_container'>
-                            <div name="delivery" id="delivery" style="width:100%;border: #e9ecef 1px solid;background-color: #e9ecef;border-radius: 7px;font-size: 18px;padding: 10px;display:flex;flex-wrap:wrap;justify-content: space-between;">
+                            <div name="delivery" id="delivery" style="width:100%;border-radius: 7px;font-size: 18px;padding: 10px;display:flex;flex-wrap:wrap;justify-content: space-between;">
+                            <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="t_no">No.</th>
+                                            <th class="t_pic">Image</th>
+                                            <th class="t_item">Items</th>
+                                            <th class="t_qty">Quantity</th>
+                                            <th class="t_action act1">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody border="transparent">
                                 <?php
                                 
                                 $no_count = 0;
@@ -251,13 +295,15 @@
                                 $sql_get_cart = "SELECT order_contents FROM customer_orders WHERE order_ID = $order_ID  AND trash = 0";
                                 $result_get_cart = $conn->query($sql_get_cart);
                                 if ($result_get_cart->num_rows > 0) {
-                                    $i=1;
                                     while ($row_get_cart = $result_get_cart->fetch_assoc()) {
                                         $items[] = "";
                                         $items = explode("},{", $row_get_cart['order_contents']);
                                         $items = array_filter($items, 'strlen');
                                         if (count($items) != 0){
                                             foreach ($items as $item) {
+                                            $no_count++;
+                                            echo "<tr>";
+                                            echo"<td class='t_no'>".$no_count."</td>";
                                                 $item = trim($item, "{}");
                                                 $details = explode(",", $item);
     
@@ -285,10 +331,10 @@
                                                             $src = "data:$mime_type;base64,$base64";
 
                                                             // Display all items from customer order
-                                                            echo '<div class="item-detail" id="item'.$i.'">
+                                                            echo '<td class="t_pic">
                                                                 <img src="'.$src.'" class="item_image">
-                                                                <div class="requirement" style="position:relative;">'.
-                                                                    $item_qty.' x '.$item_name;
+                                                                </td>';
+                                                            echo '<td class="t_item">'.$item_name;
                                                                     if (!empty($matches[1])) {
                                                                         foreach ($matches[1] as $match) {
                                                                             $customs = explode(',', $match);
@@ -304,22 +350,25 @@
                                                                     if(!empty($item_request)){
                                                                         echo '<br><span>- ' . $item_request . '</span>';
                                                                     }
-                                                            echo '<p class="done_btn" onclick="toggleSaturation(\'item'.$i.'\')">Mark as Done</p></div>
-                                                            </div>';
-                                                            ++$i;
+                                                            echo '</td>';
+                                                            
                                                         }
                                                         
                                                     }
                                                 }
+                                                echo '<td class="t_qty">'.$item_qty.'</td>';
+                                                echo '<td class="t_action act1"><i title="Mark as Done" class="far fa-check-square toggle-icon"></i></td>';
+                                                echo "</tr>";
 
                                                 }
                                             }
                                         }
                                     }
                                                 
-                                                    
 
                                 ?>
+                                    </tbody> 
+                                </table>
                             </div>
                         </div>
                         <hr style="width:100%;">
@@ -350,39 +399,36 @@
                 $conn->close();
                 ?>
                 <script>
+                    // Function to toggle the icon class
+                    function toggleIcon(event) {
+                        const icon = event.currentTarget;
+                        const row = icon.closest('tr');
+
+                        if (icon.classList.contains("far")) {
+                            icon.classList.remove("far");
+                            icon.classList.add("fas");
+                        } else if (icon.classList.contains("fas")) {
+                            icon.classList.remove("fas");
+                            icon.classList.add("far");
+                        }
+
+                        row.classList.toggle("saturated");
+                    }
+
+                    // Select all icons with the class "toggle-icon"
+                    const icons = document.querySelectorAll(".toggle-icon");
+
+                    // Add event listeners to each icon
+                    icons.forEach(icon => {
+                        icon.addEventListener("click", toggleIcon);
+                    });
+                </script>
+                <script>
                     function confirmAction(message) {
                         return confirm("Are you sure you want to " + message + "?");
                     }
                   
                 </script>
-                <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        applySavedSaturation();
-    });
-
-    function applySavedSaturation() {
-        var itemDetailDivs = document.querySelectorAll('.item-detail');
-        itemDetailDivs.forEach(function(div) {
-            var id = div.id;
-            if (localStorage.getItem(id) === 'saturated') {
-                div.style.filter = 'saturate(0.2)';
-            } else {
-                div.style.filter = 'saturate(1)';
-            }
-        });
-    }
-
-    function toggleSaturation(id) {
-        var itemDetailDiv = document.getElementById(id);
-        if (itemDetailDiv.style.filter === 'saturate(0.2)') {
-            itemDetailDiv.style.filter = 'saturate(1)';
-            localStorage.setItem(id, 'normal');
-        } else {
-            itemDetailDiv.style.filter = 'saturate(0.2)';
-            localStorage.setItem(id, 'saturated');
-        }
-    }
-</script>
             
     </body>
 </html>

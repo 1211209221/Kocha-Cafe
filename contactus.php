@@ -220,12 +220,12 @@
                 <div class="contact-form">
                     <div class="maparea">
                         <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
+                        <iframe class="fade_in" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
                         2s4%2C%2044%2C%20Jalan%20Desa%2C%20Taman%20Desa%2C%2058100%20Kuala%20Lumpur%2C%20Wilayah%20Persekutuan%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1710597219405!5m2!1sen!2smy" 
-                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" ></iframe>
                         
                     </div>
-                    <div class="form-box">
+                    <div class="form-box fade_in">
                         <div class="contact-info">
                             <h4>CONTACT INFO</h4>
                             <div class="box">
