@@ -558,7 +558,7 @@
             color: #5a9498;
             cursor: pointer;
             padding: 10px;
-            margin: 2px 0;
+            margin: 4px 0;
             width: 100%;
             border: none;
             border-radius: 5px;
@@ -628,6 +628,32 @@
         .left-box .accordion .status i{
             font-size: 12px;
             padding: 5px;
+        }
+        .panel .simple_area{
+            display: flex;
+            background-color: #eeeeee;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .panel .simple_area .small_area{
+            width: 50%;
+            flex-direction: column;
+            display: flex;
+        }
+        .small_area .o_title{
+            font-weight: 800;
+            font-size: 13px;
+        }
+        .small_area .o_title i{
+            margin-right: 5px;
+        }
+        .small_area .o_content{
+            font-size: 22px;
+            font-weight: 800;
+            color: #5a9498;
+        }
+        .panel .bottom_area{
+            margin-top:5px;
         }
         @media (max-width: 508px){
             .tooltip-content{
@@ -1785,12 +1811,13 @@
                                             echo '<span class="sta-deliver status"><i class=\'fas fa-truck-loading\'></i>Delivering</span></button>';
                                         }
 
-                                    $sql_get_cart = "SELECT order_contents FROM customer_orders WHERE order_ID = $oid  AND trash = 0";
-                                        $result_get_cart = $conn->query($sql_get_cart);
-                                        if ($result_get_cart->num_rows > 0) {
-                                            while ($row_get_cart = $result_get_cart->fetch_assoc()) {
+                                        $date = $row['order_date'];
+                                        $sql_get_payment = "SELECT * FROM payment WHERE payment_time = '$date' AND trash = 0";
+                                        $result_get_payment = $conn->query($sql_get_payment);
+                                        if ($result_get_payment->num_rows > 0) {
+                                            while ($row_payment = $result_get_payment->fetch_assoc()) {
                                                 $items[] = "";
-                                                $items = explode("},{", $row_get_cart['order_contents']);
+                                                $items = explode("},{", $row_payment['payment_items']);
                                                 $items = array_filter($items, 'strlen');
                                                 if (count($items) != 0){
                                                     foreach ($items as $item) {
@@ -1807,14 +1834,41 @@
                                                         preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
 
                                                         echo '<div class="panel">
-                                                        <div><p>Thank you for your purchase! Your payment details are below.</p>
-                                                            <div>
-                                                                <span>TOTAL</span>
-                                                                <span>RM 50.00</span>
-                                                            </div>
-                                                            <div>
-                                                                <div>Payment Details</div>
-                                                                <div>Order Details</div>
+                                                        <div><p>Thank you for your purchase! Your payment details are below:</p>
+                                                            <div class="simple_area">
+                                                                <div class="small_area">
+                                                                    <span class="o_title"><i class="far fa-dollar-sign"></i> TOTAL COST</span>
+                                                                    <span class="o_content">RM '.$row['order_total'].'</span>
+                                                                </div>
+                                                                <div class="small_area">
+                                                                    <span class="o_title"><i class="fas fa-store"></i>ORDERED FROM</span>
+                                                                    <span class="o_content">Kocha Café</span>
+                                                                </div>
+                                                            </div>';
+                                                            
+                                                        $paymentID = $row_payment['payment_ID'];
+                                                        $payment_cardnum = $row_payment['payment_cardnum'];
+
+                                                        echo '<div class="bottom_area">
+                                                                <div><p>Payment Details</p>
+                                                                    <div class="attribute">
+                                                                        <span>Invoice ID</span>
+                                                                        <span>'.$paymentID.'</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span>Payment Method</span>
+                                                                        <span><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span>Delivery Location</span>
+                                                                        <span>'.$row['order_address'].'</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span>Order Time</span>
+                                                                        <span>'.$row['order_date'].'</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div><p>Order Details</p></div>
                                                             </div>
                                                         </div></div>';
                                                         
@@ -2080,7 +2134,7 @@
                                 <span>Showing to of results</span>
                             </div>
                         </div>
-                    </div>
+                    
                         </div>
                         <div id="voucher" class="tabcontent" style="display: none;">
                             <h5 class="title"><i class="fas fa-tags"></i> My Vouchers</h5>

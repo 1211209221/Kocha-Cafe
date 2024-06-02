@@ -423,12 +423,20 @@
                     // Generate the new order ID
                     $newOrderID = generate_order_id($conn);
 
+                    // generate invoice number using the current timestamp
+                    function generateInvoiceNumber() {
+                        date_default_timezone_set('Asia/Kuala_Lumpur');
+                        return 'INV-' . date('YmdHis'); // Example: INV-20240529123000
+                    }
+
+                    // Generate a new invoice number
+                    $invoice_number = generateInvoiceNumber();
 
                     //update
                     $order_date = date('Y-m-d H:i:s');
                     // Construct the SQL query to insert menu item data
                     $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents, order_subtotal, order_total, order_address, order_date,cust_ID) VALUES ('$newOrderID','$string', $subtotal, $totalprice, '$add','$order_date','$cust_ID')";
-                    $payment = "INSERT INTO payment (payment_name, payment_items, payment_subtotal, payment_total, payment_cardnum, payment_time,cust_ID) VALUES ('$holder_name','$string',$subtotal, $totalprice,'$last_four_digits','$order_date','$cust_ID')";
+                    $payment = "INSERT INTO payment (payment_ID, payment_name, payment_items, payment_subtotal, payment_total, payment_cardnum, payment_time,cust_ID) VALUES ('$invoice_number','$holder_name','$string',$subtotal, $totalprice,'$last_four_digits','$order_date','$cust_ID')";
                     //update point
                     $update_point = "UPDATE customer SET cust_points = $resultafterpay  WHERE cust_ID = $cust_ID AND trash = 0";
 
