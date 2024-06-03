@@ -788,9 +788,9 @@ select{
     margin-right: 5px;
     font-size: 16px;
 }
-.left-opt .logout-opt a:hover{
+.left-opt .logout-opt:hover{
     color: #505050;
-    border: 3px solid #505050;
+    transform: scale(1.1);
     transition: 0.15s ease-in-out;
 }
 .bottom-info .right-detail{

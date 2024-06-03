@@ -348,6 +348,51 @@
                 
                 
             }
+            if(isset($_POST['order_received'])){
+                //update tracking status
+                $orderid = $_POST['orderid'];
+                $update_trackingstatus = "UPDATE customer_orders SET tracking_stage = 3 WHERE order_ID = $orderid AND trash = 0";
+                if($conn->query($update_trackingstatus) === TRUE) {
+                    $_SESSION['update_track_success'] = true;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                } else {
+                    $_SESSION['update_track_error'] = "Error updating record: " . $conn->error;
+                    echo '<script>';
+                    echo 'window.location.href = "profile.php";';
+                    echo '</script>';
+                    exit();
+                }
+            }
+
+            if (isset($_SESSION['update_track_success']) && $_SESSION['update_track_success'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Order is received, you can rate now!
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['update_track_success']);
+            }
+            if (isset($_SESSION['update_track_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-check-circle"></i>Failed to update tracking stage. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                echo '<div class="error_message">' . $_SESSION['update_track_error'] . '</div>';
+
+                unset($_SESSION['update_pro_error']);
+            }
             if (isset($_SESSION['update_pro_success']) && $_SESSION['update_pro_success'] === true) {
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
@@ -709,6 +754,24 @@
             font-weight: 400;
             margin-left: 17px;
             font-size:14px;
+        }
+        .button{
+            margin:10px 0px 0px 0px;
+        }
+        input[type="button"]{
+            margin-left:3px;
+            background-color:#E2857B;
+            color:#fff;
+            border:1px solid #E2857B;
+            outline:none;
+            padding: 4px 7px;
+            border-radius:7px;
+            font-size:16px;
+            position:relative;
+            margin-top:3px;
+        }input[type="button"]:hover{
+            transform:scale(1.1);
+            transition:0.15s;
         }
         @media (max-width: 990px){
             .left-box .bottom_area{
@@ -1875,6 +1938,23 @@
                                     echo '<div class="left-box">';
                                     while ($row = $result->fetch_assoc()) {
                                         $oid = $row['order_ID'];
+                                        echo '<div id="confirmreceive" class="modal">
+                                        <form class="profile-edit-content animate" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">
+                                            <div class="xcontainer">
+                                                <span class="txt" style="color: #5a9498;"><i class="fas fa-exclamation" style="color: #5a9498;"></i> Note</span>
+                                                <span onclick="document.getElementById(\'confirmreceive\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
+                                              </div>
+                                          <div class="pcontainer">
+                                            <p style="margin-bottom: initial;margin:0px 17px;">Have you <b style="color:#5a9498;">RECEIVED</b> this order?</p>
+                                            <p style="margin:0px 17px 5px;">After you confirm it, you can <b style="color:#5a9498;">RATE</b> the product you have ordered!</p>
+                                            <input type="hidden" name="orderid" value="'.$oid.'">
+                                            <button type="submit" name="order_received" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
+                                          </div>
+                                          <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
+                                            <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;margin:unset;" onclick="document.getElementById(\'confirmreceive\').style.display=\'none\'">Cancel</button>
+                                          </div>
+                                        </form>
+                                      </div>';
                                         $order_id = "K_".$row['order_ID'];
                                         echo '<button class="accordion" title="Expand"><p>'.$order_id.'</p>
                                                 <span class="order_date" style="font-size: 15px;">'.$row['order_date'].'</span>';
@@ -1888,13 +1968,19 @@
                                             echo '<span class="sta-deliver status"><i class=\'fas fa-truck-loading\'></i>Delivering</span></button>';
                                         }
 
+                                    
+
                                         $date = $row['order_date'];
                                         $sql_get_payment = "SELECT * FROM payment WHERE payment_time = '$date' AND trash = 0";
                                         $result_get_payment = $conn->query($sql_get_payment);
                                         if ($result_get_payment->num_rows > 0) {
                                             while ($row_payment = $result_get_payment->fetch_assoc()) {
                                                         echo '<div class="panel">
-                                                        <div><p>Thank you for your purchase! Your payment details are below:</p>
+                                                        <div>';
+                                                        if($row['tracking_stage']==2){
+                                                            echo '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive\').style.display=\'flex\'"><hr>';
+                                                        }
+                                                        echo '<p>Thank you for your purchase! Your payment details are below:</p>
                                                             <div class="simple_area">
                                                                 <div class="small_area">
                                                                     <span class="o_title"><i class="far fa-dollar-sign"></i> TOTAL COST</span>
