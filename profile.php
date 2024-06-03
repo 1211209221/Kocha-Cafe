@@ -2272,7 +2272,14 @@
             </div>
         </div>
         <?php include 'footer.php'; ?>
-
+        <script>
+            console.log("Page will reload in 1 minute");
+            // Set an interval to reload the page every minute (60000 milliseconds)
+            setInterval(function(){
+                console.log("Reloading page...");
+                location.reload();
+            }, 60000);
+        </script>
         <script>
             window.addEventListener('DOMContentLoaded', (event) => {
                 // Check local storage for the active tab
