@@ -544,13 +544,13 @@
             width:200px
         }
         .left-box{
-            min-width:280px;
+            min-width:270px;
             background: #fff;
             padding: 15px;
             border-radius: 7px;
             overflow: scroll;
             scrollbar-width: none;
-            max-height: 400px;
+            height: 400px;
             border: 1px solid #c5c5c5;
         }
         .left-box .accordion{
@@ -655,6 +655,80 @@
         .panel .bottom_area{
             margin-top:5px;
         }
+        .left-box .bottom_area{
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            border: 1px solid darkgrey;
+            padding: 8px;
+            border-radius: 7px;
+        }
+        .bottom_area .paymentprt{
+            width: 50%;
+            margin-right: 5px;
+        }
+        .bottom_area .orderprt{
+            width: 50%;
+        }
+        .bottom_area .text{
+            font-weight: 800;
+            color: #5a9498;
+            font-size:17px;
+        }
+        .bottom_area .attribute{
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            margin-left:5px;
+        }
+        .bottom_area .attribute .payment_title{
+            font-weight: 800;
+            font-size: 15px;
+            color: #585858;
+        } 
+        .bottom_area .order_table{
+            box-shadow:none;
+            border-radius:revert;
+            border:1px solid #eeeeee;
+        }
+        table thead .desc, thead .amount{
+            font-weight: 800;
+            font-size: 16px;
+            color: #585858;
+            padding: 6px 10px;
+        }
+        tbody .desc, tbody .amount{
+            padding: 10px;
+            font-size: 15px;
+            font-weight:800;
+        }
+        tbody .noborder{
+            border: none;
+        }
+        .extra{
+            font-weight: 400;
+            margin-left: 17px;
+            font-size:14px;
+        }
+        @media (max-width: 990px){
+            .left-box .bottom_area{
+                flex-direction:column;
+            }
+            .bottom_area .paymentprt{
+                width: 100%;
+                margin-right: none;
+            }
+            .bottom_area .orderprt{
+                width: 100%;
+            }
+        }
+        @media (max-width: 770px){
+            .left-box .order_date{
+                font-size: 14px;
+                position: static;
+                font-weight: 400;
+            }
+        }
         @media (max-width: 508px){
             .tooltip-content{
                 left: 85%;
@@ -667,6 +741,9 @@
                 left: 106%;
                 top: 33%;
                 transform: translate(-50%);
+            }
+            .small_area .o_content{
+                font-size: 18px;
             }
         }
         </style>
@@ -1620,7 +1697,7 @@
                         </div>
                         <div class="opt-container">
                             <ul>
-                            <li class="tablink active" onclick="opencontent(event, 'profile')"><i class="fas fa-address-card"></i> <span>My Profile</span></li>
+                            <li class="tablink active" onclick="opencontent(event, 'profile')"><i class="fas fa-address-card"></i> <span>My Profile </span></li>
                             <li class="tablink" onclick="opencontent(event, 'tracking')"><i class="fas fa-hand-holding-box"></i> <span>Order Tracking</span></li>
                             <li class="tablink" onclick="opencontent(event, 'history')"><i class="fas fa-history"></i> <span>Order History</span></li>
                             <li class="tablink" onclick="opencontent(event, 'voucher')"><i class="fas fa-tags"></i> <span>My Vouchers</span></li>
@@ -1816,23 +1893,6 @@
                                         $result_get_payment = $conn->query($sql_get_payment);
                                         if ($result_get_payment->num_rows > 0) {
                                             while ($row_payment = $result_get_payment->fetch_assoc()) {
-                                                $items[] = "";
-                                                $items = explode("},{", $row_payment['payment_items']);
-                                                $items = array_filter($items, 'strlen');
-                                                if (count($items) != 0){
-                                                    foreach ($items as $item) {
-                                                        $item = trim($item, "{}");
-                                                        $details = explode(",", $item);
-                
-                                                        $item_ID = trim($details[0], "()");
-                                                        $item_name = trim($details[1], "()");
-                                                        $item_price = trim($details[2], "()");
-                                                        $item_qty = trim($details[3], "()");
-                                                        $item_sumprice = trim($details[4], "()");
-                                                        $item_request = trim($details[5], "()");
-                                                        $item_custom = implode(',', array_slice($details, 6));
-                                                        preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
-
                                                         echo '<div class="panel">
                                                         <div><p>Thank you for your purchase! Your payment details are below:</p>
                                                             <div class="simple_area">
@@ -1848,32 +1908,98 @@
                                                             
                                                         $paymentID = $row_payment['payment_ID'];
                                                         $payment_cardnum = $row_payment['payment_cardnum'];
+                                                        $point_redeem = ($row_payment['payment_subtotal'] - $row_payment['payment_total'])/0.1;
+                                                        $pointconvert =  $point_redeem * 0.1;
 
                                                         echo '<div class="bottom_area">
-                                                                <div><p>Payment Details</p>
+                                                                <div class="paymentprt"><p class="text">Payment Details</p>
                                                                     <div class="attribute">
-                                                                        <span>Invoice ID</span>
-                                                                        <span>'.$paymentID.'</span>
+                                                                        <span class="payment_title">Invoice ID</span>
+                                                                        <span class="payment_det">'.$paymentID.'</span>
                                                                     </div>
                                                                     <div class="attribute">
-                                                                        <span>Payment Method</span>
-                                                                        <span><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
+                                                                        <span class="payment_title">Payment Method</span>
+                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
                                                                     </div>
                                                                     <div class="attribute">
-                                                                        <span>Delivery Location</span>
-                                                                        <span>'.$row['order_address'].'</span>
+                                                                        <span class="payment_title">Delivery Location</span>
+                                                                        <span class="payment_det">'.$row['order_address'].'</span>
                                                                     </div>
                                                                     <div class="attribute">
-                                                                        <span>Order Time</span>
-                                                                        <span>'.$row['order_date'].'</span>
+                                                                        <span class="payment_title">Order Time</span>
+                                                                        <span class="payment_det">'.$row['order_date'].'</span>
                                                                     </div>
                                                                 </div>
-                                                                <div><p>Order Details</p></div>
+                                                                <div class="orderprt"><p class="text">Order Details</p>
+                                                                    <div>
+                                                                        <table class="order_table">
+                                                                            <thead class="thead-light">
+                                                                                <tr style="background-color: #e9ecef;">
+                                                                                    <th class="desc">Description</th>
+                                                                                    <th class="amount">Amount</th>
+                                                                                </tr>
+                                                                            <thead>
+                                                                            <tbody border="transparent">';
+                                                                                
+                                                                                $items[] = "";
+                                                                                $items = explode("},{", $row_payment['payment_items']);
+                                                                                $items = array_filter($items, 'strlen');
+                                                                                if (count($items) != 0){
+                                                                                    foreach ($items as $item) {
+                                                                                        $item = trim($item, "{}");
+                                                                                        $details = explode(",", $item);
+                                                
+                                                                                        $item_ID = trim($details[0], "()");
+                                                                                        $item_name = trim($details[1], "()");
+                                                                                        $item_price = trim($details[2], "()");
+                                                                                        $item_qty = trim($details[3], "()");
+                                                                                        $item_sumprice = trim($details[4], "()");
+                                                                                        $item_request = trim($details[5], "()");
+                                                                                        $item_custom = implode(',', array_slice($details, 6));
+                                                                                        preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
+
+                                                                                        echo '<tr class="noborder"><td class="desc">
+                                                                                            '.$item_qty.'x <span>'.$item_name.'</span>';
+                                                                                            if (!empty($matches[1])) {
+                                                                                                foreach ($matches[1] as $match) {
+                                                                                                    $customs = explode(',', $match);
+                                                                                                    if (count($customs) >= 2) {
+                                                                                                        $custom_key = trim($customs[0]);
+                                                                                                        $custom_value = trim($customs[1]);
+                                                                                                        if (!empty($custom_key) && !empty($custom_value)) {
+                                                                                                            echo '<br><span class="extra">' . $custom_value . '</span>';
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            if(!empty($item_request)){
+                                                                                                echo '<br><span class="extra">' . $item_request . '</span>';
+                        
+                                                                                            }
+                                                                                        echo '</td><td class="amount">RM '.$item_sumprice.'</td></tr>';
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                            
+                                                                            
+                                                                            echo '<tr style="border-top: 2px solid lightgray;border-bottom: none;">
+                                                                                <td class="desc">Subtotal</td><td class="amount">RM '.$row_payment['payment_subtotal'].'</td>
+                                                                            </tr>
+                                                                            <tr class="noborder">
+                                                                                <td class="desc">Point Redeem</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                            </tr>
+                                                                            <tr class="noborder" style="background-color: #fffae4;">
+                                                                                <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$row_payment['payment_total'].'</td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div></div>';
                                                         
-                                                    }
-                                                }
+                                                    
+                                                
                                             }
                                         }
 
