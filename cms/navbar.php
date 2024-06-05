@@ -1,5 +1,17 @@
-<?php 
+<?php
+
     $current_page = basename($_SERVER['PHP_SELF']);
+
+    if(isset($_SESSION["admin"])) {
+        $admin_ID = $_SESSION["admin"];
+        $sql0 = "SELECT * FROM admin WHERE admin_ID = '$admin_ID'";
+        $result0 = mysqli_query($conn, $sql0);
+        $admin = mysqli_fetch_array($result0, MYSQLI_ASSOC);
+    } else {
+        // If "user" key is not set, set $user to an empty array
+        $admin = array();
+        $admin_ID = 0;
+    }
 ?>
 <style>
     body{
@@ -183,7 +195,7 @@
             </a>
         </div>
         <div class="page_container">
-            <a>
+            <a href = "logout.php">
                 <div>
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
@@ -215,7 +227,7 @@
                     </div>
                 </div>
                 <div class="icons">
-                    <a class="profile"><i class="far fa-user"></i><span>Username</span></a>
+                    <a class="profile"><i class="far fa-user"></i><span><?php echo $admin['admin_username']; ?></span></a>
                 </div>
             </div>
         </div>
