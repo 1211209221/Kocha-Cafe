@@ -73,7 +73,10 @@
 
                     $maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
 
+                    $edit_set = 0;
+
                     if ($conn->query($sql) === TRUE) {
+                        $edit_set = 1;
                         // Check if file was uploaded without errors
                         if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
                             if ($_FILES["image"]["size"] <= $maxFileSize) {
@@ -86,14 +89,17 @@
                                 $stmt = $conn->prepare("UPDATE menu_images SET filename=?, mime_type=?, data=? WHERE image_ID=?");
                                 $stmt->bind_param("sssi", $filename, $mime_type, $data, $item_ID);
                                 $stmt->execute();
-
-                                $_SESSION['editItem_success'] = true;
                             } else {
                                 // File is too large
                                 $_SESSION['editItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
+                                $edit_set = 0;
                             }
                         } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
                             $_SESSION['editItem_image_error'] = "Error uploading file.";
+                        }
+                        
+                        if($edit_set == 1){
+                            $_SESSION['editItem_success'] = true;
                         }
 
                         header("Location: items-edit.php?ID=$item_ID");

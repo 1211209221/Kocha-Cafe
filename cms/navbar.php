@@ -13,6 +13,8 @@
         $admin_ID = 0;
         $admin['admin_name']="Admin";
     }
+
+    var_dump($_SESSION);
 ?>
 <style>
     body{
