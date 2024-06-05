@@ -187,14 +187,6 @@
                 </a>
             </div>
         </div>
-        <div class="page_container" onclick="openNav()">
-            <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 7)">
-                <div>
-                    <i class="fas fa-cog"></i>
-                </div>
-                <span>Settings</span>
-            </a>
-        </div>
         <div class="page_container">
             <a href = "logout.php">
                 <div>
