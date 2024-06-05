@@ -175,7 +175,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to add item. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to add item. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -203,7 +203,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to post. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to post. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -718,13 +718,35 @@
                         <div class="ratings_filter">
                         <form id="ratingForm" action="item.php?ID=<?php echo $item_ID; ?>" method="get">
                             <?php
-                                if(!empty($user)){
+                                $sql_get_orders = "SELECT * FROM customer_orders WHERE cust_ID = $cust_ID AND tracking_stage = 3 AND trash = 0";
+                                $result_get_orders = mysqli_query($conn, $sql_get_orders);
+                                
+                                $ordered = 0;
+                                
+                                if (mysqli_num_rows($result_get_orders) > 0) {
+                                    while ($row_get_cart = mysqli_fetch_assoc($result_get_orders)) {
+                                        $items = explode("},{", $row_get_cart['order_contents']);
+                                        $items = array_filter($items, 'strlen');
+                                
+                                        if (count($items) != 0) {
+                                            foreach ($items as $item) {
+                                                $item = trim($item, "{}");
+                                                $details = explode(",", $item);
+                                                $order_item_ID = trim($details[0], "()");
+
+                                                if ($item_ID == $order_item_ID) {
+                                                    $ordered = 1;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if(!empty($user) && $ordered == 1){
                                     $sql_review_limit = "SELECT * FROM customer_reviews WHERE item_ID = $item_ID AND cust_ID = $cust_ID AND trash = 0";
 
                                     $result_review_limit = $conn->query($sql_review_limit);
                                     if ($result_review_limit->num_rows > 0) {
-                                        while ($row_review_limit = $result_review_limit->fetch_assoc()) {
-                                        }
                                     }
                                     else{
                                         echo '<div class="review_button">Write Review</div>';

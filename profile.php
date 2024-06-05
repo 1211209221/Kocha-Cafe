@@ -383,7 +383,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update tracking stage. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to update tracking stage. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -409,7 +409,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update profile. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to update profile. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -435,7 +435,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to change password. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to change password. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -462,7 +462,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to change password. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to change password. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -488,7 +488,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete address. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to delete address. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -514,7 +514,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update delivery address. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to update delivery address. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -540,7 +540,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to add address. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to add address. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>

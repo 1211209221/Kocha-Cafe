@@ -71,25 +71,31 @@
                                 item_options = '$item_options'
                             WHERE item_ID = $item_ID";
 
+                    $maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
+
                     if ($conn->query($sql) === TRUE) {
                         // Check if file was uploaded without errors
                         if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
-                            $filename = $_FILES["image"]["name"];
-                            $tempname = $_FILES["image"]["tmp_name"];
-                            $mime_type = mime_content_type($tempname);
-                            $data = file_get_contents($tempname);
+                            if ($_FILES["image"]["size"] <= $maxFileSize) {
+                                $filename = $_FILES["image"]["name"];
+                                $tempname = $_FILES["image"]["tmp_name"];
+                                $mime_type = mime_content_type($tempname);
+                                $data = file_get_contents($tempname);
 
-                            // Insert image data into database
-                            $stmt = $conn->prepare("UPDATE menu_images SET filename=?, mime_type=?, data=? WHERE image_ID=?");
-                            $stmt->bind_param("sssi", $filename, $mime_type, $data, $item_ID);
-                            $stmt->execute();
+                                // Insert image data into database
+                                $stmt = $conn->prepare("UPDATE menu_images SET filename=?, mime_type=?, data=? WHERE image_ID=?");
+                                $stmt->bind_param("sssi", $filename, $mime_type, $data, $item_ID);
+                                $stmt->execute();
 
+                                $_SESSION['editItem_success'] = true;
+                            } else {
+                                // File is too large
+                                $_SESSION['editItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
+                            }
                         } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
-                            $_SESSION['editItem_image_error'] = true;
-                            header("Location: items-edit.php?ID=$item_ID");
-                            exit();
+                            $_SESSION['editItem_image_error'] = "Error uploading file.";
                         }
-                        $_SESSION['editItem_success'] = true;
+
                         header("Location: items-edit.php?ID=$item_ID");
                         exit();
                     } else {
@@ -163,7 +169,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to edit item. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to edit item. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -176,13 +182,26 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to edit item image. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to edit item image. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
                         </div>';
 
                 unset($_SESSION['editItem_image_error']);
+            }
+
+            if (isset($_SESSION['editItem_imageSize_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-times-circle"></i>File size exceeds the maximum limit of 1MB..
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['editItem_imageSize_error']);
             }
 
             if (isset($_SESSION['deleteItem_success']) && $_SESSION['deleteItem_success'] === true) {
@@ -202,7 +221,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete item. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to delete item. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -215,7 +234,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to delete item image...
+                                    <i class="fas fa-times-circle"></i>Failed to delete item image...
                                 </div>
                                 <div class="timer"></div>
                             </div>
