@@ -12,8 +12,6 @@
         $admin = array();
         $admin_ID = 0;
     }
-
-    var_dump($_SESSION);
 ?>
 <style>
     body{
