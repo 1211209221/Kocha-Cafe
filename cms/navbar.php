@@ -11,6 +11,7 @@
         // If "user" key is not set, set $user to an empty array
         $admin = array();
         $admin_ID = 0;
+        $admin['admin_name']="Admin";
     }
 ?>
 <style>
@@ -227,7 +228,7 @@
                     </div>
                 </div>
                 <div class="icons">
-                    <a class="profile"><i class="far fa-user"></i><span><?php echo $admin['admin_username']; ?></span></a>
+                    <a class="profile"><i class="far fa-user"></i><span><?php echo $admin['admin_name']; ?></span></a>
                 </div>
             </div>
         </div>
