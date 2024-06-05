@@ -36,7 +36,7 @@
             <img src="../images/logo/logo_2.png" class="nav_logo">
             <img src="../images/logo/logo_icon_2.png" class="nav_logo_expand">
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a href="#.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 0)">
                 <div>
                     <i class="fas fa-home-lg"></i>
@@ -52,7 +52,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == 'customers-all.php' || $current_page == 'customers-add.php' || $current_page == 'customers-edit.php' || $current_page == 'admins-all.php' || $current_page == 'admins-add.php' || $current_page == 'admins-edit.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 1)">
                 <div>
                     <i class="fas fa-user"></i>
@@ -74,8 +74,8 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
-            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php' || $current_page == 'categories.php' || $current_page == 'customization.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 2)">
+        <div class="page_container" onclick="openNav()">
+            <a class="<?php echo ($current_page == 'items-all.php' || $current_page == 'items-add.php' || $current_page == 'items-edit.php' || $current_page == 'categories.php' || $current_page == 'customization.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 2)" >
                 <div>
                     <i class="fas fa-utensils"></i>
                 </div>
@@ -109,7 +109,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == 'orders-all.php' || $current_page == 'orders-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 3)">
                 <div>
                     <i class="fas fa-clipboard-list"></i>
@@ -132,7 +132,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 4)">
                 <div>
                     <i class="fas fa-comment"></i>
@@ -148,7 +148,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
                 <div>
                     <i class="fas fa-envelope"></i>
@@ -171,7 +171,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 6)">
                 <div>
                     <i class="fas fa-ticket-alt"></i>
@@ -187,7 +187,7 @@
                 </a>
             </div>
         </div>
-        <div class="page_container">
+        <div class="page_container" onclick="openNav()">
             <a class="<?php echo ($current_page == '#.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 7)">
                 <div>
                     <i class="fas fa-cog"></i>
@@ -259,6 +259,25 @@
         }
     }
 
+    function openNav() {
+        var sidenav = document.getElementById("adminSidenav");
+        var subPagesContainers = document.querySelectorAll("[id*=subPages]");
+        var filter_darken = document.getElementById("filter_darken");
+
+        // Only run if the sidenav is not already expanded
+        if (!sidenav.classList.contains("expand")) {
+            subPagesContainers.forEach(function(subPages) {
+                if (subPages.classList.contains("toggled")) {
+                    setTimeout(function() {
+                        subPages.style.maxHeight = subPages.scrollHeight + "px";
+                    }, 1);
+                }
+            });
+
+            sidenav.classList.add("expand");
+            filter_darken.classList.add("appear");
+        }
+    }
 
     window.onload = function() {
         var subPages = document.querySelector("[id*=subPages]");
