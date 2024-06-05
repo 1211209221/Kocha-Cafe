@@ -1926,7 +1926,7 @@
                             <p>Track your current order and payment details.</p>
                             <?php
                                 //check got current order
-                                $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage != 3";
+                                $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage != 3 ORDER BY tracking_stage ASC";
                                 $result = $conn->query($cf_query);
                                 if($result && $result->num_rows == 0){
                                     echo '<div>
@@ -1938,20 +1938,20 @@
                                     echo '<div class="left-box">';
                                     while ($row = $result->fetch_assoc()) {
                                         $oid = $row['order_ID'];
-                                        echo '<div id="confirmreceive" class="modal">
+                                        echo '<div id="confirmreceive'.$oid.'" class="modal">
                                         <form class="profile-edit-content animate" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">
                                             <div class="xcontainer">
                                                 <span class="txt" style="color: #5a9498;"><i class="fas fa-exclamation" style="color: #5a9498;"></i> Note</span>
-                                                <span onclick="document.getElementById(\'confirmreceive\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
+                                                <span onclick="document.getElementById(\'confirmreceive'.$oid.'\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
                                               </div>
                                           <div class="pcontainer">
                                             <p style="margin-bottom: initial;margin:0px 17px;">Have you <b style="color:#5a9498;">RECEIVED</b> this order?</p>
                                             <p style="margin:0px 17px 5px;">After you confirm it, you can <b style="color:#5a9498;">RATE</b> the product you have ordered!</p>
-                                            <input type="hidden" name="orderid" value="'.$oid.'">
+                                            <input type="text" name="orderid" value="'.$oid.'">
                                             <button type="submit" name="order_received" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
                                           </div>
                                           <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
-                                            <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;margin:unset;" onclick="document.getElementById(\'confirmreceive\').style.display=\'none\'">Cancel</button>
+                                            <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;margin:unset;" onclick="document.getElementById(\'confirmreceive'.$oid.'\').style.display=\'none\'">Cancel</button>
                                           </div>
                                         </form>
                                       </div>';
@@ -1978,7 +1978,7 @@
                                                         echo '<div class="panel">
                                                         <div>';
                                                         if($row['tracking_stage']==2){
-                                                            echo '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive\').style.display=\'flex\'"><hr>';
+                                                            echo '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive'.$oid.'\').style.display=\'flex\'"><hr>';
                                                         }
                                                         echo '<p>Thank you for your purchase! Your payment details are below:</p>
                                                             <div class="simple_area">
@@ -1995,7 +1995,7 @@
                                                         $paymentID = $row_payment['payment_ID'];
                                                         $payment_cardnum = $row_payment['payment_cardnum'];
                                                         $point_redeem = ($row_payment['payment_subtotal'] - $row_payment['payment_total'])/0.1;
-                                                        $pointconvert =  $point_redeem * 0.1;
+                                                        $pointconvert = round($point_redeem * 0.1);
 
                                                         echo '<div class="bottom_area">
                                                                 <div class="paymentprt"><p class="text">Payment Details</p>

@@ -35,16 +35,16 @@
             if (isset($_POST['edit_submit'])){
                 // Retrieve form data
                 $trash = $_POST['cust_trash'];
-                $sql = "UPDATE customer SET trash = 1 WHERE cust_ID = $cust_ID";
+                $sql = "UPDATE customer SET trash = $trash WHERE cust_ID = $cust_ID";
                 
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['editcust_success'] = true;
-                    header("Location: admins-edit.php?ID=$cust_ID");
+                    header("Location: customers-edit.php?ID=$cust_ID");
                     exit();
                 } else {
                     $_SESSION['editcust_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: admins-edit.php?ID=$cust_ID");
+                    header("Location: customers-edit.php?ID=$cust_ID");
                     exit();
                 }
             }
@@ -54,7 +54,7 @@
             echo '<div class="toast_container">
                     <div id="custom_toast" class="custom_toast true fade_in">
                         <div class="d-flex align-items-center message">
-                            <i class="fas fa-check-circle"></i> Admin changes saved!
+                            <i class="fas fa-check-circle"></i> User changes saved!
                         </div>
                         <div class="timer"></div>
                     </div>
@@ -67,7 +67,7 @@
             echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast false fade_in">
                             <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i>Failed to edit admin. Please try again...
+                                <i class="fas fa-check-circle"></i>Failed to edit user. Please try again...
                             </div>
                             <div class="timer"></div>
                         </div>
@@ -115,7 +115,7 @@
                             <div name="delivery" title="Unable to edit" id="delivery" style="width:100%;border: #e9ecef 1px solid;background-color: #e9ecef;border-radius: 7px;font-size: 18px;padding: 2px 5px;">
                                 <?php
                                     //take out addresses
-                                    $get_address = "SELECT cust_address FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                                    $get_address = "SELECT cust_address FROM customer WHERE cust_ID = $cust_ID";
                                         $address_result = $conn->query($get_address);
                                         $address_row = mysqli_fetch_assoc($address_result);
 
@@ -187,96 +187,6 @@
                             icon.classList.add("fa-eye-slash");
                         }
                     }
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const formElements1 = document.querySelectorAll("#admin_name, #cust_phone, #admin_username, #cust_email, #admin_password");
-
-            formElements1.forEach(element => {
-                element.addEventListener("input", function () {
-                    validateForm1();
-                });
-            });
-
-            document.getElementById("edit-submit").addEventListener("click", function (event) {
-                // Validate form fields
-                if (!validateForm1()) {
-                    // Prevent form submission if validation fails
-                    event.preventDefault();
-                }
-            });
-        
-        });
-        function isValidEmail(email) {
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
-        }
-
-        function isValidPhone(phone) {
-            const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-            return re.test(String(phone).toLowerCase());
-        }
-        function validateForm1() {
-                            
-            const cust_phone = document.getElementById("cust_phone").value;
-            const cust_username = document.getElementById("cust_username").value;
-            const cust_email = document.getElementById("cust_email").value;
-            var letters = /^[a-zA-Z-' ]*$/;
-            let valid = true;
-
-            if (cust_username.trim() === "") {
-                errorDisplay1(document.getElementById("cust_username"), "*Username cannot be empty.*");
-                valid = false;
-            } else if(cust_username.length > 20){
-                errorDisplay1(document.getElementById("cust_username"), "*Username cannot be more than 20 characters.*");
-                valid = false;
-            } 
-            else {
-                clearError1(document.getElementById("cust_username"));
-            }
-
-            if (cust_phone.trim() === "") {
-                errorDisplay1(document.getElementById("cust_phone"), "*Please enter your phone number.*");
-                valid = false;
-            }else if (!cust_phone.trim().startsWith("+60")) {
-                errorDisplay1(document.getElementById("cust_phone"), "*Please enter a phone number starting with +60*");
-                valid = false;
-            } else if (!isValidPhone(cust_phone.trim())) {
-                errorDisplay1(document.getElementById("cust_phone"), "*Invalid phone number format*");
-                valid = false;
-            }
-            else{
-                clearError1(document.getElementById("cust_phone"));
-            }
-
-            if (cust_email.trim() === "") {
-                errorDisplay1(document.getElementById("cust_email"), "*Please enter your email address.*");
-                    valid = false;
-            } else if (!isValidEmail(cust_email.trim())) {
-                errorDisplay1(document.getElementById("cust_email"), "*Invalid email format*");
-                valid = false;
-            }
-            else{
-                clearError1(document.getElementById("cust_email"));
-            }             
-                            
-            // Return the overall validity of the form
-            return valid;
-        }
-        function errorDisplay1(input, message) {
-            const errorElement = input.parentNode.nextElementSibling;
-            errorElement.innerText = message;
-            errorElement.classList.remove('hidden');
-            input.classList.add('error-color');
-        }
-
-        // Function to clear error message
-        function clearError1(input) {
-            const errorElement = input.parentNode.nextElementSibling;
-            errorElement.innerText = "";
-            errorElement.classList.add('hidden');
-            input.classList.remove('error-color');
-        }
     </script>
                 <?php
                 }

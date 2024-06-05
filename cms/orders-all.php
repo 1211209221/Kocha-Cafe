@@ -114,7 +114,7 @@
             table tr .t_no{
                 display:none;
             }
-            table tr .t_id{
+            table thead .t_id{
                 width: 9%;
                 padding-left:15px !important;
                 border-top-left-radius: 7px;
@@ -295,7 +295,7 @@
                 const clearAllButton = document.querySelector('.filter_header .clear');
                 let currentPage = 1;
                 let searchTerm = '';
-                let selecteddateFilter = '1';
+                let selecteddateFilter = '2';
                 let selectedstatusFilter = 'all';
 
                 function sortTable() {
@@ -495,8 +495,8 @@
                 function clearAllFilters() {
                     // Clear search term
                     searchTerm = '';
-                    dateFilter.value = '1';
-                    selecteddateFilter = '1';
+                    dateFilter.value = '2';
+                    selecteddateFilter = '2';
                     statusFilter.value = 'all';
                     selectedstatusFilter = 'all';
 
@@ -569,8 +569,8 @@
                             <div class="filter_type">
                                 <label for="dateFilter">Sort by Date</label>
                                 <select id="dateFilter">
-                                    <option value="1">Oldest</option>
                                     <option value="2">Latest</option>
+                                    <option value="1">Oldest</option>
                                 </select>
                             </div>
                             <div class="filter_type">
@@ -619,7 +619,7 @@
                                         <?php
                                             $no_count = 0;
 
-                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0";
+                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 ORDER BY tracking_stage ASC";
 
                                             $result = $conn->query($cf_query);
                                             if($result && $result->num_rows > 0){
