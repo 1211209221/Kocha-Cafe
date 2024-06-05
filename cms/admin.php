@@ -1,55 +1,26 @@
 <?php
-
-$host = "localhost";
-$user = "root";
-$password = "";
-$db = "kocha_cafe";
-
 session_start();
-
-$data = mysqli_connect($host, $user, $password, $db);
-
-if ($data === false) {
-    die("connection error");
-}
-
 $error_message = ""; // Initialize error message variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["admin_username"]) && isset($_POST["admin_pass"])) {
         $username = $_POST["admin_username"];
-        $password = $_POST["admin_pass"];
 
         // Using prepared statements to prevent SQL injection
-        $sql = "SELECT * FROM admin WHERE admin_username=? AND admin_pass=?";
-        $stmt = mysqli_prepare($data, $sql);
-
-        // Bind parameters to the prepared statement
-        mysqli_stmt_bind_param($stmt, "ss", $username, $password);
-
-        // Execute the prepared statement
-        mysqli_stmt_execute($stmt);
-
-        // Get result set
-        $result = mysqli_stmt_get_result($stmt);
-
+        require_once "connect.php";
+        $sql = "SELECT * FROM admin WHERE admin_username = '$username'";
+        $result = mysqli_query($conn, $sql);
+        $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
         // Check if any rows were returned
-        if (mysqli_num_rows($result) > 0) {
+        if (password_verify( $_POST["admin_pass"], $user["admin_pass"])) {
             // Fetch the row
             $row = mysqli_fetch_assoc($result);
+                
+                $_SESSION["admin"] = $user["admin_ID"];
+                header("location:dashboard.php");
+                
+                exit(); // Terminate script execution after redirection
 
-            // Check for admin type
-            if ($row["admin_level"] == "Admin") {
-                $_SESSION["username"] = $username;
-                header("location:dashboard.php");
-                exit(); // Terminate script execution after redirection
-            } elseif ($row["admin_level"] == "Admin") {
-                $_SESSION["username"] = $username;
-                header("location:dashboard.php");
-                exit(); // Terminate script execution after redirection
-            } else {
-                $error_message = "Invalid admin level";
-            }
         } else {
             $error_message = "Username or password incorrect";
         }
