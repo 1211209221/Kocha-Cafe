@@ -437,6 +437,25 @@
                     // Construct the SQL query to insert menu item data
                     $sql_cart = "INSERT INTO customer_orders (order_ID, order_contents, order_subtotal, order_total, order_address, order_date,cust_ID) VALUES ('$newOrderID','$string', $subtotal, $totalprice, '$add','$order_date','$cust_ID')";
                     $payment = "INSERT INTO payment (payment_ID, payment_name, payment_items, payment_subtotal, payment_total, payment_cardnum, payment_time,cust_ID) VALUES ('$invoice_number','$holder_name','$string',$subtotal, $totalprice,'$last_four_digits','$order_date','$cust_ID')";
+
+                    for ($i = 0; $i < (count($price_sums)); $i++) {
+                        $item_ID = $item_IDs[$i];
+                        $quantity_input = $quantity_inputs[$i];
+                        $item_sold_no = 0;
+                    
+                        $sql_items = "SELECT * FROM menu_items WHERE item_ID = $item_ID";
+                        $result_items = $conn->query($sql_items);
+                    
+                        if ($result_items->num_rows > 0) {
+                            while ($row_items = $result_items->fetch_assoc()) {
+                                $item_sold_no = $row_items['item_sold'];
+                            }
+                        }
+                    
+                        $sql_items_sold = "UPDATE menu_items SET item_sold = ($item_sold_no + $quantity_input) WHERE item_ID = $item_ID";
+                        $conn->query($sql_items_sold);
+                    }
+
                     //update point
                     $update_point = "UPDATE customer SET cust_points = $resultafterpay  WHERE cust_ID = $cust_ID AND trash = 0";
 
@@ -500,7 +519,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update phone number. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to update phone number. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -529,7 +548,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to update cart. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to update cart. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -557,7 +576,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to submit order. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to submit order. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -572,7 +591,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>You have no items in your cart! Please try again...
+                                    <i class="fas fa-times-circle"></i>You have no items in your cart! Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>

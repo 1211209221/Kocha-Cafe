@@ -81,7 +81,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to add item. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to add item. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -94,7 +94,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to add item image. Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to add item image. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>

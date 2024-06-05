@@ -149,7 +149,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>You are spammer! Get out...
+                                    <i class="fas fa-times-circle"></i>You are spammer! Get out...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -160,7 +160,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Couldn\'t connect to database. Please try again...
+                                    <i class="fas fa-times-circle"></i>Couldn\'t connect to database. Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
@@ -182,7 +182,7 @@
                 echo '<div class="toast_container">
                             <div id="custom_toast" class="custom_toast false fade_in">
                                 <div class="d-flex align-items-center message">
-                                    <i class="fas fa-check-circle"></i>Failed to send.('. $mail->ErrorInfo .') Please try again...
+                                    <i class="fas fa-times-circle"></i>Failed to send.('. $mail->ErrorInfo .') Please try again...
                                 </div>
                                 <div class="timer"></div>
                             </div>
