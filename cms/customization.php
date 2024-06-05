@@ -314,7 +314,7 @@
                         } else {
                             echo "No items found";
                         }
-                        echo "<div style='width: 100%;'><input type='submit' name='add' value='Add New'><input type='submit' name='update' value='Update Categories' onclick=\"return confirmAction('make these changes');\"></div>
+                        echo "<div style='width: 100%;'><input type='submit' name='add' value='Add New'><input type='submit' name='update' value='Update Customizations' onclick=\"return confirmAction('make these changes');\"></div>
                             </div>
                         </form>
                     </div>

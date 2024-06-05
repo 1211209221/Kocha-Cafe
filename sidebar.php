@@ -45,12 +45,6 @@
         </div>
         <span>Profile</span>
     </a>
-    <a href="order-tracking.php" class="<?php echo ($current_page == 'order-tracking.php') ? 'active-menu' : ''; ?>">
-        <div>
-            <i class="fas fa-location-circle"></i>
-        </div>
-        <span>Order Tracking</span>
-    </a>
     <a href="wishlist.php" class="<?php echo ($current_page == 'wishlist.php') ? 'active-menu' : ''; ?>">
         <div>
             <i class="fas fa-heart"></i>
@@ -75,7 +69,7 @@
         </div>
         <span>About Us</span>
     </a>
-    <a href="#">
+    <a href="logout.php">
         <div>
             <i class="fas fa-sign-out-alt"></i>
         </div>

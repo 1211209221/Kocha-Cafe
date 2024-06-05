@@ -29,38 +29,61 @@
                 $item_availability = $_POST['item_availability'];
                 $item_options = $_POST['item_options'];
 
-                // Construct the SQL query to insert menu item data
-                $sql = "INSERT INTO menu_items (item_name, item_category, item_price, item_description, item_discount, item_availability, item_options) VALUES ('$item_name', '$item_category', '$item_price', '$item_description', '$item_discount', '$item_availability', '$item_options')";
+                $maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
 
-                // Execute the SQL query
-                if ($conn->query($sql) === TRUE) {
-                    // Get the auto-incremented item_ID
-                    $item_id = $conn->insert_id;
-
-                    // Check if file was uploaded without errors
-                    if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
+                // Check if file was uploaded without errors
+                if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
+                    if ($_FILES["image"]["size"] <= $maxFileSize) {
                         $filename = $_FILES["image"]["name"];
                         $tempname = $_FILES["image"]["tmp_name"];
                         $mime_type = mime_content_type($tempname);
                         $data = file_get_contents($tempname);
 
-                        // Insert image data into database
-                        $stmt = $conn->prepare("INSERT INTO menu_images (image_ID, filename, mime_type, data) VALUES (?, ?, ?, ?)");
-                        $stmt->bind_param("isss", $item_id, $filename, $mime_type, $data);
-                        $stmt->execute();
+                        // Construct the SQL query to insert menu item data
+                        $sql = "INSERT INTO menu_items (item_name, item_category, item_price, item_description, item_discount, item_availability, item_options) VALUES ('$item_name', '$item_category', '$item_price', '$item_description', '$item_discount', '$item_availability', '$item_options')";
 
+                        // Execute the SQL query
+                        if ($conn->query($sql) === TRUE) {
+                            // Get the auto-incremented item_ID
+                            $item_id = $conn->insert_id;
+
+                            // Insert image data into database
+                            $stmt = $conn->prepare("INSERT INTO menu_images (image_ID, filename, mime_type, data) VALUES (?, ?, ?, ?)");
+                            $stmt->bind_param("isss", $item_id, $filename, $mime_type, $data);
+                            $stmt->execute();
+
+                            $_SESSION['addItem_success'] = true;
+                            header("Location: items-add.php");
+                            exit();
+                        } else {
+                            $_SESSION['addItem_error'] = "Error: " . $sql . "<br>" . $conn->error;
+                            header("Location: items-add.php");
+                            exit();
+                        }
+                    } else {
+                        // File is too large
+                        $_SESSION['addItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
+                        header("Location: items-add.php");
+                        exit();
+                    }
+                } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
+                    $_SESSION['addItem_image_error'] = "Error uploading file.";
+                    header("Location: items-add.php");
+                    exit();
+                } else {
+                    // No image uploaded, proceed with inserting menu item data without image
+                    $sql = "INSERT INTO menu_items (item_name, item_category, item_price, item_description, item_discount, item_availability, item_options) VALUES ('$item_name', '$item_category', '$item_price', '$item_description', '$item_discount', '$item_availability', '$item_options')";
+
+                    // Execute the SQL query
+                    if ($conn->query($sql) === TRUE) {
                         $_SESSION['addItem_success'] = true;
                         header("Location: items-add.php");
                         exit();
                     } else {
-                        $_SESSION['addItem_image_error'] = true;
+                        $_SESSION['addItem_error'] = "Error: " . $sql . "<br>" . $conn->error;
                         header("Location: items-add.php");
                         exit();
                     }
-                } else {
-                    $_SESSION['addItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                    header("Location: items-add.php");
-                    exit();
                 }
             }
 
@@ -101,6 +124,19 @@
                         </div>';
 
                 unset($_SESSION['addItem_image_error']);
+            }
+
+            if (isset($_SESSION['addItem_imageSize_error'])) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-times-circle"></i>Item image cannot exceed the maximum limit of 1MB. Please try again...
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['addItem_imageSize_error']);
             }
 
             include 'navbar.php';
