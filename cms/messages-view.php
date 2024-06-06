@@ -67,8 +67,10 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+        include 'navbar.php';
 
-        session_start();
+        //session_start();
+
 
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
@@ -91,11 +93,16 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['editmsg_success'] = true;
-                    header("Location: messages-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "messages-all.php";';
+                    echo '</script>';
+                    //header("Location: messages-all.php");
                     exit();
                 } else {
                     $_SESSION['editmsg_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: messages-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "messages-all.php";';
+                    echo '</script>';
                     exit();
                 }
             }
@@ -119,7 +126,7 @@
 
         $sqlall = "SELECT * FROM contact_message WHERE CF_ID = $CF_ID";
 
-        include 'navbar.php';
+        
         $result = $conn->query($sqlall);
 
             if ($result->num_rows > 0) {

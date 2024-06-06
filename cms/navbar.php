@@ -1,17 +1,27 @@
 <?php
-
-    $current_page = basename($_SERVER['PHP_SELF']);
-
+$current_page = basename($_SERVER['PHP_SELF']);
+session_start();
     if(isset($_SESSION["admin"])) {
         $admin_ID = $_SESSION["admin"];
         $sql0 = "SELECT * FROM admin WHERE admin_ID = '$admin_ID'";
         $result0 = mysqli_query($conn, $sql0);
         $admin = mysqli_fetch_array($result0, MYSQLI_ASSOC);
+        $updatestatus = "UPDATE admin SET admin_active = 1 WHERE admin_ID = '$admin_ID'";
+        if ($conn->query($updatestatus) === TRUE){
+            //nothing
+            $admin_name = $admin['admin_name'];
+        }
+        else{
+            header("Location:admin.php");
+            exit();
+        }
     } else {
+        header("Location:admin.php");
+        exit();
         // If "user" key is not set, set $user to an empty array
         $admin = array();
         $admin_ID = 0;
-        $admin['admin_name']="Admin";
+        $admin_name = "Admin";
     }
 ?>
 <style>
@@ -188,7 +198,7 @@
             </div>
         </div>
         <div class="page_container">
-            <a href = "logout.php">
+            <a href = "admin_logout.php">
                 <div>
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
@@ -220,7 +230,7 @@
                     </div>
                 </div>
                 <div class="icons">
-                    <a class="profile"><i class="far fa-user"></i><span><?php echo $admin['admin_name']; ?></span></a>
+                    <a class="profile"><i class="far fa-user"></i><span><?php echo $admin_name; ?></span></a>
                 </div>
             </div>
         </div>

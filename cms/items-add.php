@@ -16,8 +16,10 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
-            session_start();
+            //session_start();
+
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Retrieve form data
@@ -53,22 +55,31 @@
                             $stmt->execute();
 
                             $_SESSION['addItem_success'] = true;
-                            header("Location: items-add.php");
+                            echo '<script>';
+                            echo 'window.location.href = "items-add.php";';
+                            echo '</script>';
+                            //header("Location: items-add.php");
                             exit();
                         } else {
                             $_SESSION['addItem_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                            header("Location: items-add.php");
+                            echo '<script>';
+                            echo 'window.location.href = "items-add.php";';
+                            echo '</script>';
                             exit();
                         }
                     } else {
                         // File is too large
                         $_SESSION['addItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
-                        header("Location: items-add.php");
+                        echo '<script>';
+                            echo 'window.location.href = "items-add.php";';
+                            echo '</script>';
                         exit();
                     }
                 } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
                     $_SESSION['addItem_image_error'] = "Error uploading file.";
-                    header("Location: items-add.php");
+                    echo '<script>';
+                        echo 'window.location.href = "items-add.php";';
+                        echo '</script>';
                     exit();
                 } else {
                     // No image uploaded, proceed with inserting menu item data without image
@@ -77,11 +88,15 @@
                     // Execute the SQL query
                     if ($conn->query($sql) === TRUE) {
                         $_SESSION['addItem_success'] = true;
-                        header("Location: items-add.php");
+                        echo '<script>';
+                        echo 'window.location.href = "items-add.php";';
+                        echo '</script>';
                         exit();
                     } else {
                         $_SESSION['addItem_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                        header("Location: items-add.php");
+                        echo '<script>';
+                        echo 'window.location.href = "items-add.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -139,7 +154,7 @@
                 unset($_SESSION['addItem_imageSize_error']);
             }
 
-            include 'navbar.php';
+
             ?>
                 <div class="container-fluid container">
                     <div class="col-12 m-auto">

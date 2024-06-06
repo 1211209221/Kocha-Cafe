@@ -15,8 +15,9 @@
     <?php
         // Include the connection file
         include '../connect.php';
+        include 'navbar.php';
 
-        session_start();
+        //session_start();
 
         // Check if form is submitted for update, then update the record
         if(isset($_POST['update'])) {
@@ -51,7 +52,9 @@
             // Display confirmation message after all updates
             if($success_count == count($category_IDs)) {
                 $_SESSION['updateCategory_success'] = true;
-                header("Location: ".$_SERVER['PHP_SELF']);
+                echo '<script>';
+                echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+                echo '</script>';
                 exit();
             }
         }
@@ -73,7 +76,9 @@
                     // Execute the update query
                     if(mysqli_stmt_execute($stmt)) {
                         $_SESSION['setPrimary_success'] = true;
-                        header("Location: ".$_SERVER['PHP_SELF']);
+                        echo '<script>';
+                        echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+                        echo '</script>';
                         exit();
                     } else {
                         echo "Error setting category as primary: " . mysqli_error($conn);
@@ -117,7 +122,9 @@
             $category_ID = $_POST['trash'];
             $_SESSION['trashCategory_success'] = true;
             deleteCategories($category_ID, $conn);
-            header("Location: ".$_SERVER['PHP_SELF']);
+            echo '<script>';
+            echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+            echo '</script>';
             exit();
         }
 
@@ -132,7 +139,9 @@
             // Execute the query
             if ($conn->query($sql) === TRUE) {
                 $_SESSION['addCategory_success'] = true;
-                header("Location: ".$_SERVER['PHP_SELF']);
+                echo '<script>';
+                echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+                echo '</script>';
                 exit();
             } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
@@ -192,7 +201,7 @@
         }
 
         include '../gototopbtn.php';
-        include 'navbar.php';
+
         // Query to select all entries from the database
         $sql = "SELECT * FROM menu_categories WHERE trash = 0";
         $result = mysqli_query($conn, $sql);

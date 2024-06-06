@@ -26,7 +26,7 @@
             include '../connect.php';
             include '../gototopbtn.php';
 
-            session_start();
+            //session_start();
         
 
             include 'navbar.php';

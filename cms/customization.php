@@ -34,8 +34,10 @@
 <?php
     include '../connect.php';
     include '../gototopbtn.php';
+    include 'navbar.php';
 
-    session_start();
+
+    //session_start();
 
     // Check if form is submitted for update, then update the record
     if(isset($_POST['update'])) {
@@ -83,7 +85,9 @@
         // Display confirmation message after all updates
         if($success_count == count($custom_IDs)) {
             $_SESSION['updateCustomization_success'] = true;
-            header("Location: ".$_SERVER['PHP_SELF']);
+            echo '<script>';
+            echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+            echo '</script>';
             exit();
         }
     }
@@ -119,7 +123,9 @@
         } else {
             echo "Error adding empty option: " . mysqli_error($conn);
         }
-        header("Location: ".$_SERVER['PHP_SELF']);
+        echo '<script>';
+        echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+        echo '</script>';
         exit();
     }
 
@@ -142,7 +148,10 @@
 
         mysqli_stmt_close($stmt_add);
         $_SESSION['addCustomization_success'] = true;
-        header("Location: ".$_SERVER['PHP_SELF']);
+        echo '<script>';
+        echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+        echo '</script>';
+        //header("Location: ".$_SERVER['PHP_SELF']);
         exit();
     }
 
@@ -219,7 +228,9 @@
         $custom_ID = $_POST['trashCustom'];
         deleteCust($custom_ID, $conn);
         $_SESSION['deleteCustomization_success'] = true;
-        header("Location: ".$_SERVER['PHP_SELF']);
+        echo '<script>';
+        echo 'window.location.href = "'.$_SERVER['PHP_SELF'].'";';
+        echo '</script>';
         exit();
     }
 
@@ -262,7 +273,6 @@
         unset($_SESSION['deleteCustomization_success']);
     }
 
-    include 'navbar.php';
 
 
     echo "<div class='container-fluid container'>

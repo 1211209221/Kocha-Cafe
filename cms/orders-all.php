@@ -14,9 +14,10 @@
     </head>
     <body>
     <?php
-            session_start();
+            
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 $order_IDs = $_POST['order_ID'];
@@ -38,15 +39,17 @@
                     }
                     if ($FailedUpdate == 0) {
                         $_SESSION['deleteorder_success'] = true;
-                        // echo '<script>';
-                        // echo 'window.location.href = "orders-all.php";';
-                        // echo '</script>';
-                        header("Location: orders-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "orders-all.php";';
+                        echo '</script>';
+                        //header("Location: orders-all.php");
                         exit();
                     }
                     else{
                         $_SESSION['deleteorder_error'] = true;
-                        header("Location: orders-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "orders-all.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -104,7 +107,11 @@
             }
 
 
-            include 'navbar.php';
+            
+            if(empty($admin)){
+                header("Location: admin.php");
+                exit();
+            }
         ?>
     <style>
             .search_container{
