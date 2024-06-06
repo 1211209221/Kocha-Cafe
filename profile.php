@@ -26,6 +26,20 @@
                 exit();
             }
 
+            if (isset($_SESSION['redirected_from_order']) && $_SESSION['redirected_from_order'] === true) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast true fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-check-circle"></i> Welcome back! Your order was successfully submitted.
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                      </div>';
+            
+                // Unset the session variable to prevent the message from displaying again
+                unset($_SESSION['redirected_from_order']);
+            }
+
             $get_ph = "SELECT cust_phone FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
             $ph_result = $conn->query($get_ph);
             $ph_row = $ph_result->fetch_assoc();
