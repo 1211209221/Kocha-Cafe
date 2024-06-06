@@ -17,7 +17,7 @@
             include '../connect.php';
             include '../gototopbtn.php';
 
-            //session_start();
+            session_start();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $item_IDs = $_POST['item_ID'];
