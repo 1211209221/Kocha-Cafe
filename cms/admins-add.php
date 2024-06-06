@@ -16,8 +16,9 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+        include 'navbar.php';
 
-        session_start();
+        //session_start();
         if (isset($_POST['add-admin'])) {
             // Retrieve form data
             $admin_name = $_POST['admin_name'];
@@ -48,17 +49,24 @@
 
             if($username_exists > 0 && $email_exists > 0){
                 $_SESSION['update_match'] = 'both match';
-                header("Location: admins-add.php");
+                echo '<script>';
+                echo 'window.location.href = "admins-add.php";';
+                echo '</script>';
+                //header("Location: admins-add.php");
                 exit();
             }
             else if($email_exists > 0){
                 $_SESSION['update_match'] = 'email match';
-                header("Location: admins-add.php");
+                echo '<script>';
+                echo 'window.location.href = "admins-add.php";';
+                echo '</script>';
                 exit();
             }
             else if($username_exists > 0){
                 $_SESSION['update_match'] = 'username match';
-                header("Location: admins-add.php");
+                echo '<script>';
+                echo 'window.location.href = "admins-add.php";';
+                echo '</script>';
                 exit();
             }
             
@@ -67,12 +75,16 @@
 
             if ($conn->query($sqladmin) === TRUE) {
                 $_SESSION['addAdmin_success'] = true;
-                header("Location: admins-add.php");
+                echo '<script>';
+                echo 'window.location.href = "admins-add.php";';
+                echo '</script>';
                 exit();
 
             } else {
                 $_SESSION['addAdmin_error'] = "Error: " . $sqladmin . "<br>" . $conn->error;
-                header("Location: admins-add.php");
+                echo '<script>';
+                echo 'window.location.href = "admins-add.php";';
+                echo '</script>';
                 exit();
             }
         }
@@ -103,7 +115,7 @@
             unset($_SESSION['addAdmin_error']);
         }
 
-        include 'navbar.php';
+
     ?>
     <script>
                 document.addEventListener('DOMContentLoaded', function() {

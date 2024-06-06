@@ -16,8 +16,10 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
-            session_start();
+            //session_start();
+
 
             if (isset($_GET['ID'])) {
                 // Retrieve the value of the ID parameter
@@ -37,16 +39,23 @@
 
                         if ($conn->query($delete_item_sql) === TRUE) {
                             $_SESSION['deleteItem_success'] = true;
-                            header("Location: items-all.php");
+                            echo '<script>';
+                            echo 'window.location.href = "items-all.php";';
+                            echo '</script>';
+                            //header("Location: items-all.php");
                             exit();
                         } else {
                             $_SESSION['deleteItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                            header("Location: items-all.php");
+                            echo '<script>';
+                            echo 'window.location.href = "items-all.php";';
+                            echo '</script>';
                             exit();
                         }
                     } else {
                         $_SESSION['deleteItem_image_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                        header("Location: items-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "items-all.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -102,11 +111,16 @@
                             $_SESSION['editItem_success'] = true;
                         }
 
-                        header("Location: items-edit.php?ID=$item_ID");
+                        echo '<script>';
+                        echo 'window.location.href = "items-edit.php?ID='.$item_ID.'";';
+                        echo '</script>';
+                        //header("Location: items-edit.php?ID=$item_ID");
                         exit();
                     } else {
                         $_SESSION['editItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                        header("Location: items-edit.php?ID=$item_ID");
+                        echo '<script>';
+                        echo 'window.location.href = "items-edit.php?ID='.$item_ID.'";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -153,7 +167,10 @@
                     }
 
                     $_SESSION['submitReviews_success'] = true;
-                    header("Location: items-edit.php?ID=" . $_GET['ID']);
+                    echo '<script>';
+                    echo 'window.location.href = "items-edit.php?ID='. $_GET['ID'].'";';
+                    echo '</script>';
+                    //header("Location: items-edit.php?ID=" . $_GET['ID']);
                     exit();
                 }
             }
@@ -302,7 +319,7 @@
             // Fetch item from the database
             $sql = "SELECT * FROM menu_items WHERE item_ID = $item_ID";
 
-            include 'navbar.php';
+
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {

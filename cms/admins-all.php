@@ -16,8 +16,9 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
-            session_start();
+            //session_start();
             
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 $admin_ids = $_POST['admin_ID'];
@@ -39,12 +40,17 @@
                     }
                     if ($FailedUpdate == 0) {
                         $_SESSION['deleteAdmin_success'] = true;
-                        header("Location: admins-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "admins-all.php";';
+                        echo '</script>';
+                        //header("Location: admins-all.php");
                         exit();
                     }
                     else{
                         $_SESSION['deleteAdmin_error'] = true;
-                        header("Location: admins-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "admins-all.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -76,7 +82,6 @@
             }
 
 
-            include 'navbar.php';
         ?>
         <script>
             function confirmAction(message) {
@@ -437,11 +442,17 @@
                                                         echo "<i class='fas fa-circle color-red' style='color: #e77468;'></i>";
                                                     }
                                                     echo "</td>";
-                                                    echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
-                                                    echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                                        <input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
-                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
-                                                        </div>";
+                                                    if($admin['admin_level']==1){
+                                                        echo '<td class="t_action act1">No action allowed!';
+                                                    }
+                                                    else{
+                                                        echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
+                                                        echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
+                                                            <input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
+                                                            <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
+                                                            </div>";
+                                                    }
+                                                    
                                                      echo "</tr>";
                                                 }
                                             }

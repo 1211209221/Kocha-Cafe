@@ -23,8 +23,9 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+        include 'navbar.php';
 
-        session_start();
+        //session_start();
 
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
@@ -36,11 +37,16 @@
                 $remove_admin_sql = "UPDATE admin SET trash = 1 WHERE admin_ID = $admin_ID";
                 if ($conn->query($remove_admin_sql) === TRUE) {
                     $_SESSION['deleteAdmin_success'] = true;
-                    header("Location: admins-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "admins-all.php";';
+                    echo '</script>';
+                    //header("Location: admins-all.php");
                     exit();
                 } else {
                     $_SESSION['deleteAdmin_error'] = "Error: " . $remove_admin_sql . "<br>" . $conn->error;
-                    header("Location: admins-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "admins-all.php";';
+                    echo '</script>';
                     exit();
                 }
             }
@@ -93,17 +99,24 @@
 
                 if($username_exists > 0 && $email_exists > 0){
                     $_SESSION['update_match'] = 'both match';
-                    header("Location: admins-edit.php?ID=$admin_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "admins-edit.php?ID='.$admin_ID.'";';
+                    echo '</script>';
+                    //header("Location: admins-edit.php?ID=$admin_ID");
                     exit();
                 }
                 else if($email_exists > 0){
                     $_SESSION['update_match'] = 'email match';
-                    header("Location: admins-edit.php?ID=$admin_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "admins-edit.php?ID='.$admin_ID.'";';
+                    echo '</script>';
                     exit();
                 }
                 else if($username_exists > 0){
                     $_SESSION['update_match'] = 'username match';
-                    header("Location: admins-edit.php?ID=$admin_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "admins-edit.php?ID='.$admin_ID.'";';
+                    echo '</script>';
                     exit();
                 }
                 else{
@@ -119,11 +132,15 @@
 
                     if ($conn->query($sql) === TRUE) {
                         $_SESSION['editadmin_success'] = true;
-                        header("Location: admins-edit.php?ID=$admin_ID");
+                        echo '<script>';
+                        echo 'window.location.href = "admins-edit.php?ID='.$admin_ID.'";';
+                        echo '</script>';
                         exit();
                     } else {
                         $_SESSION['editadmin_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                        header("Location: admins-edit.php?ID=$admin_ID");
+                        echo '<script>';
+                        echo 'window.location.href = "admins-edit.php?ID='.$admin_ID.'";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -186,7 +203,7 @@
 
         $sql = "SELECT * FROM admin WHERE admin_ID = $admin_ID";
 
-        include 'navbar.php';
+
         $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){  

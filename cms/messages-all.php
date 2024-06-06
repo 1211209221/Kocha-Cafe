@@ -16,8 +16,10 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
-            session_start();
+            //session_start();
+
             
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 
@@ -40,16 +42,23 @@
                         }
                         if ($FailedUpdate == 0) {
                             $_SESSION['deletemessage_success'] = true;
-                            header("Location: messages-all.php");
+                            echo '<script>';
+                            echo 'window.location.href = "messages-all.php";';
+                            echo '</script>';
+                            //header("Location: messages-all.php");
                             exit();
                         } else {
                             $_SESSION['deletemessage_error'] = true;
-                            header("Location: messages-all.php");
+                            echo '<script>';
+                            echo 'window.location.href = "messages-all.php";';
+                            echo '</script>';
                             exit();
                         }
                     } else {
                         $_SESSION['deletemessage_error'] = true;
-                        header("Location: messages-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "messages-all.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -134,7 +143,6 @@
             }
 
 
-            include 'navbar.php';
         ?>
         <style>
             .search_container{

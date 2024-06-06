@@ -16,8 +16,10 @@
         <?php
             include '../connect.php';
             include '../gototopbtn.php';
+            include 'navbar.php';
 
-            session_start();
+            //session_start();
+
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $item_IDs = $_POST['item_ID'];
@@ -40,12 +42,17 @@
 
                     if ($FailedUpdate == 0) {
                         $_SESSION['deleteItem_success'] = true;
-                        header("Location: items-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "items-all.php";';
+                        echo '</script>';
+                        //header("Location: items-all.php");
                         exit();
                     }
                     else{
                         $_SESSION['deleteItem_error'] = true;
-                        header("Location: items-all.php");
+                        echo '<script>';
+                        echo 'window.location.href = "items-all.php";';
+                        echo '</script>';
                         exit();
                     }
                 }
@@ -78,7 +85,7 @@
             }
 
 
-            include 'navbar.php';
+
         ?>
         <script>
             function confirmAction(message) {

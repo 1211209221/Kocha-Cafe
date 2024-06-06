@@ -23,8 +23,9 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+        include 'navbar.php';
 
-        session_start();
+        //session_start();
 
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
@@ -40,11 +41,16 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['editcust_success'] = true;
-                    header("Location: customers-edit.php?ID=$cust_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "customers-edit.php?ID='.$cust_ID.'";';
+                    echo '</script>';
+                    //header("Location: customers-edit.php?ID=$cust_ID");
                     exit();
                 } else {
                     $_SESSION['editcust_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: customers-edit.php?ID=$cust_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "customers-edit.php?ID='.$cust_ID.'";';
+                    echo '</script>';
                     exit();
                 }
             }
@@ -79,7 +85,7 @@
 
         $sql = "SELECT * FROM customer WHERE cust_ID = $cust_ID";
 
-        include 'navbar.php';
+
         $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){  

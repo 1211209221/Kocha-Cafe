@@ -16,8 +16,8 @@
     <?php
         include '../connect.php';
         include '../gototopbtn.php';
+        include 'navbar.php';
 
-        session_start();
 
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
@@ -34,11 +34,16 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['updateorder_success'] = true;
-                    header("Location: orders-view.php?ID=$order_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "orders-view.php?ID='.$order_ID.'";';
+                    echo '</script>';
+                    //header("Location: orders-view.php?ID=$order_ID");
                     exit();
                 } else {
                     $_SESSION['updateorder_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: orders-view.php?ID=$order_ID");
+                    echo '<script>';
+                    echo 'window.location.href = "orders-view.php?ID='.$order_ID.'";';
+                    echo '</script>';
                     exit();
                 }
             }
@@ -48,11 +53,16 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['delorder_success'] = true;
-                    header("Location: orders-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "orders-all.php";';
+                    echo '</script>';
+                    //header("Location: orders-all.php");
                     exit();
                 } else {
                     $_SESSION['delorder_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: orders-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "orders-all.php";';
+                    echo '</script>';
                     exit();
                 }
             }
@@ -220,7 +230,7 @@
     <?php
     $sqlall = "SELECT * FROM customer_orders WHERE order_ID = $order_ID";
 
-    include 'navbar.php';
+    
     $result = $conn->query($sqlall);
 
         if ($result->num_rows > 0) {
