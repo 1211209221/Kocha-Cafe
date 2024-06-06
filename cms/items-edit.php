@@ -333,7 +333,7 @@
                                         }
 
                                     ?>
-                                    <input type="file" name="image" class="upload_image" id="upload_image">
+                                    <input type="file" name="image" class="upload_image" id="upload_image" accept="image/png, image/gif, image/jpeg" />
                                     <label class="upload_image_label" for="upload_image"><i class="fas fa-camera"></i></label>
                                     <?php
                                         // SQL query to select the cust_wishlist column
