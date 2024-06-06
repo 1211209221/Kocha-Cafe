@@ -560,6 +560,9 @@
             }
 
             if (isset($_SESSION['submitOrder_success']) && $_SESSION['submitOrder_success'] === true) {
+
+                $_SESSION['redirected_from_order'] = true;
+
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
                             <div class="d-flex align-items-center message">
@@ -570,6 +573,12 @@
                     </div>';
 
                 unset($_SESSION['submitOrder_success']);
+                //go to order tracking page
+                echo '<script>
+                    setTimeout(function(){
+                        window.location.href = "profile.php"; 
+                    }, 3000); // 3000 milliseconds = 3 seconds
+                </script>';
             }
 
             if (isset($_SESSION['submitOrder_error'])) {
