@@ -481,9 +481,9 @@
                                 <div class="price_filter">
                                     <span>Price Range (MYR)</span>
                                     <div class="d-flex justify-content-center py-1">
-                                        <input type="text" name="price_min" placeholder="Min.">
-                                        <div class="px-2">-</div>
-                                        <input type="text" name="price_max" placeholder="Max.">
+                                        <input type="number" name="price_min" placeholder="Min." min=0>
+                                        <div class="px-2" style="font-size: 22px;">-</div>
+                                        <input type="number" name="price_max" placeholder="Max." min=0>
                                     </div>
                                 </div>
                                 <hr>
