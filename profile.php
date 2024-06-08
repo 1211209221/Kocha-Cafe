@@ -1943,7 +1943,7 @@
                                 $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage != 3 ORDER BY tracking_stage ASC";
                                 $result = $conn->query($cf_query);
                                 if($result && $result->num_rows == 0){
-                                    echo '<div>
+                                    echo '
                                     <div style="width: 100%;height: 400px;text-align: center;display: flex;align-items: center;justify-content: center;">
                                     <i class=\'far fa-ghost\'></i>No current order detected
                                 </div>';
