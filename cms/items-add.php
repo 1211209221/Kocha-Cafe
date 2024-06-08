@@ -165,7 +165,7 @@
                                     <a>Admin</a> > <a>Menu</a> > <a href="items-all.php">Item List</a> > <a class="active">Add New</a>
                                 </div>
                                 <div class='image_container'><img src='../images/placeholder_image.png' class='item_image_diplay'>
-                                    <input type="file" name="image" class="upload_image" id="upload_image" required>
+                                    <input type="file" name="image" class="upload_image" id="upload_image" required accept="image/png, image/gif, image/jpeg" />
                                     <label class="upload_image_label" for="upload_image"><i class="fas fa-camera"></i></label>
                                 </div>
                                 <div class='item_details'>
