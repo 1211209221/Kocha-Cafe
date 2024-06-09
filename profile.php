@@ -104,12 +104,17 @@
                         $components = explode(",", $address);
                         
                         // Extract individual components
-                        $add_label[] = trim($components[0], "()");
-                        $add_unit[] = trim($components[1], "()");
-                        $add_building[] = trim($components[2], "()");
-                        $add_street[] = trim($components[3], "()");
-                        $add_postcode[] = trim($components[4], "()");
-                        $add_state[] = trim($components[5], "()");
+                        if (count($components) >= 6) {
+                            // Extract individual components
+                            $add_label[] = trim($components[0], "()");
+                            $add_unit[] = trim($components[1], "()");
+                            $add_building[] = trim($components[2], "()");
+                            $add_street[] = trim($components[3], "()");
+                            $add_postcode[] = trim($components[4], "()");
+                            $add_state[] = trim($components[5], "()");
+                        } else {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -237,9 +242,9 @@
                 $numAddresses = count($addresses);
 
                 // Check if the selected index is valid
-                if ($index >= 0 && $index < $numAddresses) {
+                if ($index >= 0 && $index <= $numAddresses) {
                     // Mark the selected address as deleted
-                    unset($addresses[$index]);
+                    unset($addresses[$index-1]);
 
                     // Concatenate all remaining addresses back into a single string
                     $updated_addresses_string = implode("},{", $addresses);
@@ -1881,26 +1886,26 @@
                                                         <i class="fas fa-pen"></i>
                                                     </button>   
                                                       
-                                                    <button style="outline: none;" title="Delete" class="bin" style="outline: none;" onclick="document.getElementById(\'confirmdelete\').style.display=\'flex\'"><i class="fas fa-trash"></i></button>
+                                                    <button style="outline: none;" title="Delete" class="bin" style="outline: none;" onclick="document.getElementById(\'confirmdelete'.$index.'\').style.display=\'flex\'"><i class="fas fa-trash"></i></button>
                                                     </div>
                                                     <div class="address-detail">
                                                         <span>'.$combined_address.'</span>
                                                     </div> 
                                                 </div>';
 
-                                                echo '<div id="confirmdelete" class="modal">
+                                                echo '<div id="confirmdelete'.$index.'" class="modal">
                                                 <form class="profile-edit-content animate" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">
                                                     <div class="xcontainer">
                                                         <span class="txt" style="color: #e2857b;"><i class="fas fa-exclamation" style="color: #e2857b;"></i> Alert</span>
-                                                        <span onclick="document.getElementById(\'confirmdelete\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
+                                                        <span onclick="document.getElementById(\'confirmdelete'.$index.'\').style.display=\'none\'" class="closeedit" title="Close Modal">&times;</span>
                                                       </div>
                                                   <div class="pcontainer">
-                                                    <p>Are you sure you want to <b style="color:#e2857b;">DELETE</b> this address?</p>
+                                                    <p style="text-align: center;">Are you sure you want to <b style="color:#e2857b;">DELETE</b> this address?</p>
                                                     <input type="hidden" name="delete-index" value="'.$index.'">
                                                     <button type="submit" name="del-address" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
                                                   </div>
                                                   <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
-                                                    <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById(\'confirmdelete\').style.display=\'none\'">Cancel</button>
+                                                    <button type="button" class="edit-profile-btn cancelbtn" style="outline: none;" onclick="document.getElementById(\'confirmdelete'.$index.'\').style.display=\'none\'">Cancel</button>
                                                   </div>
                                                 </form>
                                               </div>';
