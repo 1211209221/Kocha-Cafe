@@ -2167,7 +2167,7 @@
                             <p>View your past order(s) and payment details.</p>
                             <?php
                                 //check got current order
-                                $querys = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID";
+                                $querys = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID ORDER BY order_date DESC";
                                 $results = $conn->query($querys);
                                 if($results && $results->num_rows == 0){
                                     echo '<div>
