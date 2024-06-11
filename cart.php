@@ -8,12 +8,26 @@
         <link rel="stylesheet" type="text/css" href="contact.css">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
         <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
         <link rel="icon" href="images/logo/logo_icon.png">
         <script src="script.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="gototop.js"></script>
+        <style>
+        /* Style for the disabled submit button */
+        input[type="submit"]:disabled {
+            opacity: 50%;
+            border:none;
+            cursor: not-allowed;
+        }
+        input[type="submit"]:hover:disabled {
+            transform:scale(1);
+            opacity: 50%;
+        }
+    </style>
     </head>
     <body>
         <?php
@@ -1244,6 +1258,26 @@
                 });
             });
         </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Get the current time in Malaysia
+                var now = moment.tz("Asia/Kuala_Lumpur");
+
+                // Define the operating hours
+                var openingTime = moment.tz("Asia/Kuala_Lumpur").set({ hour: 8, minute: 30 });
+                var closingTime = moment.tz("Asia/Kuala_Lumpur").set({ hour: 21, minute: 0 });
+
+                // Check if the current time is outside the operating hours
+                if (now.isBefore(openingTime) || now.isAfter(closingTime)) {
+                    // Show the message to the user
+                    document.getElementById("noteforuser").style.display = "block";
+                    // Disable the submit button
+                    document.getElementById("submit_order").disabled = true;
+                }
+            });
+        </script>
+        <div id="noteforuser" style="padding: 15px;display:none;background-color: #5a9498;font-size: 17px;color: #fff;letter-spacing: 0.8px;font-weight: 300;text-align: center;"><strong>
+            <i class="fas fa-exclamation" style="margin-right:3px;"></i> Our operating hours are from <u>8:30 AM to 9:00 PM</u>. Please place your orders within this timeframe. Thank you! &#128522;</strong></div>
         <div class="cart">
             <div class="container-fluid container">
                 <div class="col-12 m-auto">

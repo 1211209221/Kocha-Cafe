@@ -246,9 +246,15 @@
                     // Mark the selected address as deleted
                     unset($addresses[$index-1]);
 
-                    // Concatenate all remaining addresses back into a single string
-                    $updated_addresses_string = implode("},{", $addresses);
-                    $updated_add_string = "{" . $updated_addresses_string . "}";
+                    if($index==1){
+                        $updated_add_string = "";
+                    }
+                    else{
+                        // Concatenate all remaining addresses back into a single string
+                        $updated_addresses_string = implode("},{", $addresses);
+                        $updated_add_string = "{" . $updated_addresses_string . "}";
+                    }
+
 
                     // Update the database with the modified addresses
                     $update_query = "UPDATE customer SET cust_address = '$updated_add_string' WHERE cust_ID = $cust_ID AND trash = 0";
@@ -1966,7 +1972,7 @@
                                           <div class="pcontainer">
                                             <p style="margin-bottom: initial;margin:0px 17px;">Have you <b style="color:#5a9498;">RECEIVED</b> this order?</p>
                                             <p style="margin:0px 17px 5px;">After you confirm it, you can <b style="color:#5a9498;">RATE</b> the product you have ordered!</p>
-                                            <input type="text" name="orderid" value="'.$oid.'">
+                                            <input type="hidden" name="orderid" value="'.$oid.'">
                                             <button type="submit" name="order_received" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
                                           </div>
                                           <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
@@ -1980,18 +1986,6 @@
                                                 <span class="order_date" style="font-size: 15px;">'.$row['order_date'].'</span>
                                                 <span id="status-container-' . $oid . '"></span></button>';
                                                 
-                                         
-                                        //         if($row['tracking_stage']==0){
-                                        //     echo '<span class="sta-queue status"><i class=\'fas fa-boxes\'></i>Queueing</span></button>';
-                                        // }
-                                        // else if($row['tracking_stage']==1){
-                                        //     echo '<span class="sta-prepare status"><i class=\'fas fa-box-full\'></i>Preparing</span></button>';
-                                        // }
-                                        // else if($row['tracking_stage']==2){
-                                        //     echo '<span class="sta-deliver status"><i class=\'fas fa-truck-loading\'></i>Delivering</span></button>';
-                                        // }
-
-                                    
 
                                         $date = $row['order_date'];
                                         $sql_get_payment = "SELECT * FROM payment WHERE payment_time = '$date' AND trash = 0";
@@ -2124,7 +2118,6 @@
                                 xhr.open("GET", "get_tracking_status.php?ID=" + orderID, true);
                                 xhr.onload = function() {
                                     if (this.status === 200) {
-                                        console.log("Response:", this.responseText); // Log the response
                                         const statuses = JSON.parse(this.responseText);
                                         let statusHtml = "";
 
@@ -2197,7 +2190,10 @@
                                                         echo '<div class="panel">
                                                         <div>';
                                                         
-                                                        echo '<p>Thank you for your purchase! Your payment details are below:</p>
+                                                        echo '<p>Thank you for your purchase! Your payment details are below: 
+                                                            <a href="Kocha_Cafe_Invoice.php?ID='.$rows_payment['payment_ID'].'" title="PDF"><button style="border: none;padding: 4px 8px;">
+                                                            <i class="fas fa-print"></i> Print</button></a></p>
+                                                        
                                                             <div class="simple_area">
                                                                 <div class="small_area">
                                                                     <span class="o_title"><i class="far fa-dollar-sign"></i> TOTAL COST</span>
@@ -2324,83 +2320,98 @@
         </div>
         <?php include 'footer.php'; ?>
         <script>
-            window.addEventListener('DOMContentLoaded', (event) => {
-                // Check local storage for the active tab
-                var activeTab = localStorage.getItem('activeTab');
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Check local storage for the active tab
+            var activeTab = localStorage.getItem('activeTab');
 
-                if (activeTab) {
-                    opencontent({currentTarget: document.querySelector(`[onclick="opencontent(event, '${activeTab}')"]`)}, activeTab);
-                } else {
-                    // Hide all tab contents except the first one
-                    var tabContents = document.querySelectorAll('.tabcontent');
-                    for (var i = 1; i < tabContents.length; i++) {
-                        tabContents[i].style.display = 'none';
-                    }
+            if (activeTab) {
+                opencontent({currentTarget: document.querySelector(`[onclick="opencontent(event, '${activeTab}')"]`)}, activeTab);
+            } else {
+                // Hide all tab contents except the first one
+                var tabContents = document.querySelectorAll('.tabcontent');
+                for (var i = 1; i < tabContents.length; i++) {
+                    tabContents[i].style.display = 'none';
                 }
-            });
-            function opencontent(evt, optname){
-                var i, tabcontent, tablink;
-
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for(i = 0; i < tabcontent.length; i++){
-                    tabcontent[i].style.display = "none";
-                }
-
-                tablink = document.getElementsByClassName("tablink");
-                for(i = 0; i < tablink.length; i++){
-                    tablink[i].classList.remove("active");
-                }
-
-                document.getElementById(optname).style.display = "block";
-                evt.currentTarget.classList.add("active");
-
-                // Save the active tab to local storage
-                localStorage.setItem('activeTab', optname);
-
+                // Show the first tab by default
+                document.querySelector('.tabcontent').style.display = 'block';
             }
-        </script>
-        <script>
-            // Add event listeners to accordions
+
+            // Retrieve accordion state
+            retrieveAccordionState();
+        });
+
+        function opencontent(evt, optname) {
+            var i, tabcontent, tablink;
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for(i = 0; i < tabcontent.length; i++){
+                tabcontent[i].style.display = "none";
+            }
+
+            tablink = document.getElementsByClassName("tablink");
+            for(i = 0; i < tablink.length; i++){
+                tablink[i].classList.remove("active");
+            }
+
+            document.getElementById(optname).style.display = "block";
+            evt.currentTarget.classList.add("active");
+
+            // Save the active tab to local storage
+            localStorage.setItem('activeTab', optname);
+
+            // Retrieve accordion state for the current tab
+            retrieveAccordionState();
+        }
+
+        // Add event listeners to accordions
+        function addAccordionListeners() {
             var acc = document.getElementsByClassName("accordion");
             for (var i = 0; i < acc.length; i++) {
                 acc[i].addEventListener("click", accordionClick);
             }
-            //if click then expand
-            function accordionClick() {
-                this.classList.toggle("expandacc");
-                var panel = this.nextElementSibling;
-                if (panel.style.maxHeight) {
-                    panel.style.maxHeight = null;
-                } else {
-                    panel.style.maxHeight = panel.scrollHeight + "px";
-                }
+        }
 
-                // Store the state of the accordion in localStorage
-                var accordionState = {};
-                var acc = document.getElementsByClassName("accordion");
-                for (var i = 0; i < acc.length; i++) {
-                    accordionState[i] = acc[i].classList.contains("expandacc");
-                }
-                localStorage.setItem("accordionState", JSON.stringify(accordionState));
+        // Accordion click event handler
+        function accordionClick() {
+            this.classList.toggle("expandacc");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
             }
 
-            // Retrieve accordion state from localStorage
-            function retrieveAccordionState() {
-                var accordionState = JSON.parse(localStorage.getItem("accordionState"));
-                if (accordionState) {
-                    var acc = document.getElementsByClassName("accordion");
-                    for (var i = 0; i < acc.length; i++) {
-                        if (accordionState[i]) {
-                            acc[i].classList.add("expandacc");
-                            var panel = acc[i].nextElementSibling;
-                            panel.style.maxHeight = panel.scrollHeight + "px";
-                        }
+            // Store the state of the accordion in localStorage
+            storeAccordionState();
+        }
+
+        // Store accordion state in localStorage
+        function storeAccordionState() {
+            var accordionState = {};
+            var acc = document.getElementsByClassName("accordion");
+            for (var i = 0; i < acc.length; i++) {
+                accordionState[i] = acc[i].classList.contains("expandacc");
+            }
+            localStorage.setItem("accordionState", JSON.stringify(accordionState));
+        }
+
+        // Retrieve accordion state from localStorage
+        function retrieveAccordionState() {
+            var accordionState = JSON.parse(localStorage.getItem("accordionState"));
+            if (accordionState) {
+                var acc = document.getElementsByClassName("accordion");
+                for (var i = 0; i < acc.length; i++) {
+                    if (accordionState[i]) {
+                        acc[i].classList.add("expandacc");
+                        var panel = acc[i].nextElementSibling;
+                        panel.style.maxHeight = panel.scrollHeight + "px";
                     }
                 }
             }
+        }
 
-            // Retrieve accordion state everytime the page reload
-            window.addEventListener("load", retrieveAccordionState);
-            </script>
+        // Add accordion listeners on load
+        window.addEventListener("load", addAccordionListeners);
+    </script>
     </body>
 </html>
