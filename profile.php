@@ -1974,18 +1974,22 @@
                                           </div>
                                         </form>
                                       </div>';
+                    
                                         $order_id = "K_".$row['order_ID'];
                                         echo '<button class="accordion" title="Expand"><p>'.$order_id.'</p>
-                                                <span class="order_date" style="font-size: 15px;">'.$row['order_date'].'</span>';
-                                        if($row['tracking_stage']==0){
-                                            echo '<span class="sta-queue status"><i class=\'fas fa-boxes\'></i>Queueing</span></button>';
-                                        }
-                                        else if($row['tracking_stage']==1){
-                                            echo '<span class="sta-prepare status"><i class=\'fas fa-box-full\'></i>Preparing</span></button>';
-                                        }
-                                        else if($row['tracking_stage']==2){
-                                            echo '<span class="sta-deliver status"><i class=\'fas fa-truck-loading\'></i>Delivering</span></button>';
-                                        }
+                                                <span class="order_date" style="font-size: 15px;">'.$row['order_date'].'</span>
+                                                <span id="status-container-' . $oid . '"></span></button>';
+                                                
+                                         
+                                        //         if($row['tracking_stage']==0){
+                                        //     echo '<span class="sta-queue status"><i class=\'fas fa-boxes\'></i>Queueing</span></button>';
+                                        // }
+                                        // else if($row['tracking_stage']==1){
+                                        //     echo '<span class="sta-prepare status"><i class=\'fas fa-box-full\'></i>Preparing</span></button>';
+                                        // }
+                                        // else if($row['tracking_stage']==2){
+                                        //     echo '<span class="sta-deliver status"><i class=\'fas fa-truck-loading\'></i>Delivering</span></button>';
+                                        // }
 
                                     
 
@@ -2114,258 +2118,200 @@
                                         </div>';
                                 }
                             ?>
+                            <script>
+                            function fetchTrackingStatus(orderID) {
+                                const xhr = new XMLHttpRequest();
+                                xhr.open("GET", "get_tracking_status.php?ID=" + orderID, true);
+                                xhr.onload = function() {
+                                    if (this.status === 200) {
+                                        console.log("Response:", this.responseText); // Log the response
+                                        const statuses = JSON.parse(this.responseText);
+                                        let statusHtml = "";
+
+                                        statuses.forEach(status => {
+                                            if (status == 0) {
+                                                statusHtml += '<span class="sta-queue status"><i class="fas fa-boxes"></i> Queueing</span>';
+                                            } else if (status == 1) {
+                                                statusHtml += '<span class="sta-prepare status"><i class="fas fa-box-full"></i> Preparing</span>';
+                                            } else if (status == 2) {
+                                                statusHtml += '<span class="sta-deliver status"><i class="fas fa-truck-loading"></i> Delivering</span>';
+                                            }
+                                        });
+
+                                        // Update the status span inside the button
+                                        const statusContainer = document.getElementById("status-container-" + orderID);
+                                        if (statusContainer) {
+                                            statusContainer.innerHTML = statusHtml;
+                                        }
+                                    }
+                                };
+                                xhr.send();
+                            }
+
+                            // Fetch the tracking status every 5 seconds for each order
+                            setInterval(function() {
+                                <?php
+                                $result->data_seek(0); // Reset result pointer to the beginning
+                                while ($row = $result->fetch_assoc()) {
+                                    echo 'fetchTrackingStatus(' . $row['order_ID'] . ');';
+                                }
+                                ?>
+                            }, 5000);
+
+                            // Fetch the initial status immediately for each order
+                            <?php
+                            $result->data_seek(0); // Reset result pointer to the beginning
+                            while ($row = $result->fetch_assoc()) {
+                                echo 'fetchTrackingStatus(' . $row['order_ID'] . ');';
+                            }
+                            ?>
+                            </script>
                                 
                             
                         </div>
                         <div id="history" class="tabcontent" style="display: none;">
                             <h5 class="title"><i class="fas fa-history"></i> Order History</h5>
-                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto; position: relative;">
-                        <style>
-                            table tr .t_no {
-                                display: none;
-                            }
-                            table tr .t_id {
-                                width: 15%;
-                                padding-left: 15px !important;
-                                border-top-left-radius: 7px;
-                                border-bottom-left-radius: 7px;
-                            }
-                            table tbody tr .t_id {
-                                font-size: 16px;
-                            }
-                            table tr .t_date {
-                                width: 20%;
-                            }
-                            table tbody tr .t_date {
-                                font-size: 16px;
-                            }
-                            table tr .t_item {
-                                width: 35%;
-                                font-size: 16px;
-                            }
-                            table tr .t_item ul {
-                                list-style: none;
-                                padding: 0;
-                                margin: 5px 0;
-                            }
-                            table tr .t_item ul li span {
-                                font-weight: 400;
-                                color: #8a8a8a;
-                                padding-left: 22px;
-                            }
-                            table tr .t_price {
-                                width: 15%;
-                            }
-                            table tr .t_status {
-                                width: 15%;
-                                text-align: center;
-                            }
-                            .status-queue {
-                                color: orange;
-                            }
-                            .status-prepare {
-                                color: blue;
-                            }
-                            .status-deliver {
-                                color: green;
-                            }
-                            .status-receive {
-                                color: purple;
-                            }
-                            .status-icon {
-                                margin-right: 5px;
-                                font-size: 14px;
-                            }
-                            .status-text {
-                                font-size: 14px;
-                            }
-                            .item-details {
-                                margin-bottom: 8px;
-                            }
-                            .item-remark, .item-sauce {
-                                display: block;
-                                margin-left: 10px;
-                                color: #888;
-                                font-size: 12px;
-                            }
-                            .table-responsive::-webkit-scrollbar {
-                                width: 8px;
-                            }
-                            .table-responsive::-webkit-scrollbar-thumb {
-                                background: #888;
-                                border-radius: 4px;
-                            }
-                            .table-responsive::-webkit-scrollbar-thumb:hover {
-                                background: #555;
-                            }
-                            .table thead th {
-                                position: sticky;
-                                top: 0;
-                                background-color: #fff;
-                                z-index: 1;
-                                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-                            }
-                            .table-container {
-                                width: 100%;
-                                margin: 20px auto;
-                            }
-                            table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                background-color: #fff;
-                                border-radius: 8px;
-                                overflow: hidden;
-                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                            }
-                            thead {
-                                background-color: #f9f9f9;
-                            }
-                            thead th {
-                                padding: 15px;
-                                text-align: left;
-                                font-weight: bold;
-                                font-size: 14px;
-                                color: #333;
-                            }
-                            tbody tr {
-                                border-bottom: 1px solid #eee;
-                            }
-                            tbody tr:hover {
-                                background-color: #f1f1f1;
-                            }
-                            tbody td {
-                                padding: 15px;
-                                font-size: 14px;
-                                color: #555;
-                            }
-                        </style>
+                            <p>View your past order(s) and payment details.</p>
+                            <?php
+                                //check got current order
+                                $querys = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID";
+                                $results = $conn->query($querys);
+                                if($results && $results->num_rows == 0){
+                                    echo '<div>
+                                    <div style="width: 100%;height: 400px;text-align: center;display: flex;align-items: center;justify-content: center;">
+                                    <i class=\'far fa-ghost\'></i>You don\'t have any order yet!
+                                </div>';
+                                }
+                                else{
+                                    echo '<div class="left-box">';
+                                    while ($rows = $results->fetch_assoc()) {                                        
+                                        $order_id = "K_".$rows['order_ID'];
+                                        echo '<button class="accordion" title="Expand"><p>'.$order_id.'</p>
+                                                <span class="order_date" style="font-size: 15px;">'.$rows['order_date'].'</span></button>';
+                                       
+                                        $date = $rows['order_date'];
+                                        $sql_get_payments = "SELECT * FROM payment WHERE payment_time = '$date' AND trash = 0";
+                                        $result_get_payments = $conn->query($sql_get_payments);
+                                        if ($result_get_payments->num_rows > 0) {
+                                            while ($rows_payment = $result_get_payments->fetch_assoc()) {
+                                                        echo '<div class="panel">
+                                                        <div>';
+                                                        
+                                                        echo '<p>Thank you for your purchase! Your payment details are below:</p>
+                                                            <div class="simple_area">
+                                                                <div class="small_area">
+                                                                    <span class="o_title"><i class="far fa-dollar-sign"></i> TOTAL COST</span>
+                                                                    <span class="o_content">RM '.$rows['order_total'].'</span>
+                                                                </div>
+                                                                <div class="small_area">
+                                                                    <span class="o_title"><i class="fas fa-store"></i>ORDERED FROM</span>
+                                                                    <span class="o_content">Kocha Café</span>
+                                                                </div>
+                                                            </div>';
+                                                            
+                                                        $paymentID = $rows_payment['payment_ID'];
+                                                        $payment_cardnum = $rows_payment['payment_cardnum'];
+                                                        $point_redeem = ($rows_payment['payment_subtotal'] - $rows_payment['payment_total'])/0.1;
+                                                        $pointconvert = round($point_redeem * 0.1);
 
-                            <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th class="t_id">Order ID</th>
-                                        <th class="t_date">Order Date</th>
-                                        <th class="t_item">Item</th>
-                                        <th class="t_price">Total Price</th>
-                                        <th class="t_status">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody border="transparent">
-                                <?php
-                                $no_count = 0;
-                                $previous_order_id = null;
+                                                        echo '<div class="bottom_area">
+                                                                <div class="paymentprt"><p class="text">Payment Details</p>
+                                                                    <div class="attribute">
+                                                                        <span class="payment_title">Invoice ID</span>
+                                                                        <span class="payment_det">'.$paymentID.'</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span class="payment_title">Payment Method</span>
+                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span class="payment_title">Delivery Location</span>
+                                                                        <span class="payment_det">'.$rows['order_address'].'</span>
+                                                                    </div>
+                                                                    <div class="attribute">
+                                                                        <span class="payment_title">Order Time</span>
+                                                                        <span class="payment_det">'.$rows['order_date'].'</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="orderprt"><p class="text">Order Details</p>
+                                                                    <div>
+                                                                        <table class="order_table">
+                                                                            <thead class="thead-light">
+                                                                                <tr style="background-color: #e9ecef;">
+                                                                                    <th class="desc">Description</th>
+                                                                                    <th class="amount">Amount</th>
+                                                                                </tr>
+                                                                            <thead>
+                                                                            <tbody border="transparent">';
+                                                                                
+                                                                                $items[] = "";
+                                                                                $items = explode("},{", $rows_payment['payment_items']);
+                                                                                $items = array_filter($items, 'strlen');
+                                                                                if (count($items) != 0){
+                                                                                    foreach ($items as $item) {
+                                                                                        $item = trim($item, "{}");
+                                                                                        $details = explode(",", $item);
+                                                
+                                                                                        $item_ID = trim($details[0], "()");
+                                                                                        $item_name = trim($details[1], "()");
+                                                                                        $item_price = trim($details[2], "()");
+                                                                                        $item_qty = trim($details[3], "()");
+                                                                                        $item_sumprice = trim($details[4], "()");
+                                                                                        $item_request = trim($details[5], "()");
+                                                                                        $item_custom = implode(',', array_slice($details, 6));
+                                                                                        preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
 
-                                $sql_review_limit = "SELECT * FROM customer_orders WHERE cust_ID = $cust_ID AND trash = 0";
-                                $result = mysqli_query($conn, $sql_review_limit);
-                                
-                                if (mysqli_num_rows($result) > 0) {
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        $no_count++;
-                                        $order_id = $row['order_ID'];
-                                        $date = date('Y-m-d H:i:s', strtotime($row['order_date']));
-                                        $status = intval($row['tracking_stage']);
-                                
-                                        echo "<tr>";
-                                        echo "<td>" . $order_id . "</td>";
-                                        echo "<td>" . $date . "</td>";
-                                        echo "<td class='t_item'><ul>";
-                                
-                                        $oid = $row['order_ID'];
-                                        $sql_get_cart = "SELECT order_contents FROM customer_orders WHERE order_ID = $oid AND trash = 0";
-                                        $result_get_cart = $conn->query($sql_get_cart);
-                                
-                                        $total_sumprice = 0; // Initialize the total sum price for the order
-                                
-                                        if ($result_get_cart->num_rows > 0) {
-                                            while ($row_get_cart = $result_get_cart->fetch_assoc()) {
-                                                $items = explode("},{", $row_get_cart['order_contents']);
-                                                $items = array_filter($items, 'strlen');
-                                
-                                                if (count($items) != 0) {
-                                                    foreach ($items as $item) {
-                                                        $item = trim($item, "{}");
-                                                        $details = explode(",", $item);
-                                
-                                                        $item_ID = trim($details[0], "()");
-                                                        $item_name = trim($details[1], "()");
-                                                        $item_price = trim($details[2], "()");
-                                                        $item_qty = trim($details[3], "()");
-                                                        $item_sumprice = trim($details[4], "()");
-                                
-                                                        $total_sumprice += floatval($item_sumprice); // Add item price to total sum
-                                
-                                                        $item_request = trim($details[5], "()");
-                                                        $item_custom = implode(',', array_slice($details, 6));
-                                                        preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
-                                
-                                                        echo '<li>' . $item_qty . ' x ' . $item_name;
-                                                        echo ' (RM' . $item_sumprice . ')';
-                                
-                                                        if (!empty($matches[1])) {
-                                                            foreach ($matches[1] as $match) {
-                                                                $customs = explode(',', $match);
-                                                                if (count($customs) >= 2) {
-                                                                    $custom_key = trim($customs[0]);
-                                                                    $custom_value = trim($customs[1]);
-                                                                    if (!empty($custom_key) && !empty($custom_value)) {
-                                                                        echo '<br><span>' . $custom_value . '</span>';
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                
-                                                        if (!empty($item_request)) {
-                                                            echo '<br><span>' . $item_request . '</span>';
-                                                        }
-                                
-                                                        echo '</li>';
-                                                    }
-                                                }
+                                                                                        echo '<tr class="noborder"><td class="desc">
+                                                                                            '.$item_qty.'x <span>'.$item_name.'</span>';
+                                                                                            if (!empty($matches[1])) {
+                                                                                                foreach ($matches[1] as $match) {
+                                                                                                    $customs = explode(',', $match);
+                                                                                                    if (count($customs) >= 2) {
+                                                                                                        $custom_key = trim($customs[0]);
+                                                                                                        $custom_value = trim($customs[1]);
+                                                                                                        if (!empty($custom_key) && !empty($custom_value)) {
+                                                                                                            echo '<br><span class="extra">' . $custom_value . '</span>';
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            if(!empty($item_request)){
+                                                                                                echo '<br><span class="extra">' . $item_request . '</span>';
+                        
+                                                                                            }
+                                                                                        echo '</td><td class="amount">RM '.$item_sumprice.'</td></tr>';
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                            
+                                                                            
+                                                                            echo '<tr style="border-top: 2px solid lightgray;border-bottom: none;">
+                                                                                <td class="desc">Subtotal</td><td class="amount">RM '.$rows_payment['payment_subtotal'].'</td>
+                                                                            </tr>
+                                                                            <tr class="noborder">
+                                                                                <td class="desc">Point Redeem</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                            </tr>
+                                                                            <tr class="noborder" style="background-color: #fffae4;">
+                                                                                <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$rows_payment['payment_total'].'</td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div></div>';
+                                                        
+                                                    
+                                                
                                             }
                                         }
-                                
-                                        echo "</ul></td>";
-                                        echo "<td>RM" . number_format($total_sumprice, 2) . "</td>"; // Display the total sum price
 
-                                        $tracking_stage = intval($row['tracking_stage']);
-                                        $status = '';
-                                        switch ($tracking_stage) {
-                                            case 0:
-                                                $status = "<span class='status-queue'><i class='fas fa-boxes status-icon'></i><span class='status-text'>Queueing</span></span>";
-                                                break;
-                                            case 1:
-                                                $status = "<span class='status-prepare'><i class='fas fa-box-full status-icon'></i><span class='status-text'>Preparing</span></span>";
-                                                break;
-                                            case 2:
-                                                $status = "<span class='status-deliver'><i class='fas fa-truck-loading status-icon'></i><span class='status-text'>Delivering</span></span>";
-                                                break;
-                                            case 3:
-                                                $status = "<span class='status-receive'><i class='fas fa-box-check status-icon'></i><span class='status-text'>Received</span></span>";
-                                                break;
-                                            default:
-                                                $status = "<span class='status-unknown'><i class='fas fa-question-circle status-icon'></i><span class='status-text'>Unknown</span></span>";
-                                                break;
-                                        }
-
-                                        echo "<td>" . $status . "</td>";
-                                        echo "</tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='5'><i class='far fa-ghost'></i> No orders found...</td></tr>";
+                                    
+                                        echo '
+                                        </div>';
                                 }
-                                ?>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="navigation_container">
-                            <div id="pagination"></div>
-                            <div class="no_results_page">
-                                <span>Showing to of results</span>
-                            </div>
-                        </div>
-                    
+                            ?>
                         </div>
                         <div id="voucher" class="tabcontent" style="display: none;">
                             <h5 class="title"><i class="fas fa-tags"></i> My Vouchers</h5>
@@ -2377,14 +2323,6 @@
             </div>
         </div>
         <?php include 'footer.php'; ?>
-        <script>
-            console.log("Page will reload in 1 minute");
-            // Set an interval to reload the page every minute (60000 milliseconds)
-            setInterval(function(){
-                console.log("Reloading page...");
-                location.reload();
-            }, 60000);
-        </script>
         <script>
             window.addEventListener('DOMContentLoaded', (event) => {
                 // Check local storage for the active tab
