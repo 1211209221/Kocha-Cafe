@@ -2187,7 +2187,7 @@
                                     while ($rows = $results->fetch_assoc()) {                                        
                                         $order_id = "K_".$rows['order_ID'];
                                         echo '<button class="accordion" title="Expand"><p>'.$order_id.'</p>
-                                                <span class="order_date" style="font-size: 15px;">'.$rows['order_date'].'</span></button>';
+                                                <span class="order_date" style="font-size: 15px;position:static;">'.$rows['order_date'].'</span></button>';
                                        
                                         $date = $rows['order_date'];
                                         $sql_get_payments = "SELECT * FROM payment WHERE payment_time = '$date' AND trash = 0";
