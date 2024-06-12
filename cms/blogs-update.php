@@ -1,6 +1,21 @@
 <?php
 include '../connect.php'; // Include your database connection file
 
+function reconnect($conn, $servername, $user, $password, $database) {
+    $conn->close();
+    $conn = new mysqli($servername, $user, $password, $database);
+    if ($conn->connect_error) {
+        error_log("Reconnection failed: " . $conn->connect_error);
+        die("Connection failed: " . $conn->connect_error);
+    }
+    return $conn;
+}
+
+// Ensure the connection is still active
+if (!$conn->ping()) {
+    $conn = reconnect($conn, $servername, $user, $password, $database);
+}
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if all required fields are set
@@ -23,8 +38,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Update blog data including image content and MIME type
             $stmt = $conn->prepare("UPDATE blog SET blog_title = ?, blog_contents = ?, blog_type = ?, image = ? WHERE blog_ID = ?");
+            if (!$stmt) {
+                error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+                header("Location: blogs-edit.php?id=$blog_id&error=1");
+                exit();
+            }
             $stmt->bind_param("ssssi", $blog_title, $blog_contents, $blog_type, $image_data, $blog_id); // Assuming the blog ID is an integer
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                error_log("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+                header("Location: blogs-edit.php?id=$blog_id&error=1");
+                exit();
+            }
 
             // Check if the update was successful
             if ($stmt->affected_rows > 0) {
@@ -39,8 +63,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // If no image is uploaded, update other blog data excluding image
             $stmt = $conn->prepare("UPDATE blog SET blog_title = ?, blog_contents = ?, blog_type = ? WHERE blog_ID = ?");
+            if (!$stmt) {
+                error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+                header("Location: blogs-edit.php?id=$blog_id&error=1");
+                exit();
+            }
             $stmt->bind_param("sssi", $blog_title, $blog_contents, $blog_type, $blog_id); // Assuming the blog ID is an integer
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                error_log("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+                header("Location: blogs-edit.php?id=$blog_id&error=1");
+                exit();
+            }
 
             // Check if the update was successful
             if ($stmt->affected_rows > 0) {

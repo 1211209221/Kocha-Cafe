@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+session_start()
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +19,13 @@
             font-size: 1rem;
             /* Adjust the size as needed */
         }
+
         /* Fixed size for the image */
         .fixed-image {
-            width: 300px; /* Adjust the width as needed */
-            height: auto; /* Maintain aspect ratio */
+            width: 300px;
+            /* Adjust the width as needed */
+            height: auto;
+            /* Maintain aspect ratio */
         }
     </style>
     <script src="../script.js"></script>
@@ -33,10 +38,28 @@
     include '../gototopbtn.php';
     include 'navbar.php';
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['blog_id']) && isset($_POST['action']) && $_POST['action'] == 'move_to_trash') {
+            $blog_id = $_POST['blog_id'];
+
+            $stmt = $conn->prepare("UPDATE blog SET trash = 1 WHERE blog_ID = ?");
+            $stmt->bind_param("i", $blog_id);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Blog moved to trash successfully.'); window.location.href='blogs-all.php';</script>";
+            } else {
+                echo "Error: " . $stmt->error;
+            }
+
+            $stmt->close();
+            exit();
+        }
+    }
+
     // Check if the ID parameter is set in the URL
     if (isset($_GET['id'])) {
         $blog_id = $_GET['id'];
-        
+
         $stmt = $conn->prepare("SELECT * FROM blog WHERE blog_ID = ?");
         $stmt->bind_param("i", $blog_id); // Assuming the blog ID is an integer
         $stmt->execute();
@@ -52,7 +75,7 @@
                     <h1>Edit Blog</h1>
                 </div>
                 <form action="blogs-update.php" method="post" enctype="multipart/form-data">
-                    <?php 
+                    <?php
                     echo "<div><img src='" . $row["image"] . "' alt='Blog Image' class='fixed-image' id='blog-image'></div>";
                     ?>
                     <input type="hidden" name="blog_id" value="<?php echo $row['blog_ID']; ?>">
@@ -79,10 +102,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="file" name="image" class="upload_image" id="image">
+                        <input type="file" name="image" class="upload_image" id="image" accept="image/jpeg, image/png, image/gif">
                         <label class="upload_image_label" for="image"><i class="fas fa-camera"></i></label>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Blog</button>
+                    <button type="button" class="btn btn-danger" id="trash-btn">Move to Trash</button>
                 </form>
             </div>
             <?php
@@ -136,7 +160,16 @@
 
             reader.readAsDataURL(file);
         });
-
+        document.getElementById('trash-btn').addEventListener('click', function () {
+            if (confirm('Are you sure you want to move this blog to the trash?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'blogs-edit.php?id=<?php echo $blog_id; ?>';
+                form.innerHTML = '<input type="hidden" name="blog_id" value="<?php echo $row['blog_ID']; ?>"><input type="hidden" name="action" value="move_to_trash">';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     </script>
 
 </body>

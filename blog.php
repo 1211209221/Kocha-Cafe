@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>About Kocha Cafe</title>
+    <title>Blog | Kocha Cafe</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -51,53 +51,52 @@
             background-color: white;
             border-radius: 20px;
             position: relative;
-            overflow: hidden; /* Ensures the image doesn't overflow the container */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .post img {
             width: 100%;
-            height: auto;
+            height: 200px; /* Set a fixed height for the image */
+            object-fit: cover; /* Ensure the image covers the entire area without distortion */
             border-radius: 20px 20px 0 0;
-            object-fit: cover; /* Ensures the image covers the entire container */
-            max-height: 200px; /* Set maximum height */
         }
 
         .post h2 {
             margin-top: 0;
+            font-size: 1.25rem;
         }
 
         .post p {
             margin-top: 5px;
+            flex-grow: 1; /* Allow the content to grow and fill the available space */
         }
 
-        .blog_type_button {
+        .blog-type-button {
             font-weight: 800;
             padding: 4px 15px;
-            /* Increased padding for better button appearance */
             background-color: #E2857B;
-            /* Green color */
             border: none;
             cursor: pointer;
             color: white;
-            margin-top: 10px;
             border-radius: 5px;
             width: 100px;
-            /* Make the button fill the width of its container */
             text-align: center;
-            /* Center-align the text */
-            box-sizing: border-box;
-            /* Include padding and border in button's total width */
             position: absolute;
             top: 20px;
             right: 20px;
+            z-index: 1;
         }
 
-        .blog_type_button:hover {
+        .blog-type-button:hover {
             background-color: #E2857B;
             opacity: 1;
             transform: scale(1.035);
             transition: 0.5s;
         }
+
     </style>
 </head>
 
@@ -116,7 +115,7 @@
 
             <?php
             // Fetch and display posts
-            $sql = "SELECT blog_ID, blog_title, blog_contents, image, file, date, blog_type FROM blog";
+            $sql = "SELECT blog_ID, blog_title, blog_contents, image, file, date, blog_type FROM blog WHERE trash = 0";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -126,7 +125,23 @@
                         <img src="<?php echo $row["image"]; ?>" alt="Blog Image">
                         <h2><?php echo $row["blog_title"]; ?></h2>
                         <p><?php echo $row["blog_contents"]; ?></p>
-                        <button class="blog-type-button"><?php echo $row["blog_type"]; ?></button>
+                        <?php
+                        // Add conditional logic for button generation
+                        switch ($row["blog_type"]) {
+                            case "Discount":
+                                echo "<a href='menu.php'><button class='blog-type-button'>Discount</button></a>";
+                                break;
+                            case "News":
+                                echo "<a href='index.php'><button class='blog-type-button'>News</button></a>";
+                                break;
+                            case "Updates":
+                                echo "<a href='menu.php'><button class='blog-type-button'>Updates</button></a>";
+                                break;
+                            default:
+                                // Handle any other cases here
+                                break;
+                        }
+                        ?>
                     </div>
                     <?php
                 }
@@ -137,5 +152,6 @@
         </div>
     </div>
 </body>
+
 
 </html>
