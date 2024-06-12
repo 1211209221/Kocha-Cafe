@@ -2089,7 +2089,7 @@
                                                                                 <td class="desc">Subtotal</td><td class="amount">RM '.$row_payment['payment_subtotal'].'</td>
                                                                             </tr>
                                                                             <tr class="noborder">
-                                                                                <td class="desc">Point Redeem</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                                <td class="desc">Point Redeemed</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
                                                                             </tr>
                                                                             <tr class="noborder" style="background-color: #fffae4;">
                                                                                 <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$row_payment['payment_total'].'</td>
@@ -2191,7 +2191,7 @@
                                                         <div>';
                                                         
                                                         echo '<p>Thank you for your purchase! Your payment details are below: 
-                                                            <a href="Kocha_Cafe_Invoice.php?ID='.$rows_payment['payment_ID'].'" title="PDF"><button style="border: none;padding: 4px 8px;">
+                                                            <a href="Kocha_Cafe_Invoice.php?ID='.$rows_payment['payment_ID'].'" title="PDF"><button style="border: none;outline:none;padding: 4px 8px;">
                                                             <i class="fas fa-print"></i> Print</button></a></p>
                                                         
                                                             <div class="simple_area">
@@ -2285,7 +2285,7 @@
                                                                                 <td class="desc">Subtotal</td><td class="amount">RM '.$rows_payment['payment_subtotal'].'</td>
                                                                             </tr>
                                                                             <tr class="noborder">
-                                                                                <td class="desc">Point Redeem</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                                <td class="desc">Point Redeemed</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
                                                                             </tr>
                                                                             <tr class="noborder" style="background-color: #fffae4;">
                                                                                 <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$rows_payment['payment_total'].'</td>

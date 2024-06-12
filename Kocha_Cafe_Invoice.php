@@ -290,7 +290,7 @@ if (isset($_GET['ID'])) {
                                         <td class="desc">Subtotal</td><td class="amount">RM '.$row['payment_subtotal'].'</td>
                                     </tr>
                                     <tr class="noborder" style="background-color:#fffcf0;">
-                                        <td class="desc">Point Redeem</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                        <td class="desc">Point Redeemed</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
                                     </tr>
                                     <tr class="noborder" style="background-color: #fffae4;font-weight:bold;">
                                         <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$row['payment_total'].'</td>
