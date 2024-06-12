@@ -17,7 +17,10 @@
     <style>
         .w100{
             width: 100%;
-        }    
+        } 
+        input{
+            height: fit-content !important;
+        }   
         
     </style>
     <body>
@@ -49,21 +52,27 @@
                         $filecount = count($_FILES['attachment']['tmp_name']);
                     }
 
-                    if($_POST["g-recaptcha-response"]){
+                    if(isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"])) {
                         $recaptcha_response = $_POST["g-recaptcha-response"];
                         $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT";
                         $url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_response";
                         $response = file_get_contents($url);
                         $response_data = json_decode($response, true);
-
-                    }
-
-                    if (!$response_data["success"]) {
-                        $_SESSION['captcharesponse'] = true;
-                        echo '<script>';
-                        echo 'window.location.href = "contactus.php";';
-                        echo '</script>';
-                        exit();
+                
+                        // Debugging: Check the response data
+                        if (!$response_data) {
+                            // Handle error in response (e.g., no response from Google)
+                            $_SESSION['captcharesponse'] = true;
+                            $_SESSION['captcha_message'] = 'Failed to verify reCAPTCHA. Please try again.';
+                            echo '<script>window.location.href = "contactus.php";</script>';
+                            exit();
+                        } elseif (!$response_data["success"]) {
+                            // Handle reCAPTCHA failure
+                            $_SESSION['captcharesponse'] = true;
+                            $_SESSION['captcha_message'] = 'You are spammer! Get out...';
+                            echo '<script>window.location.href = "contactus.php";</script>';
+                            exit();
+                        }
                     }
                     else{
                         date_default_timezone_set('Asia/Kuala_Lumpur');
@@ -145,16 +154,17 @@
 
                 }
             }
-            if(isset($_SESSION['captcharesponse']) &&  $_SESSION['captcharesponse'] === true){
+            if (isset($_SESSION['captcharesponse']) && $_SESSION['captcharesponse'] === true) {
                 echo '<div class="toast_container">
-                            <div id="custom_toast" class="custom_toast false fade_in">
-                                <div class="d-flex align-items-center message">
-                                    <i class="fas fa-times-circle"></i>You are spammer! Get out...
-                                </div>
-                                <div class="timer"></div>
+                        <div id="custom_toast" class="custom_toast false fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-times-circle"></i>' . $_SESSION['captcha_message'] . '
                             </div>
-                        </div>';
+                            <div class="timer"></div>
+                        </div>
+                      </div>';
                 unset($_SESSION['captcharesponse']);
+                unset($_SESSION['captcha_message']);
             }
             if(isset($_SESSION['databasepart']) && $_SESSION['databasepart'] === true){
                 echo '<div class="toast_container">
@@ -218,14 +228,14 @@
                     </div>
                 </section>
                 <div class="contact-form">
-                    <div class="maparea">
+                    <div class="maparea" class="fade_in" style="transition:0.5s;">
                         <h3>Location Map  <i class="fas fa-map-marked-alt"></i> </h3>
-                        <iframe class="fade_in" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.9944164785484!2d101.6781645!3d3.0961430000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4a3936458433%3A0xdd49188c6bcec09f!
                         2s4%2C%2044%2C%20Jalan%20Desa%2C%20Taman%20Desa%2C%2058100%20Kuala%20Lumpur%2C%20Wilayah%20Persekutuan%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1710597219405!5m2!1sen!2smy" 
                         style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" ></iframe>
                         
                     </div>
-                    <div class="form-box fade_in">
+                    <div class="form-box fade_in" style="transition:0.5s;">
                         <div class="contact-info">
                             <h4>CONTACT INFO</h4>
                             <div class="box">
@@ -239,14 +249,21 @@
                                 <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
                                 <div class="info-text">
                                     <h5>Phone</h5>
-                                    <p><a href = "tel:+6017 412 4250">+6017 412 4250</a></p>
+                                    <p title="Call"><a href = "tel:+6017 412 4250">+6017 412 4250</a></p>
                                 </div>
                             </div>
                             <div class="box">
                                 <div class="info-icon"><i class="fas fa-envelope"></i></div>
                                 <div class="info-text">
                                     <h5>Email</h5>
-                                    <p><a href="mailto:info@kochacafe.com">info@kochacafe.com</a></p>
+                                    <p title="Email"><a href="mailto:kochacafe8@gmail.com">kochacafe8@gmail.com</a></p>
+                                </div>
+                            </div>
+                            <div class="box">
+                                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                                <div class="info-text">
+                                    <h5>Operating Hour</h5>
+                                    <p>8.30 am - 9.00 pm</p>
                                 </div>
                             </div>
                         </div>
@@ -286,13 +303,14 @@
                                         <small class="error-input hidden"></small>
                                     </div>
                                     <div class="inputbox cap">
-                                        <div id="captcha" class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                        <div id="captcha" class="g-recaptcha" data-sitekey="6Lf506cpAAAAALCC8XRrEmC5-LqhuH3m0_s_9Mck" data-callback="onRecaptchaSuccess" style="transform:scale(0.8);-webkit-transform:scale(0.8);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                         </div>
                                         <small class="error-input hidden"></small>
+                                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                     </div>
                                     
-                                    <div class="inputbox w50 sbtn">
-                                        <input type="submit" id = "submitbtn" name="submit" value="Submit">
+                                    <div class="inputbox w100 sbtn">
+                                        <input type="submit" id = "submitbtn" name="submit" value="SUBMIT">
                                     </div>
                                     
                                 </div>
@@ -308,7 +326,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 // Attach event listener to the form elements
-                const formElements = document.querySelectorAll("#name, #phno, #email, #subject, #attachment, #message, #captcha");
+                const formElements = document.querySelectorAll("#name, #phno, #email, #subject, #attachment, #message, #captcha, .g-recaptcha");
                 formElements.forEach(element => {
                     element.addEventListener("input", function() {
                         validateContactForm();
@@ -324,6 +342,11 @@
                     }
                 });
             });
+
+            function onRecaptchaSuccess(token) {
+                document.getElementById("g-recaptcha-response").value = token;
+                clearError(document.getElementById("captcha"));
+            }
 
             function isValidEmail(email) {
                 const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -344,6 +367,7 @@
                 const attachment = document.getElementById("attachment");
                 const f = attachment.files;
                 const message = document.getElementById("message").value;
+                const gRecaptchaResponse = document.getElementById("g-recaptcha-response").value;
                 var letters = /^[a-zA-Z-' ]*$/;
                 let valid = true; 
 
@@ -424,11 +448,10 @@
                 }
 
                 //validate recaptcha
-                if (window.grecaptcha.getResponse().length === 0) { 
-                    errorDisplay(document.getElementById("captcha"), "*Please tick the recaptcha.*"); 
+                if (gRecaptchaResponse.length === 0) {
+                    errorDisplay(document.getElementById("captcha"), "*Please tick the reCAPTCHA.*");
                     valid = false;
-                }
-                else{
+                } else {
                     clearError(document.getElementById("captcha"));
                 }
 

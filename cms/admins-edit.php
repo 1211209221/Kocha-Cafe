@@ -261,7 +261,14 @@
                         <div class="address-error" id="email-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_username">Username</label>
-                            <input type="text" name="admin_username" id="admin_username" placeholder="adminxxx123" value="<?php echo $row['admin_username']; ?>" required></textarea>
+                            <?php
+                            if($admin['admin_level']==1){
+                                echo '<input type="text" title="Read-only" name="admin_username" id="admin_username" placeholder="adminxxx123" value="'.$row['admin_username'].'" readonly>';
+                            }else{
+                                echo '<input type="text" name="admin_username" id="admin_username" placeholder="adminxxx123" value="'.$row['admin_username'].'" required>';
+                            }
+                                    
+                            ?>
                         </div>
                         <div class="address-error" id="user-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container' style="position:relative;">
@@ -271,14 +278,33 @@
                         <div class="address-error" id="pass-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_level">Admin Level</label>
-                            <select name="admin_level" id="admin_level" style="width:100%;">
-                                <option value="1" <?php if ($row['admin_level'] == "1") echo "selected"; ?>>Admin</option>
-                                <option value="2" <?php if ($row['admin_level'] == "2") echo "selected"; ?>>Superadmin</option>
+                            <?php
+                            if($admin['admin_level']==1){
+                                echo '<select name="admin_level" id="admin_level" style="width:100%;" title="Unable to edit">';
+                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' disabled>Admin</option>
+                                <option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' disabled>Superadmin</option>';
+                            }
+                            
+                            else{
+                                echo '<select name="admin_level" id="admin_level" style="width:100%;">';
+                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' >Admin</option>
+                                <option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' >Superadmin</option>';
+                            }
+                                    
+                            ?>
                             </select>
                         </div>
                         <div class='submit_buttons'>
                             <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick='return confirmAction("save the changes");'>
-                            <input type="submit" name="delete" class="delete" value="Remove" onclick='return confirmAction("remove this admin");'>
+                            <?php
+                            if($admin['admin_level']==1){
+                                //nothing
+                            }else{
+                                echo '<input type="submit" name="delete" class="delete" value="Remove" onclick=\'return confirmAction("remove this admin");\'>';
+                            }
+                                    
+                            ?>
+                            
                         </div>
                     </div>
                     <a href="admins-all.php" class="back_button2">Back To List</a>

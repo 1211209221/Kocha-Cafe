@@ -400,8 +400,13 @@
                         </div>
                         <form method='post' name='trash_form' class='trash-form' id='trash_form'>
                         <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction('delete the selected menu admin(s)')">
-                            <a href="admins-add.php"><div class="add_button">New Admin</div></a>
+                            <?php
+                                if($admin['admin_level']==2){
+                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction(\'delete the selected menu admin(s)\')">
+                            <a href="admins-add.php"><div class="add_button">New Admin</div></a>';
+                                }
+                            ?>
+                            
                         </div>
                     </div>
                             <div class="table-responsive">
@@ -426,7 +431,13 @@
                                                     $no_count++;
                                                     echo "<tr";
                                                     echo"><td class='t_no'>".$no_count."</td>";
-                                                    echo "<td class='t_name'>".$row['admin_name']."</td>";
+                                                    
+                                                    if($admin['admin_ID'] == $row['admin_ID']){
+                                                        echo "<td class='t_name'>".$row['admin_name']." (You) </td>";
+                                                    }else{
+                                                        echo "<td class='t_name'>".$row['admin_name']."</td>";
+                                                    }
+                                                     
                                                     echo "<td class='t_email'><a title='Email' href='mailto:" . $row['admin_email'] . "'>" . $row['admin_email'] . "</a></td>";
                                                     echo "<td class='t_level'>";
                                                     if($row['admin_level'] == 1){
@@ -442,8 +453,11 @@
                                                         echo "<i class='fas fa-circle color-red' style='color: #e77468;'></i>";
                                                     }
                                                     echo "</td>";
-                                                    if($admin['admin_level']==1){
-                                                        echo '<td class="t_action act1">No action allowed!';
+                                                    if($admin['admin_level']==1 && $admin['admin_ID'] != $row['admin_ID']){
+                                                        echo '<td class="t_action act1" style="font-size:15px;" title="No Action Allowed!"><i class="fas fa-ban" style="color: #e77468;"></i>';
+                                                    }
+                                                    else if($admin['admin_ID'] == $row['admin_ID']){
+                                                        echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
                                                     }
                                                     else{
                                                         echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';

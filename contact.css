@@ -112,7 +112,7 @@ html
     display: flex;
     max-width: 1000px;
     min-height: 600px;   
-    margin-bottom: 100px; 
+    margin-bottom: 150px; 
 }
 
 .form-box .contact-info{
@@ -120,11 +120,11 @@ html
     top: 80px;
     width: 375px;
     margin-left: 25px;
-    height: 430px;
+    height: fit-content;
     background-color: #ffaca7;
     border-radius: 20px;
     z-index: 1;
-    padding: 40px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -138,7 +138,7 @@ html
 }
 .form-box .contact-info .box{
     position: relative;
-    padding: 10px 0;
+    padding: 5px 0;
     display: flex;
 }
 .form-box .contact-info .box .fas{
@@ -160,16 +160,36 @@ html
 .form-box .contact-info .box .info-text h5{
     font-weight: 600;
     color: #282D2B;
-    font-size: 18px;
+    font-size: 19px;
 }
 .form-box .contact-info .box .info-text p{
     text-align: left;
-    font-size: 16px;
+    font-size: 17px;
     color: #282D2B;
 }
 .info-text p a{
     text-decoration: none;
     color: #282D2B;
+    position: relative;
+}
+.info-text p a:hover{
+    color: #fff;
+    transition: 0.3s;
+}
+.info-text p a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px; 
+    background-color: #fff; 
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.info-text p a:hover::after {
+    width: 100%;
+    left: 0;
 }
 
 .form-box .contactForm{
@@ -251,16 +271,15 @@ html
     font-weight: 700;
     font-size: 16px;
     border: none;
-    max-width: 110px;
     align-self: flex-end;
     padding: 10px;
 }
 .form-box .contactForm .form .inputbox input[type="submit"]:hover{
-    background-color: rgb(255, 224, 212);
+    background-color: white;
     transform: scale(1.05);
     transition: 0.3s ease-in-out;
     font-size: 15px;
-    color: #145018;
+    color: #50A596;
 }
 .form-box .contactForm .form .inputbox input[type="submit"]:active{
     transform: scale(1);
@@ -321,7 +340,7 @@ html
         margin: 10px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         border-radius: 5px;
-        margin-bottom: 50px;
+        margin-bottom: 100px;
     }
     .form-box:hover{
         box-shadow: 0px 0px 20px 7px rgba(176, 176, 176, 0.407);
@@ -443,7 +462,7 @@ html
     .contact-banner .banner-text .line-2{
         padding-left: 90px;
         padding-right: 5px;
-        font-size: 12px !important;
+        font-size: 14px !important;
         text-align: justify;
     }
     .fa-hand-point-right{
