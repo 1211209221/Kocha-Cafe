@@ -694,7 +694,7 @@
                 ?>
             document.addEventListener("DOMContentLoaded", function() {
                 //for payment form
-                const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points");
+                const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points, #selectlocation");
                 const formElements2 = document.querySelectorAll("#pn");
                 formElements1.forEach(element => {
                     element.addEventListener("input", function () {
