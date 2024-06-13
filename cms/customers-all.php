@@ -21,6 +21,12 @@
             .admin_page .t_level a:hover {
                 color: #5a9498;
             }
+            @media (max-width: 400px) {
+                table tr .t_level{
+                    display:none;
+                }
+
+            }
         </style>
         <?php
             include '../connect.php';
