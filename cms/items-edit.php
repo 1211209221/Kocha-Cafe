@@ -351,7 +351,7 @@
 
                                     ?>
                                     <input type="file" name="image" class="upload_image" id="upload_image" accept="image/png, image/gif, image/jpeg" />
-                                    <label class="upload_image_label" for="upload_image"><i class="fas fa-camera"></i></label>
+                                    <label class="upload_image_label" for="upload_image" <?php if($admin['admin_level'] == 1) {echo ' style="pointer-events: none;"';} ?>><i class="fas fa-camera"></i></label>
                                     <?php
                                         // SQL query to select the cust_wishlist column
                                         $sql_saved = "SELECT cust_wishlist FROM customer WHERE trash = 0";
@@ -397,7 +397,7 @@
                                         <div class="page_title">Edit Item<i class="fas fa-pen"></i></div>
                                         <div class="item_detail_container">
                                             <label for="item_name">Item Name</label>
-                                            <input type="text" name="item_name" id="item_name" value="<?php echo $row['item_name']; ?>" maxlength='50' required>
+                                            <input type="text" name="item_name" id="item_name" value="<?php echo $row['item_name']; ?>" maxlength='50' required <?php if($admin['admin_level']==1){echo"readonly";} ?>>
                                         </div>
                                         <div class="item_detail_container">
                                             <label for="item_category">Item Category</label>
@@ -421,12 +421,13 @@
                                                 if ($parent_categories_result->num_rows > 0) {
                                                     while ($row2 = $parent_categories_result->fetch_assoc()) {
                                                         $selected = in_array($row2['category_ID'], $selectedCategoryIDs) ? 'selected' : '';
-                                                        echo "<option value='" . $row2['category_ID'] . "'>" . $row2['category_name'] . "</option>";
+                                                        $readonly = ($admin['admin_level'] == 1) ? 'disabled' : '';
+                                                        echo "<option value='" . $row2['category_ID'] . "' " . $selected . " " . $readonly . ">" . $row2['category_name'] . "</option>";
                                                     }
-                                                }
+                                                }                                                
                                                 ?>
                                             </select>
-                                            <button id="addButton">Add</button>
+                                            <button id="addButton" <?php if($admin['admin_level'] == 1){echo'style="pointer-events: none;"';} ?>>Add</button>
                                         </div>
                                         <div id="selectedCategories">
                                             <?php
@@ -436,8 +437,13 @@
                                                 $category_name_result = $conn->query($category_name_sql);
                                                 if ($category_name_result->num_rows > 0) {
                                                     $row3 = $category_name_result->fetch_assoc();
-                                                    echo "<div id='category_" . $categoryId . "'>" . $row3['category_name'] . " <button class='trashButton'><i class='fas fa-times'></i></button></div>";
+                                                    echo "<div id='category_" . $categoryId . "'>" . $row3['category_name'] . " <button class='trashButton'";
+                                                    if ($admin['admin_level'] == 1) {
+                                                        echo ' style="pointer-events: none;"';
+                                                    }
+                                                    echo "><i class='fas fa-times'></i></button></div>";
                                                 }
+                                                
                                             }
                                             ?>
                                         </div>
@@ -513,12 +519,13 @@
                                                 if ($menu_cutomization_result->num_rows > 0) {
                                                     while ($row4 = $menu_cutomization_result->fetch_assoc()) {
                                                         // $selected = in_array($row4['custom_ID'], $selectedOptionIDs) ? 'selected' : '';
-                                                        echo "<option value='" . $row4['custom_ID'] . "'>" . $row4['custom_name'] . "</option>";
+                                                        $readonly = ($admin['admin_level'] == 1) ? 'disabled' : '';
+                                                        echo "<option value='" . $row4['custom_ID'] . "' " . $readonly . ">" . $row4['custom_name'] . "</option>";
                                                     }
                                                 }
                                                 ?>
                                             </select>
-                                            <button id="addOptionButton">Add</button>
+                                            <button id="addOptionButton" <?php if($admin['admin_level'] == 1){echo'style="pointer-events: none;"';} ?>>Add</button>
                                          </div>
                                         <div id="selectedOptions">
                                             <?php
@@ -528,8 +535,12 @@
                                                 $option_name_result = $conn->query($option_name_sql);
                                                 if ($option_name_result->num_rows > 0) {
                                                     $row3 = $option_name_result->fetch_assoc();
-                                                    echo "<div id='option_" . $optionId . "'>" . $row3['custom_name'] . " <button class='trashOptionButton'><i class='fas fa-times'></i></button></div>";
-                                                }
+                                                    echo "<div id='option_" . $optionId . "'>" . $row3['custom_name'] . " <button class='trashOptionButton'";
+                                                    if ($admin['admin_level'] == 1) {
+                                                        echo ' style="pointer-events: none;"';
+                                                    }
+                                                    echo "><i class='fas fa-times'></i></button></div>";
+                                                }                                                
                                             }
                                             ?>
                                         </div>
@@ -780,15 +791,15 @@
                                         </script>
                                         <div class="item_detail_container">
                                             <label for="item_price">Item Price</label>
-                                            <input type="number" min='0' name="item_price" id="item_price" step="any" value="<?php echo $row['item_price']; ?>" required>
+                                            <input type="number" min='0' name="item_price" id="item_price" step="any" value="<?php echo $row['item_price']; ?>" required <?php if($admin['admin_level']==1){echo"readonly";} ?>>
                                         </div>
                                         <div class="item_detail_container">
                                             <label for="item_discount">Item Discount</label>
-                                            <input type="number" min='0' name="item_discount" id="item_discount" value="<?php echo $row['item_discount']; ?>" required>
+                                            <input type="number" min='0' name="item_discount" id="item_discount" value="<?php echo $row['item_discount']; ?>" required <?php if($admin['admin_level']==1){echo"readonly";} ?>>
                                         </div>
                                         <div class="item_detail_container">
                                             <label for="item_description" style="margin-bottom: auto;">Item Description</label>
-                                            <textarea name="item_description" id="item_description" rows="4" cols="50" required><?php echo $row['item_description']; ?></textarea>
+                                            <textarea name="item_description" id="item_description" rows="4" cols="50" required <?php if($admin['admin_level']==1){echo"readonly";} ?>><?php echo $row['item_description']; ?></textarea>
                                         </div>
                                         <div class="item_detail_container">
                                             <label for="item_availability">Item Availability</label>
@@ -799,7 +810,11 @@
                                         </div>
                                         <div class="submit_buttons">
                                             <input type="submit" name="edit_submit" class="edit_submit" value="Save">
-                                            <input type="submit" name="delete" class="delete" value="Delete" onclick='return confirmAction("delete this item");'>
+                                            <?php
+                                                if($admin['admin_level']==2){
+                                                    echo'<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction("delete this item");">';
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                     </div>
@@ -893,14 +908,13 @@
                                                         echo '<div class="username">-Deleted User</div>';
                                                     }
                                                     echo "<div class='review_edit'><select name='review_approve[]' id='review_approve'>
-                                                            <option value='1' " . ($row_reviews['review_approve'] == '1' ? 'selected' : '') . ">Approved</option>
-                                                            <option value='0' " . ($row_reviews['review_approve'] == '0' ? 'selected' : '') . ">Not Approved</option>
-
-                                                            <input type='hidden' value='0' name='trash[]' id='trash_" . $row_reviews['review_ID'] . "'>
-                                                            <label class='fa fa-trash' for='trash_". $row_reviews['review_ID'] . "'></label>
-                                                            </div>
-                                                            </div>
-                                                            </div>";
+                                                    <option value='1' " . ($row_reviews['review_approve'] == '1' ? 'selected' : '') . ($admin['admin_level'] == 1 ? ' disabled' : ''). ">Approved</option>
+                                                    <option value='0' " . ($row_reviews['review_approve'] == '0' ? 'selected' : '') . ($admin['admin_level'] == 1 ? ' disabled' : '').">Not Approved</option>
+                                                    <input type='hidden' value='0' name='trash[]' id='trash_" . $row_reviews['review_ID'] . "'>";
+                                                    echo "<label class='fa fa-trash' for='trash_" . $row_reviews['review_ID'] . "' style='" . ($admin['admin_level'] == 1 ? 'display: none;' : '') . "'></label>";
+                                                    echo "</div>
+                                                    </div>
+                                                    </div>";
                                                 }
                                                 echo'<div class="no_reviews ';
                                             }

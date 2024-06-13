@@ -23,6 +23,7 @@ session_start();
         $admin_ID = 0;
         $admin_name = "Admin";
     }
+
 ?>
 <style>
     body{
@@ -47,7 +48,7 @@ session_start();
             <img src="../images/logo/logo_icon_2.png" class="nav_logo_expand">
         </div>
         <div class="page_container" onclick="openNav()">
-            <a href="#.php" class="<?php echo ($current_page == 'dashboard.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 0)">
+            <a class="<?php echo ($current_page == 'dashboard.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 0)">
                 <div>
                     <i class="fas fa-home-lg"></i>
                 </div>
@@ -105,18 +106,23 @@ session_start();
                         }
                     ?>
                 </a>
-                <a href="categories.php" class="subPage <?php echo ($current_page == 'categories.php') ? 'active-menu' : ''; ?>">
-                    <div>
-                        <i class="fas fa-border-all"></i>
-                    </div>
-                    <span>Item Categories</span>
-                </a>
-                <a href="customization.php" class="subPage <?php echo ($current_page == 'customization.php') ? 'active-menu' : ''; ?>">
-                    <div>
-                        <i class="fas fa-sliders-v-square"></i>
-                    </div>
-                    <span>Item Customizations</span>
-                </a>
+                <?php
+                    if ($admin['admin_level'] == 2) {
+                        echo '<a href="categories.php" class="subPage ' . ($current_page == 'categories.php' ? 'active-menu' : '') . '">
+                            <div>
+                                <i class="fas fa-border-all"></i>
+                            </div>
+                            <span>Item Categories</span>
+                        </a>';
+                        
+                        echo '<a href="customization.php" class="subPage ' . ($current_page == 'customization.php' ? 'active-menu' : '') . '">
+                            <div>
+                                <i class="fas fa-sliders-v-square"></i>
+                            </div>
+                            <span>Item Customizations</span>
+                        </a>';
+                    }
+                ?>
             </div>
         </div>
         <div class="page_container" onclick="openNav()">
@@ -142,61 +148,65 @@ session_start();
                 </a>
             </div>
         </div>
-        <div class="page_container" onclick="openNav()">
-            <a class="<?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 4)">
-                <div>
-                    <i class="fas fa-comment"></i>
-                </div>
-                <span>Blog</span>
-            </a>
-            <div class="sub_pages_container <?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'toggled' : ''; ?>" id="subPages4">
-                <a href="blogs-all.php" class="subPage <?php echo ($current_page == 'blogs-all.php' || $current_page == 'blogs-edit.php' || $current_page == 'blogs-add.php') ? 'active-menu' : ''; ?>">
+        <?php
+            if ($admin['admin_level'] == 2) {
+                echo '<div class="page_container" onclick="openNav()">';
+                echo '<a class="' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '" onclick="toggleSubPages(this, 4)">';
+                echo '<div><i class="fas fa-comment"></i></div>';
+                echo '<span>Blog</span>';
+                echo '</a>';
+                echo '<div class="sub_pages_container ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "toggled" : '') . '" id="subPages4">';
+                echo '<a href="blogs-all.php" class="subPage ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '">';
+                echo '<div><i class="fas fa-comments"></i></div>';
+                echo '<span>Blog List</span>';
+                echo '</a>';
+                echo '</div>';
+                echo '</div>';
+
+                echo '<div class="page_container" onclick="openNav()">';
+                ?>
+                <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
                     <div>
-                        <i class="fas fa-comments"></i>
+                        <i class="fas fa-envelope"></i>
                     </div>
-                    <span>Blog List</span>
+                    <span>Inbox</span>
                 </a>
-            </div>
-        </div>
-        <div class="page_container" onclick="openNav()">
-            <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
-                <div>
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <span>Inbox</span>
-            </a>
-            <div class="sub_pages_container <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'toggled' : ''; ?>" id="subPages5">
-                <a href="messages-all.php" class="subPage <?php echo ($current_page == 'messages-all.php'|| $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>">
-                    <div>
-                        <i class="fas fa-mail-bulk"></i>
-                    </div>
-                    <span>Message List</span>
-                    <?php
+                <div class="sub_pages_container <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'toggled' : ''; ?>" id="subPages5">
+                    <a href="messages-all.php" class="subPage <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>">
+                        <div>
+                            <i class="fas fa-mail-bulk"></i>
+                        </div>
+                        <span>Message List</span>
+                        <?php
                         $sql_get_msg_no = "SELECT * FROM contact_message WHERE markasread = 0 AND trash = 0";
                         $result_get_msg_no = $conn->query($sql_get_msg_no);
                         if ($result_get_msg_no->num_rows > 0) {
-                            echo '<div class="notification_circle">'.$result_get_msg_no->num_rows.'</div>';
+                            echo '<div class="notification_circle">' . $result_get_msg_no->num_rows . '</div>';
                         }
-                    ?>
-                </a>
-            </div>
-        </div>
-        <div class="page_container" onclick="openNav()">
-            <a class="<?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 6)">
-                <div>
-                    <i class="fas fa-ticket-alt"></i>
+                        ?>
+                    </a>
                 </div>
-                <span>Vouchers</span>
-            </a>
-            <div class="sub_pages_container <?php echo ($current_page == 'vouchers-all.php') ? 'toggled' : ''; ?>" id="subPages6">
-                <a href="vouchers-all.php" class="subPage <?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>">
-                    <div>
-                        <i class="fas fa-ticket"></i>
+                </div>
+                <div class="page_container" onclick="openNav()">
+                    <a class="<?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 6)">
+                        <div>
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <span>Vouchers</span>
+                    </a>
+                    <div class="sub_pages_container <?php echo ($current_page == 'vouchers-all.php') ? 'toggled' : ''; ?>" id="subPages6">
+                        <a href="vouchers-all.php" class="subPage <?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>">
+                            <div>
+                                <i class="fas fa-ticket"></i>
+                            </div>
+                            <span>Vouchers List</span>
+                        </a>
                     </div>
-                    <span>Vouchers List</span>
-                </a>
-            </div>
-        </div>
+                </div>
+                <?php
+            }
+            ?>
+
         <div class="page_container">
             <a href = "admin_logout.php">
                 <div>

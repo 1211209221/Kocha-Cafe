@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php
-session_start()
-?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +11,11 @@ session_start()
     <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
     <link rel="icon" href="../images/logo/logo_icon_2.png">
     <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+    <?php
+        include '../connect.php';
+        include '../gototopbtn.php';
+        include 'navbar.php';
+    ?>
     <style>
         .fa {
             font-size: 1rem;
@@ -34,9 +36,6 @@ session_start()
 
 <body>
     <?php
-    include '../connect.php';
-    include '../gototopbtn.php';
-    include 'navbar.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['blog_id']) && isset($_POST['action']) && $_POST['action'] == 'move_to_trash') {
@@ -103,7 +102,6 @@ session_start()
                     </div>
                     <div class="form-group">
                         <input type="file" name="image" class="upload_image" id="image" accept="image/jpeg, image/png, image/gif">
-                        <label class="upload_image_label" for="image"><i class="fas fa-camera"></i></label>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Blog</button>
                     <button type="button" class="btn btn-danger" id="trash-btn">Move to Trash</button>

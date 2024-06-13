@@ -24,9 +24,7 @@
         include '../connect.php';
         include '../gototopbtn.php';
         include 'navbar.php';
-
-        //session_start();
-
+        
         if (isset($_GET['ID'])) {
             // Retrieve the value of the ID parameter
             $admin_ID = $_GET['ID'];
@@ -78,7 +76,11 @@
                     }
                 }
 
-                $admin_level = $_POST['admin_level'];
+                if(!isset($_POST['admin_level'])){
+                    $admin_level = 1;
+                }else{
+                    $admin_level = $_POST['admin_level'];
+                }
 
                 //compare username and email first
                 $check_username_query = "SELECT * FROM admin WHERE admin_ID != $admin_ID";

@@ -70,14 +70,25 @@
         }
 
         if (isset($_SESSION['editcust_error'])) {
-            echo '<div class="toast_container">
-                        <div id="custom_toast" class="custom_toast false fade_in">
-                            <div class="d-flex align-items-center message">
-                                <i class="fas fa-times-circle"></i>Failed to edit customer. Please try again...
-                            </div>
-                            <div class="timer"></div>
+            if($admin['admin_level']==1){
+                echo '<div class="toast_container">
+                    <div id="custom_toast" class="custom_toast false fade_in">
+                        <div class="d-flex align-items-center message">
+                            <i class="fas fa-times-circle"></i>Failed to edit customer due to invalid admin level...
                         </div>
-                    </div>';
+                        <div class="timer"></div>
+                    </div>
+                </div>';
+            }else{
+                echo '<div class="toast_container">
+                    <div id="custom_toast" class="custom_toast false fade_in">
+                        <div class="d-flex align-items-center message">
+                            <i class="fas fa-times-circle"></i>Failed to edit customer. Please try again...
+                        </div>
+                        <div class="timer"></div>
+                    </div>
+                </div>';
+            }
 
             unset($_SESSION['editcust_error']);
         }
@@ -164,8 +175,8 @@
                         <div class='item_detail_container'>
                             <label for="cust_trash">Access Mode</label>
                             <select name="cust_trash" id="cust_trash" style="width:100%;">
-                                <option value="0" <?php if ($row['trash'] == "0") echo "selected"; ?>>Enabled</option>
-                                <option value="1" <?php if ($row['trash'] == "1") echo "selected"; ?>>Disabled</option>
+                                <option value="0" <?php if ($row['trash'] == "0") echo "selected"; if($admin['admin_level']==1){ echo " disabled";} ?>>Enabled</option>
+                                <option value="1" <?php if ($row['trash'] == "1") echo "selected"; if($admin['admin_level']==1){ echo " disabled";} ?>>Disabled</option>
                             </select>
                         </div>
                         <div class='submit_buttons'>

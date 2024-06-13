@@ -1,10 +1,5 @@
 <?php
-session_start();
 ob_start(); 
-
-include '../connect.php';
-include '../gototopbtn.php';
-include 'navbar.php';
 
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $date = date('Y-m-d H:i:s');
@@ -69,6 +64,11 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="../script.js"></script>
     <script src="../gototop.js"></script>
+    <?php
+        include '../connect.php';
+        include '../gototopbtn.php';
+        include 'navbar.php';
+    ?>
     <style>
         h1 {
             text-align: center;
@@ -143,7 +143,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
 <body>
     <div class="container-fluid">
         <h1>Add Blog</h1>
-        <h2>(Upload Image by Editing the Blog)</h2>
         <div class="form-container">
             <form method="POST" action="" enctype="multipart/form-data">
                 <label for="subject">Subject</label><br>
@@ -168,7 +167,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                 <input type="submit" name="submit" value="Upload">
                 <input type="reset">
             </form>
-            <br><a href="blogs-all.php">View Announcements</a>
         </div>
     </div>
 

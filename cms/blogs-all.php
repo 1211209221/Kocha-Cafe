@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<div>
-    <?php
-    session_start();
-    ?>
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +12,11 @@
         <link rel="icon" href="../images/logo/logo_icon_2.png">
         <script src="../script.js"></script>
         <script src="../gototop.js"></script>
+        <?php
+            include '../connect.php';
+            include '../gototopbtn.php';
+            include 'navbar.php';
+        ?>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -40,14 +39,13 @@
             }
 
             .row {
-                padding-top: 20px;
                 display: flex;
                 flex-wrap: wrap;
                 gap: 2%;
             }
 
             .post {
-                box-shadow: 0px 0px 15px rgb(195, 195, 195);
+                box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
                 padding: 8px;
                 box-sizing: border-box;
@@ -305,16 +303,6 @@
     </head>
 
     <body>
-        <?php
-        include '../connect.php';
-        include '../gototopbtn.php';
-        include 'navbar.php';
-        if (empty($user)) {
-            header("Location: admin.php");
-            exit();
-        }
-        ?>
-
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const reviewContainers = document.querySelectorAll('.post');

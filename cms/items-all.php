@@ -567,8 +567,11 @@
                         </div>
                         <form method='post' name='trash_form' class='trash-form' id='trash_form'>
                         <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete items" onclick="return confirmAction('delete the selected menu items(s)')">
-                            <a href="items-add.php"><div class="add_button">New Item</div></a>
+                            <?php
+                                if($admin['admin_level']==2){
+                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete items" onclick="return confirmAction("delete the selected menu items(s)")"><a href="items-add.php"><div class="add_button">New Item</div></a>';
+                                }
+                            ?>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -706,9 +709,13 @@
                                         if ($result_get_cart_no->num_rows > 0) {
                                             echo '<div class="notification_circle">'.$result_get_cart_no->num_rows.'</div>';
                                         }
+                                    
 
-                                    echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                    <input type='hidden' name='item_ID[]' value='".$row['item_ID']."'>
+                                    echo "</i></a>";
+                                    if($admin['admin_level']==2){
+                                        echo"<a class='trash-icon'><i class='fas fa-trash'></i></a>";
+                                    }
+                                    echo"<input type='hidden' name='item_ID[]' value='".$row['item_ID']."'>
                                     <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
                                     </div>";
                                     echo "</tr>";
