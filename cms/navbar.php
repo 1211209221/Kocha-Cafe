@@ -163,49 +163,32 @@ session_start();
                 echo '</div>';
                 echo '</div>';
 
-                echo '<div class="page_container" onclick="openNav()">';
-                ?>
-                <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
-                    <div>
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <span>Inbox</span>
-                </a>
-                <div class="sub_pages_container <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'toggled' : ''; ?>" id="subPages5">
-                    <a href="messages-all.php" class="subPage <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>">
-                        <div>
-                            <i class="fas fa-mail-bulk"></i>
-                        </div>
-                        <span>Message List</span>
-                        <?php
-                        $sql_get_msg_no = "SELECT * FROM contact_message WHERE markasread = 0 AND trash = 0";
-                        $result_get_msg_no = $conn->query($sql_get_msg_no);
-                        if ($result_get_msg_no->num_rows > 0) {
-                            echo '<div class="notification_circle">' . $result_get_msg_no->num_rows . '</div>';
-                        }
-                        ?>
-                    </a>
-                </div>
-                </div>
-                <div class="page_container" onclick="openNav()">
-                    <a class="<?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 6)">
-                        <div>
-                            <i class="fas fa-ticket-alt"></i>
-                        </div>
-                        <span>Vouchers</span>
-                    </a>
-                    <div class="sub_pages_container <?php echo ($current_page == 'vouchers-all.php') ? 'toggled' : ''; ?>" id="subPages6">
-                        <a href="vouchers-all.php" class="subPage <?php echo ($current_page == 'vouchers-all.php') ? 'active-menu' : ''; ?>">
-                            <div>
-                                <i class="fas fa-ticket"></i>
-                            </div>
-                            <span>Vouchers List</span>
-                        </a>
-                    </div>
-                </div>
-                <?php
             }
+
+            echo '<div class="page_container" onclick="openNav()">';
             ?>
+            <a class="<?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>" onclick="toggleSubPages(this, 5)">
+                <div>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <span>Inbox</span>
+            </a>
+            <div class="sub_pages_container <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'toggled' : ''; ?>" id="subPages5">
+                <a href="messages-all.php" class="subPage <?php echo ($current_page == 'messages-all.php' || $current_page == 'messages-view.php') ? 'active-menu' : ''; ?>">
+                    <div>
+                        <i class="fas fa-mail-bulk"></i>
+                    </div>
+                    <span>Message List</span>
+                    <?php
+                    $sql_get_msg_no = "SELECT * FROM contact_message WHERE markasread = 0 AND trash = 0";
+                    $result_get_msg_no = $conn->query($sql_get_msg_no);
+                    if ($result_get_msg_no->num_rows > 0) {
+                        echo '<div class="notification_circle">' . $result_get_msg_no->num_rows . '</div>';
+                    }
+                    ?>
+                </a>
+            </div>
+            </div>
 
         <div class="page_container">
             <a href = "admin_logout.php">
