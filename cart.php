@@ -35,7 +35,10 @@
             include 'top.php';
 
             if(empty($user)){
-                header("Location: login.php");
+                echo '<script>';
+                echo 'window.location.href = "login.php";';
+                echo '</script>';
+                //header("Location: login.php");
                 exit();
             }
 
