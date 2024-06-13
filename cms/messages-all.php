@@ -69,7 +69,7 @@
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
                             <div class="d-flex align-items-center message">
-                                <i class="fas fa-check-circle"></i> Message is marked as unread.
+                                <i class="fas fa-check-circle"></i> Read status updated.
                             </div>
                             <div class="timer"></div>
                         </div>
@@ -542,7 +542,11 @@
                         </div>
                         
                         <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Message" onclick="return confirmAction('delete the selected message(s)')">
+                        <?php
+                            if ($admin['admin_level'] == 2) {
+                                echo'<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Message" onclick="return confirmAction("delete the selected message(s)")">';
+                            }                                
+                        ?>
                         </div>
                     </div>
                             <div class="table-responsive">
@@ -577,8 +581,10 @@
                                                     echo "<td class='t_date'>" . $date . "</td>";
                                                     echo "<td class='t_status'>" . $row['markasread'] . "</td>";
                                                     echo "<td class='t_action act1'><div>";
-                                                    echo "<a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                                    <input type='hidden' name='CF_ID[]' value='" . $row['CF_ID'] . "'>
+                                                    if ($admin['admin_level'] == 2) {
+                                                        echo "<a class='trash-icon'><i class='fas fa-trash'></i></a>";
+                                                    }
+                                                    echo "<input type='hidden' name='CF_ID[]' value='" . $row['CF_ID'] . "'>
                                                     <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>";
                                                     echo "<a href='messages-view.php?ID=" . $row['CF_ID'] . "'><i class='fas fa-chevron-circle-right'></i></a>";
                                                     echo "</div></td>";

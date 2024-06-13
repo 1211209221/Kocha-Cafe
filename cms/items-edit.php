@@ -911,7 +911,7 @@
                                                     <option value='1' " . ($row_reviews['review_approve'] == '1' ? 'selected' : '') . ($admin['admin_level'] == 1 ? ' disabled' : ''). ">Approved</option>
                                                     <option value='0' " . ($row_reviews['review_approve'] == '0' ? 'selected' : '') . ($admin['admin_level'] == 1 ? ' disabled' : '').">Not Approved</option>
                                                     <input type='hidden' value='0' name='trash[]' id='trash_" . $row_reviews['review_ID'] . "'>";
-                                                    echo "<label class='fa fa-trash' for='trash_" . $row_reviews['review_ID'] . "' style='" . ($admin['admin_level'] == 1 ? 'display: none;' : '') . "'></label>";
+                                                    echo "<label class='fa fa-trash' for='trash_" . $row_reviews['review_ID'] . "' style='" . ($admin['admin_level'] == 1 ? 'pointer-events: none;' : '') . "'></label>";
                                                     echo "</div>
                                                     </div>
                                                     </div>";
@@ -926,7 +926,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center page_bottom">
                                             <div id="pagination"></div>
-                                            <input type="submit" name="approve_submit" id="approve_submit" value="Submit Changes" onclick='return confirmAction("save these changes");'>
+                                            <input type="submit" name="approve_submit" id="approve_submit" value="Submit Changes" onclick='return confirmAction("save these changes");' <?php if($admin['admin_level'] == 1){ echo 'style="pointer-events: none; background-color:#919ba0 !important;" disabled'; } ?>>
                                         </div>
                                         <a href="items-all.php" class="back_button">Back To List</a>
                                     </div>

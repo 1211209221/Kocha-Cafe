@@ -606,7 +606,11 @@
                             <label for="perPage" id="perPageLabel"><span>Shown </span>per page</label>
                         </div>
                         <div class="d-flex align-items-center justify-content-center">
-                            <input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction('delete the selected order(s)')">
+                            <?php
+                                if($admin['admin_level'] == 2){
+                                    echo'<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction("delete the selected order(s)")">';
+                                }
+                            ?>
                         </div>
                     </div>
                             <div class="table-responsive">
@@ -717,12 +721,15 @@
                                                     else{
                                                         echo "<td class='t_status'><span class='sta-receive'><i class='fas fa-box-check'></i><p>Received</p></span></td>";
                                                     }
-                                                    echo '<td class="t_action act1"><div><a class="trash-icon"><i class="fas fa-trash"></i></a><a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;">';
-                                                    echo "</i></a>
-                                                        <input type='hidden' name='order_ID[]' value='".$row['order_ID']."'>
-                                                        <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
-                                                        </div>";
-                                                     echo "</tr>";
+                                                    echo '<td class="t_action act1"><div>';
+                                                    if ($admin['admin_level'] == 2) {
+                                                        echo '<a class="trash-icon"><i class="fas fa-trash"></i></a>';
+                                                    }
+                                                    echo '<a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;"></a>
+                                                        <input type="hidden" name="order_ID[]" value="' . $row['order_ID'] . '">
+                                                        <input type="hidden" class="trash-item-input" name="trash_item[]" value="0" style="display:block;">
+                                                        </div></td>';
+
                                                 }
                                             }
                                             else {

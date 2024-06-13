@@ -217,7 +217,11 @@
                         </div>
                         <div class='submit_buttons'>
                             <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('mark this message as unread');">
-                            <input type="submit" name="delete" class="delete" value="Delete" onclick='return confirmAction("delete this message");'>
+                            <?php
+                                if ($admin['admin_level'] == 2) {
+                                    echo '<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction(\'delete this message\');">';
+                                }                                
+                            ?>
                         </div>
                     </div>
                     <a href="messages-all.php" class="back_button2">Back To List</a>

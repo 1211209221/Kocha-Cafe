@@ -180,7 +180,7 @@
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="confirmAction('submit the change');">
+                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('submit the change');" <?php if($admin['admin_level'] == 1){ echo 'style="pointer-events: none; background-color:#919ba0;" disabled'; } ?>>
                         </div>
                     </div>
                     <a href="customers-all.php" class="back_button2">Back To List</a>
