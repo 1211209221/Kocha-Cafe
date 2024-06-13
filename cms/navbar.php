@@ -149,21 +149,18 @@ session_start();
             </div>
         </div>
         <?php
-            if ($admin['admin_level'] == 2) {
-                echo '<div class="page_container" onclick="openNav()">';
-                echo '<a class="' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '" onclick="toggleSubPages(this, 4)">';
-                echo '<div><i class="fas fa-comment"></i></div>';
-                echo '<span>Blog</span>';
-                echo '</a>';
-                echo '<div class="sub_pages_container ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "toggled" : '') . '" id="subPages4">';
-                echo '<a href="blogs-all.php" class="subPage ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '">';
-                echo '<div><i class="fas fa-comments"></i></div>';
-                echo '<span>Blog List</span>';
-                echo '</a>';
-                echo '</div>';
-                echo '</div>';
-
-            }
+            echo '<div class="page_container" onclick="openNav()">';
+            echo '<a class="' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '" onclick="toggleSubPages(this, 4)">';
+            echo '<div><i class="fas fa-comment"></i></div>';
+            echo '<span>Blog</span>';
+            echo '</a>';
+            echo '<div class="sub_pages_container ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "toggled" : '') . '" id="subPages4">';
+            echo '<a href="blogs-all.php" class="subPage ' . (($current_page == "blogs-all.php" || $current_page == "blogs-edit.php" || $current_page == "blogs-add.php") ? "active-menu" : '') . '">';
+            echo '<div><i class="fas fa-comments"></i></div>';
+            echo '<span>Blog List</span>';
+            echo '</a>';
+            echo '</div>';
+            echo '</div>';
 
             echo '<div class="page_container" onclick="openNav()">';
             ?>
