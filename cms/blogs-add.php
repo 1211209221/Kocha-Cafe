@@ -1,5 +1,6 @@
 <?php
-ob_start(); 
+ob_start();
+include '../connect.php';
 
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $date = date('Y-m-d H:i:s');
@@ -65,7 +66,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     <script src="../script.js"></script>
     <script src="../gototop.js"></script>
     <?php
-        include '../connect.php';
         include '../gototopbtn.php';
         include 'navbar.php';
     ?>

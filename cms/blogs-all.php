@@ -134,13 +134,13 @@
                 margin-right: 10px;
             }
 
-            .icon_button1,
-            .icon_button2 {
+            .icon_button1 {
                 padding: 8px;
                 background-color: #5a9498;
                 border: none;
                 cursor: pointer;
                 color: white;
+                margin-top: 10px;
                 margin-right: 10px;
                 border-radius: 50%;
                 font-size: 16px;
@@ -180,6 +180,8 @@
                 position: absolute;
                 top: 20px;
                 right: 20px;
+                outline: none;
+                pointer-events: none;
             }
 
             .post img {
@@ -201,6 +203,11 @@
 
             .all_items .filter_selectors select {
                 width: 50px;
+            }
+
+            .filter_type{
+                top: -5px;
+                position: relative;
             }
 
             .filter_type input {
@@ -254,6 +261,12 @@
                 margin-right: 10px;
             }
 
+            @media screen and (max-width: 1200px) {
+                .icon_button1 {
+                    margin-top: 0px;
+                }
+            }
+
             @media screen and (max-width: 768px) {
                 .post {
                     flex: 0 0 48.25%;
@@ -262,6 +275,10 @@
 
                 .row {
                     gap: 3.5%;
+                }
+
+                .dateFilters{
+                    display: block !important;
                 }
             }
 
@@ -273,6 +290,10 @@
 
                 .row {
                     gap: 0%;
+                }
+
+                .icon_button1 {
+                    margin-top: 10px;
                 }
             }
 
@@ -298,6 +319,51 @@
             .search_button:hover {
                 background-color: #36676A;
                 transform: scale(1.03);
+            }
+
+            #pagination{
+                box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .page-button{
+                background-color: white !important;
+                border: 5px white solid !important;
+            }
+
+            .page-button:hover{
+                background-color: #d0d5d9 !important;
+                border: 5px #d0d5d9 solid !important;
+            }
+
+            div.active-page {
+                background-color: #d0d5d9 !important;
+                border: 5px #d0d5d9 solid !important;
+                transform: scale(1.03) !important;
+            }
+            .filter_type span{
+                margin-left: 17px;
+                flex: 0 0 10%;
+            }
+            .filter_name {
+                font-size: 18px;
+                font-weight: 800;
+                color: #5a9498;
+            }
+            .dateFilters{
+                display: flex;
+            }
+            .dateFilters input{
+                margin-right: 40px;
+            }
+            .dateFilters label{
+                color: #5a9498 !important;
+                flex: 0 0 80px !important;
+            }
+            .dateFilters span{
+                display: flex;
+            }
+            .all_items .filter_selectors{
+                padding-bottom: 5px;
             }
         </style>
     </head>
@@ -468,22 +534,32 @@
                                 </div>
                             </div>
                             <hr class="mt-1">
-                            <!-- Filter Checkboxes -->
+                            <span class="filter_name">Menu Categories</span>
                             <div class="filter_type">
-                                <input type="checkbox" id="discountFilter" class="filter-checkbox">
-                                <label for="discountFilter">Discount</label>
-                                <input type="checkbox" id="newsFilter" class="filter-checkbox">
-                                <label for="newsFilter">News</label>
-                                <input type="checkbox" id="updatesFilter" class="filter-checkbox">
-                                <label for="updatesFilter">Updates</label>
+                                <span class="d-flex align-items-center">
+                                    <input type="checkbox" id="discountFilter" class="filter-checkbox">
+                                    <label for="discountFilter">Discount</label>
+                                </span>
+                                <span class="d-flex align-items-center">
+                                    <input type="checkbox" id="newsFilter" class="filter-checkbox">
+                                    <label for="newsFilter">News</label>
+                                </span>
+                                <span class="d-flex align-items-center">
+                                    <input type="checkbox" id="updatesFilter" class="filter-checkbox">
+                                    <label for="updatesFilter">Updates</label>
+                                </span>
                             </div>
-
+                            <hr class="mt-2" style="margin-bottom: 15px;">
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label for="startDate">Start Date:</label>
-                                    <input type="date" id="startDate" class="input2">
-                                    <label for="endDate">End Date:</label>
-                                    <input type="date" id="endDate" class="input2">
+                                <div class="col-md-3 dateFilters">
+                                    <span>
+                                        <label for="startDate">Start Date</label>
+                                        <input type="date" id="startDate" class="input2">
+                                    </span>
+                                    <span>
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" id="endDate" class="input2">
+                                    </span>
                                 </div>
                             </div>
 
@@ -503,10 +579,13 @@
                             </select>
                             <label for="perPage" id="perPageLabel"><span>Shown</span> per page</label>
                         </div>
-                        <a href="blogs-add.php">
-                            <div class="add_button">New Blog</div>
-                        </a>
-
+                        <?php
+                            if ($admin['admin_level'] == 2) {
+                                echo '<a href="blogs-add.php">
+                                <div class="add_button">New Blog</div>
+                                </a>';
+                            }
+                        ?>
                     </div>
                 </div>
                 <div class="row" style="margin: 0;">
