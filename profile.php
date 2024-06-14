@@ -1788,7 +1788,6 @@
                             <li class="tablink active" onclick="opencontent(event, 'profile')"><i class="fas fa-address-card"></i> <span>My Profile </span></li>
                             <li class="tablink" onclick="opencontent(event, 'tracking')"><i class="fas fa-hand-holding-box"></i> <span>Order Tracking</span></li>
                             <li class="tablink" onclick="opencontent(event, 'history')"><i class="fas fa-history"></i> <span>Order History</span></li>
-                            <li class="tablink" onclick="opencontent(event, 'voucher')"><i class="fas fa-tags"></i> <span>My Vouchers</span></li>
                             </ul>
                         </div>
                         <div class="logout-opt">
@@ -2309,9 +2308,7 @@
                                 }
                             ?>
                         </div>
-                        <div id="voucher" class="tabcontent" style="display: none;">
-                            <h5 class="title"><i class="fas fa-tags"></i> My Vouchers</h5>
-                        </div>
+                        
                     </div>
                 </div>
              

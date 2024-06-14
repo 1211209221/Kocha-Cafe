@@ -1524,15 +1524,7 @@
                                                             <input type="text" id="newlocation" name="new_location" class="new_location" placeholder="New delivery address..." onkeypress="return event.keyCode != 13;">
                                                         </div>
                                                     </div>
-                                                    <hr>
-                                                    <div class="payment_coupon">
-                                                        <div class="coupon_title">
-                                                            <div>
-                                                                <i class="fas fa-ticket-alt"></i><span>Redeem Voucher</span>
-                                                            </div>
-                                                        </div>
-                                                        <input type="text" placeholder="ABC12" name="payment_coupon" id="payment_coupon" onkeypress="return event.keyCode != 13;">
-                                                    </div>
+                                                    
                                                     <hr>
                                                     <div class="payment_points">
                                                         <div class="points_display">
@@ -1558,10 +1550,7 @@
                                                             <div class="subtotal">RM 0.00</div>
                                                             <input type="hidden" id="sub" name="sub">
                                                         </div>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span>Discount</span>
-                                                            <div id="vou" class="discounted">-RM 0.00</div>
-                                                        </div>
+                                                        
                                                         <div class="d-flex justify-content-between">
                                                             <span>Points</span>
                                                             <div id="pts" class="points_converted">-RM 0.00</div>
