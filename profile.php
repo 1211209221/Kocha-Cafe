@@ -1950,7 +1950,7 @@
                             <p>Track your current order and payment details.</p>
                             <?php
                                 //check got current order
-                                $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage != 3 ORDER BY tracking_stage ASC";
+                                $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage != 3 ORDER BY order_date DESC";
                                 $result = $conn->query($cf_query);
                                 if($result && $result->num_rows == 0){
                                     echo '
@@ -1994,7 +1994,7 @@
                                                         echo '<div class="panel">
                                                         <div>';
                                                         if($row['tracking_stage']==2){
-                                                            echo '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive'.$oid.'\').style.display=\'flex\'"><hr>';
+                                                            echo '<span id="receive-container-' . $oid . '"></span>';
                                                         }
                                                         echo '<p>Thank you for your purchase! Your payment details are below:</p>
                                                             <div class="simple_area">
@@ -2119,21 +2119,28 @@
                                     if (this.status === 200) {
                                         const statuses = JSON.parse(this.responseText);
                                         let statusHtml = "";
+                                        let receive ="";
 
                                         statuses.forEach(status => {
                                             if (status == 0) {
                                                 statusHtml += '<span class="sta-queue status"><i class="fas fa-boxes"></i> Queueing</span>';
+                                                receive ="";
                                             } else if (status == 1) {
                                                 statusHtml += '<span class="sta-prepare status"><i class="fas fa-box-full"></i> Preparing</span>';
+                                                receive ="";
                                             } else if (status == 2) {
                                                 statusHtml += '<span class="sta-deliver status"><i class="fas fa-truck-loading"></i> Delivering</span>';
+                                                receive += '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive' + orderID + '\').style.display=\'flex\'"><hr>';
                                             }
                                         });
 
                                         // Update the status span inside the button
                                         const statusContainer = document.getElementById("status-container-" + orderID);
+                                        const receiveContainer = document.getElementById("receive-container-" + orderID);
                                         if (statusContainer) {
                                             statusContainer.innerHTML = statusHtml;
+                                            receiveContainer.innerHTML = receive;
+                                            
                                         }
                                     }
                                 };
@@ -2308,7 +2315,7 @@
                                 }
                             ?>
                         </div>
-                        
+
                     </div>
                 </div>
              
