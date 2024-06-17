@@ -389,7 +389,7 @@
                     if(empty($ph_row['cust_phone'])){
                         //add session
                         $_SESSION['no_phone'] = "nophone";
-                        header("Location: cart.php");
+                        echo '<script>window.location.href = "cart.php";</script>';
                         exit();
                     }
 
@@ -488,17 +488,17 @@
                             $sql_empty_cart = "UPDATE customer SET cust_cart = '' WHERE cust_ID = $cust_ID";
                             $conn->query($sql_empty_cart);
                             $_SESSION['submitOrder_success'] = true;
-                            header("Location: cart.php");
+                            echo '<script>window.location.href = "cart.php";</script>';
                             exit();
                         } else {
                             $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                            header("Location: cart.php");
+                            echo '<script>window.location.href = "cart.php";</script>';
                             exit();
                         }
                     }
                     else{
                         $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                        header("Location: cart.php");
+                        echo '<script>window.location.href = "cart.php";</script>';
                         exit();
                     }
                 }
