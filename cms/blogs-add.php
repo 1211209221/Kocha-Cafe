@@ -23,18 +23,14 @@ if (isset($_POST['submit'])) {
               VALUES ('$subject', '$content', '$file', '$date', '$blog_type', '$image')";
 
     if (mysqli_query($conn, $query)) {
-        echo "<script>document.getElementById('content').value = '" . $_POST['content'] . "';</script>";
-        echo "Record inserted successfully!<br>";
-        echo "Subject: $subject<br>";
-        echo "Content: $content<br>";
-        echo "Date: $date<br>";
-        echo "Blog Type: $blog_type<br>";
-        header("Location: blogs-add.php");
-        ob_end_flush(); // Flush and end the output buffer
-        exit();
+        $_SESSION['addBlog_success'] = true;
+        echo '<script>';
+        echo 'window.location.href = "blogs-add.php";';
+        echo '</script>';
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
+    
 }
 
 // Handle image upload via AJAX
@@ -43,10 +39,29 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     $targetFile = $targetDir . basename($_FILES['image']['name']);
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
-    $response = array();
-    echo json_encode($response);
-    exit();
+    // Generate a unique filename to avoid conflicts
+    $newFileName = uniqid() . '.' . $imageFileType;
+    $targetPath = $targetDir . $newFileName;
+
+    // Move the uploaded file to the target directory
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+        // Return the path to the uploaded image
+        $response = array(
+            'success' => true,
+            'imageUrl' => $targetPath // You can modify this to store relative or absolute URL as needed
+        );
+        echo json_encode($response);
+        exit();
+    } else {
+        $response = array(
+            'success' => false,
+            'message' => 'Failed to move uploaded file.'
+        );
+        echo json_encode($response);
+        exit();
+    }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -68,6 +83,19 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     <?php
         include '../gototopbtn.php';
         include 'navbar.php';
+
+        if (isset($_SESSION['addBlog_success']) && $_SESSION['addBlog_success'] === true) {
+            echo '<div class="toast_container">
+                    <div id="custom_toast" class="custom_toast true fade_in">
+                        <div class="d-flex align-items-center message">
+                            <i class="fas fa-check-circle"></i> Blog successfully added!
+                        </div>
+                        <div class="timer"></div>
+                    </div>
+                </div>';
+
+            unset($_SESSION['addBlog_success']);
+        }
     ?>
     <style>
         h1 {
@@ -80,28 +108,36 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             color: #343a40;
             margin-bottom: 30px;
         }
-        .container-fluid {
-            padding: 0 30px;
-        }
         .form-container {
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 1100px;
             margin: auto;
         }
         label {
-            font-weight: bold;
-            color: #495057;
+            font-size: 18px;
+            font-weight: 800;
+            color: #5a9498;
+            white-space: nowrap;
+            margin: 1px 0;
         }
         input[type="text"], input[type="datetime-local"], select, #editor {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #ced4da;
             border-radius: 4px;
+            border: #e9ecef 1px solid !important;
+            background-color: #e9ecef !important;
+            border-radius: 7px !important;
+            font-size: 18px !important;
+            padding: 6px 5px !important;
+            color: black !important;
+            box-shadow: unset !important;
+        }
+        #editor {
+            border-radius: unset !important;
+            border-bottom-right-radius: 10px !important;
+            border-bottom-left-radius: 10px !important;
         }
         input[type="file"] {
             margin-bottom: 20px;
@@ -137,13 +173,58 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             max-width: 100%;
             margin-top: 20px;
         }
+        .page_title {
+            width: 100%;
+            color: #495057;
+            font-weight: 800;
+            font-size: 28px;
+            border-radius: 10px;
+            margin: 10px 0px 5px 0px;
+        }
+        .page_title i {
+            padding-left: 7px;
+            font-size: 21px;
+            bottom: 1px;
+        }
+        .breadcrumbs {
+            position: absolute;
+            top: -55px;
+            left: 0px;
+            margin: 10px 0px 0px 0px;
+            width: fit-content;
+            font-size: 18px;
+        }
+        .item_details{
+            margin-top: 55px;
+            position: relative;
+        }
+        .admin_page .button_1 {
+            padding: 4px 20px;
+            width: fit-content;
+            background-color: #5a9498;
+            color: white;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            transition: 0.15s;
+            text-decoration: none;
+            align-items: center;
+            display: flex;
+        }
+        .ql-toolbar {
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <h1>Add Blog</h1>
-        <div class="form-container">
+    <div class="container-fluid admin_page">
+        <div class="form-container item_details">
+            <div class="breadcrumbs">
+                <a>Admin</a> &gt; <a>Menu</a> &gt; <a href="items-all.php">Item List</a> &gt; <a class="active">Big Breakfast</a>
+            </div>
+            <div class="page_title">New Blog<i class="fas fa-pen"></i></div>
             <form method="POST" action="" enctype="multipart/form-data">
                 <label for="subject">Subject</label><br>
                 <input type="text" id="subject" name="subject" required><br><br>
@@ -154,7 +235,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                 <label for="date">Date</label><br>
                 <input type="datetime-local" id="date" name="date" value="<?php echo $date ?>" readonly required><br><br>
                 <label for="image">Image</label><br>
-                <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif"><br><br>
+                <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif" required><br><br>
                 <img id="blog-image" src="" alt="Blog Image">
                 <input type="hidden" id="imagePath" name="imagePath">
                 <label for="blog_type">Blog Type</label><br>
@@ -164,8 +245,9 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                     <option value="Update">Update</option>
                     <!-- Add more options as needed -->
                 </select><br><br>
-                <input type="submit" name="submit" value="Upload">
-                <input type="reset">
+                <div class="d-flex align-items-center justify-content-end">
+                    <input type="submit" class="button_1" name="submit" value="Add Blog">
+                </div>
             </form>
         </div>
     </div>
@@ -201,15 +283,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
 
         document.getElementById('image').addEventListener('change', function (e) {
             var file = e.target.files[0];
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                document.getElementById('blog-image').style.display = 'block';
-                document.getElementById('blog-image').setAttribute('src', e.target.result);
-            }
-
-            reader.readAsDataURL(file);
-
             var formData = new FormData();
             formData.append('image', file);
 
@@ -224,7 +297,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                         alert('Image upload failed: ' + response.message);
                     }
                 } else {
-                    alert('An error occurred while uploading the image.');
+                    alert('Request failed. Status: ' + xhr.status);
                 }
             };
             xhr.send(formData);

@@ -71,8 +71,8 @@
                         // File is too large
                         $_SESSION['addItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
                         echo '<script>';
-                            echo 'window.location.href = "items-add.php";';
-                            echo '</script>';
+                        echo 'window.location.href = "items-add.php";';
+                        echo '</script>';
                         exit();
                     }
                 } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {

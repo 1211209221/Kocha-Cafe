@@ -346,6 +346,17 @@
                 form.submit();
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial content of hidden input
+            document.getElementById('content').value = quill.root.innerHTML;
+
+                // Handle text change event
+                quill.on('text-change', function () {
+                    var html = quill.root.innerHTML;
+                    document.getElementById('content').value = html;
+                });
+        });
     </script>
 
 </body>

@@ -59,7 +59,7 @@
             flex: 0 0 32%;
             max-width: 32%;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            white-space: normal;
         }
 
         .post h2 {
@@ -109,7 +109,7 @@
         }
 
         .navigation_container {
-            margin-top: 20px;
+            margin-top: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -195,7 +195,6 @@
             height: 200px;
             /* Adjust the height as needed */
             object-fit: cover;
-            /* Ensure the image covers the entire container */
         }
 
         p {
@@ -271,9 +270,6 @@
             .icon_button1 {
                 margin-top: 0px;
             }
-        }
-
-        @media screen and (max-width: 768px) {
             .post {
                 flex: 0 0 48.25%;
                 max-width: 48.25%;
@@ -282,13 +278,12 @@
             .row {
                 gap: 3.5%;
             }
+        }
 
+        @media screen and (max-width: 768px) {
             .dateFilters {
                 display: block !important;
             }
-        }
-
-        @media screen and (max-width: 575px) {
             .post {
                 flex: 0 0 100%;
                 max-width: 100%;
@@ -297,7 +292,9 @@
             .row {
                 gap: 0%;
             }
+        }
 
+        @media screen and (max-width: 575px) {
             .icon_button1 {
                 margin-top: 10px;
             }
@@ -377,6 +374,16 @@
 
         .all_items .filter_selectors {
             padding-bottom: 5px;
+        }
+
+        .blog-contents{
+            white-space: normal;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
     </style>
 </head>
@@ -585,10 +592,10 @@
                         <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch"
                             placeholder="Search item...">
                         <select id="perPage">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
+                            <option value="6">6</option>
+                            <option value="9" selected>9</option>
+                            <option value="18">18</option>
+                            <option value="30">30</option>
                         </select>
                         <label for="perPage" id="perPageLabel"><span>Shown</span> per page</label>
                     </div>
@@ -619,8 +626,8 @@
                         }
                         echo "'>";
                         echo "<div><img src='" . $row["image"] . "' alt='Blog Image'></div>"; // Adjusted image size
-                        echo "<h2 style='justify-content: space-between;'><span>" . $row["blog_title"] . "</span><span><a href='blogs-edit.php?id=" . $row["blog_ID"] . "'><i class='fas fa-pen icon_button1'></i></a></span></h2>";
-                        echo "<p>" . $row["date"] . "</p>";
+                        echo "<h2 style='justify-content: space-between;' class='mb-0'><span>" . $row["blog_title"] . "</span><span><a href='blogs-edit.php?id=" . $row["blog_ID"] . "'><i class='fas fa-pen icon_button1'></i></a></span></h2>";
+                        echo "<p class='mb-0' style='color: #95bfbe; font-weight: 900;'>" . $row["date"] . "</p>";
                         echo "<div class='blog-contents'><p>" . $row["blog_contents"] . "</p></div>";
                         echo "<button class='blog_type_button'>" . $row["blog_type"] . "</button>"; // Converted blog type to button
                         echo "</div>"; // Closing individual post container
