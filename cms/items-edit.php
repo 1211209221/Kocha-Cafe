@@ -45,14 +45,14 @@
                             //header("Location: items-all.php");
                             exit();
                         } else {
-                            $_SESSION['deleteItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                            $_SESSION['deleteItem_error'] = true;
                             echo '<script>';
                             echo 'window.location.href = "items-all.php";';
                             echo '</script>';
                             exit();
                         }
                     } else {
-                        $_SESSION['deleteItem_image_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        $_SESSION['deleteItem_image_error'] = true;
                         echo '<script>';
                         echo 'window.location.href = "items-all.php";';
                         echo '</script>';
@@ -117,7 +117,7 @@
                         //header("Location: items-edit.php?ID=$item_ID");
                         exit();
                     } else {
-                        $_SESSION['editItem_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
+                        $_SESSION['editItem_error'] = true;
                         echo '<script>';
                         echo 'window.location.href = "items-edit.php?ID='.$item_ID.'";';
                         echo '</script>';

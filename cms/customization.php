@@ -34,8 +34,6 @@
 <?php
     include '../connect.php';
     include '../gototopbtn.php';
-    include 'navbar.php';
-
 
     //session_start();
 
@@ -119,7 +117,6 @@
         $stmt_update = mysqli_prepare($conn, $sql_update);
         mysqli_stmt_bind_param($stmt_update, 'si', $custom_options, $custom_ID);
         if(mysqli_stmt_execute($stmt_update)) {
-            echo "Empty option has been added successfully.";
         } else {
             echo "Error adding empty option: " . mysqli_error($conn);
         }
@@ -138,7 +135,6 @@
             mysqli_stmt_bind_param($stmt_add, 's', $custom_options);
 
             if (mysqli_stmt_execute($stmt_add)) {
-                echo "Empty option has been added successfully.";
             } else {
                 echo "Error adding empty option: " . mysqli_error($conn);
             }
@@ -273,7 +269,7 @@
         unset($_SESSION['deleteCustomization_success']);
     }
 
-
+    include 'navbar.php';
 
     echo "<div class='container-fluid container'>
         <div class='col-12 m-auto'>

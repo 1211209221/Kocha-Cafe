@@ -433,10 +433,17 @@
                             // Ensure the incrementing part is 5 digits
                             $newIncrementPart = str_pad($increment, 5, '0', STR_PAD_LEFT); // 5 digits for the incremental part
                             $orderID = $timestamp . $newIncrementPart;
+                        }else{
+                            $currentDate = date('Ymd');
+                            $increment = 1;
+
+                            $newIncrementPart = str_pad($increment, 5, '0', STR_PAD_LEFT); // 5 digits for the incremental part
+                            $orderID = $timestamp . $newIncrementPart;
                         }
                     
                         return $orderID;
                     }
+                    
                     // Generate the new order ID
                     $newOrderID = generate_order_id($conn);
 
