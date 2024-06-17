@@ -42,24 +42,28 @@
         }
 
         .post {
-            width: calc(33.33% - 20px);
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 30px;
+            padding: 8px;
             box-sizing: border-box;
             background-color: white;
-            border-radius: 20px;
+            border-radius: 10px;
             position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            flex: 0 0 32%;
+            max-width: 32%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .post img {
             width: 100%;
-            height: 200px; /* Set a fixed height for the image */
-            object-fit: cover; /* Ensure the image covers the entire area without distortion */
+            height: 200px;
+            /* Set a fixed height for the image */
+            object-fit: cover;
+            /* Ensure the image covers the entire area without distortion */
             border-radius: 20px 20px 0 0;
         }
 
@@ -70,7 +74,8 @@
 
         .post p {
             margin-top: 5px;
-            flex-grow: 1; /* Allow the content to grow and fill the available space */
+            flex-grow: 1;
+            /* Allow the content to grow and fill the available space */
         }
 
         .blog-type-button {
@@ -95,7 +100,6 @@
             transform: scale(1.035);
             transition: 0.5s;
         }
-
     </style>
 </head>
 
@@ -125,16 +129,19 @@
                         <h2><?php echo $row["blog_title"]; ?></h2>
                         <p><?php echo $row["blog_contents"]; ?></p>
                         <?php
+                        // Generate unique ID for each post
+                        $post_id = $row["blog_ID"];
+
                         // Add conditional logic for button generation
                         switch ($row["blog_type"]) {
                             case "Discount":
-                                echo "<a href='menu.php'><button class='blog-type-button'>Discount</button></a>";
+                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>Discount</button></a>";
                                 break;
                             case "News":
-                                echo "<a href='index.php'><button class='blog-type-button'>News</button></a>";
+                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>News</button></a>";
                                 break;
                             case "Updates":
-                                echo "<a href='menu.php'><button class='blog-type-button'>Updates</button></a>";
+                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>Updates</button></a>";
                                 break;
                             default:
                                 // Handle any other cases here
@@ -148,6 +155,7 @@
                 echo "0 results";
             }
             ?>
+
         </div>
     </div>
 </body>
