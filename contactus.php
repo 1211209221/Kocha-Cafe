@@ -52,14 +52,29 @@
                         $filecount = count($_FILES['attachment']['tmp_name']);
                     }
 
-                    if(isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"])) {
+                    if (isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"])) {
                         $recaptcha_response = $_POST["g-recaptcha-response"];
-                        $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT";
-                        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_response";
-                        $response = file_get_contents($url);
+                        $recaptcha_secret = "6Lf506cpAAAAAK_euIDA9CphEiXmC3LSk0fQILPT"; 
+                        $url = "https://www.google.com/recaptcha/api/siteverify";
+                    
+                        // Use cURL to send the request to the reCAPTCHA server
+                        $data = array(
+                            'secret' => $recaptcha_secret,
+                            'response' => $recaptcha_response
+                        );
+                    
+                        $options = array(
+                            'http' => array(
+                                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                                'method'  => 'POST',
+                                'content' => http_build_query($data)
+                            )
+                        );
+                    
+                        $context  = stream_context_create($options);
+                        $response = file_get_contents($url, false, $context);
                         $response_data = json_decode($response, true);
-                
-                        // Debugging: Check the response data
+                    
                         if (!$response_data) {
                             // Handle error in response (e.g., no response from Google)
                             $_SESSION['captcharesponse'] = true;
@@ -69,7 +84,7 @@
                         } elseif (!$response_data["success"]) {
                             // Handle reCAPTCHA failure
                             $_SESSION['captcharesponse'] = true;
-                            $_SESSION['captcha_message'] = 'You are spammer! Get out...';
+                            $_SESSION['captcha_message'] = 'You are a spammer! Get out...';
                             echo '<script>window.location.href = "contactus.php";</script>';
                             exit();
                         }
