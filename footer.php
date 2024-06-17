@@ -58,7 +58,7 @@
                         <span class="address"> No. 44, Jalan Desa Melur 4/1, Taman Bandar Connaught, 56000 Cheras,
                             Kuala Lumpur, Malaysia<br><br>
                             Phone: +6017 412 4250<br>
-                            Email: info@kochacafe.com
+                            Email: kochacafe8@gmail.com
                         </span>
                     </div>
                 </div>
