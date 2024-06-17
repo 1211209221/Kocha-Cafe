@@ -1136,7 +1136,7 @@
                         </div>
                         <div class="pcontainer">
                             <p style="margin-bottom:unset;">Are you sure you want to <b style="color:#e2857b;">DELETE</b> this account?</p>
-                            <p style="margin-top:5px;">Your purchase history, wishlist, and other data will be <b style="color:#e2857b;">LOST!</b></p>
+                            <p style="margin-top:5px;">You will <b style="color:#e2857b;">NOT</b> be able to find your purchase history, wishlist, and other data after this action!</p>
                             <button type="submit" name="del-acc" class="edit-profile-btn" style="outline: none; margin-top:15px">Confirm</button>
                         </div>
                         <div class="pcontainer" style="background-color:#f3f3f3; height: 70px;">
