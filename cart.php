@@ -389,7 +389,7 @@
                     if(empty($ph_row['cust_phone'])){
                         //add session
                         $_SESSION['no_phone'] = "nophone";
-                        header("Location: cart.php");
+                        echo '<script>window.location.href = "cart.php";</script>';
                         exit();
                     }
 
@@ -433,10 +433,17 @@
                             // Ensure the incrementing part is 5 digits
                             $newIncrementPart = str_pad($increment, 5, '0', STR_PAD_LEFT); // 5 digits for the incremental part
                             $orderID = $timestamp . $newIncrementPart;
+                        }else{
+                            $currentDate = date('Ymd');
+                            $increment = 1;
+
+                            $newIncrementPart = str_pad($increment, 5, '0', STR_PAD_LEFT); // 5 digits for the incremental part
+                            $orderID = $timestamp . $newIncrementPart;
                         }
                     
                         return $orderID;
                     }
+                    
                     // Generate the new order ID
                     $newOrderID = generate_order_id($conn);
 
@@ -481,17 +488,17 @@
                             $sql_empty_cart = "UPDATE customer SET cust_cart = '' WHERE cust_ID = $cust_ID";
                             $conn->query($sql_empty_cart);
                             $_SESSION['submitOrder_success'] = true;
-                            header("Location: cart.php");
+                            echo '<script>window.location.href = "cart.php";</script>';
                             exit();
                         } else {
                             $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                            header("Location: cart.php");
+                            echo '<script>window.location.href = "cart.php";</script>';
                             exit();
                         }
                     }
                     else{
                         $_SESSION['submitOrder_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                        header("Location: cart.php");
+                        echo '<script>window.location.href = "cart.php";</script>';
                         exit();
                     }
                 }
@@ -817,6 +824,9 @@
                 if(redeem_points.trim()>maxPoints){
                     errorDisplay1(document.getElementById("redeem_points"), "*Exceeded points.*");
                 }
+                else if(redeem_points.trim()>50){
+                    errorDisplay1(document.getElementById("redeem_points"), "*The maximum point you use is 50*");
+                }
                 else{
                     clearError1(document.getElementById("redeem_points"));
                 }
@@ -1052,14 +1062,13 @@
                     // Get the elements containing subtotal, points, discount, and total price
                     let subtotal = parseFloat(document.querySelector('.subtotal').textContent.replace('RM ', ''));
                     let points = parseFloat(document.querySelector('.points_converted').textContent.replace('-RM ', ''));
-                    let discount = parseFloat(document.querySelector('.discounted').textContent.replace('-RM ', ''));
                     let totalPriceElement = document.querySelector('.price_total');
                     let earn_point = document.getElementById('earn_point');
                     let earnPointInput = document.getElementById('earn_point_input');
                     let totalprice = document.getElementById('totalprice');
 
                     // Calculate the total price
-                    let totalPrice = subtotal - points - discount;
+                    let totalPrice = subtotal - points;
 
                     // Update the total price displayed on the page
                     totalPriceElement.textContent = "RM " + totalPrice.toFixed(2);
@@ -1100,7 +1109,6 @@
 
                 // Observe changes to the subtotal, points, and voucher discount elements
                 observer.observe(document.querySelector('.subtotal'), observerOptions);
-                observer.observe(document.querySelector('.discounted'), observerOptions);
                 observer.observe(document.querySelector('.points_converted'), observerOptions);
                 
                 //next

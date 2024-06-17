@@ -8,26 +8,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Using prepared statements to prevent SQL injection
         require_once "connect.php";
-        $sql = "SELECT * FROM admin WHERE admin_username = '$username'";
-        $result = mysqli_query($conn, $sql);
-        $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
-        // Check if any rows were returned
-        if (password_verify( $_POST["admin_pass"], $user["admin_pass"])) {
-            // Fetch the row
-            $row = mysqli_fetch_assoc($result);
-                
+
+        // Prepare the SQL statement to prevent SQL injection
+        $stmt = $conn->prepare("SELECT * FROM admin WHERE admin_username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            if (password_verify($_POST["admin_pass"], $user["admin_pass"])) {
+                // Correct password, fetch the row
                 $_SESSION["admin"] = $user["admin_ID"];
                 header("location:dashboard.php");
-                
                 exit(); // Terminate script execution after redirection
-
+            } else {
+                $error_message = "Username or password incorrect";
+            }
         } else {
             $error_message = "Username or password incorrect";
         }
+        $stmt->close();
+        $conn->close();
     } else {
         $error_message = "Please enter both username and password";
     }
 }
+
 
 ?>
 
@@ -98,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <?php
                     if (!empty($error_message)) {
-                        echo "<div class='alert alert-danger'>$error_message</div>";
+                        echo "<div class='alert alert-danger mt-4 mb-0'>$error_message</div>";
                     }
                     ?>
                 </form>
