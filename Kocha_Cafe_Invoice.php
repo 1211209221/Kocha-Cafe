@@ -276,7 +276,7 @@ if (isset($_GET['ID'])) {
                                                                 $custom_key = trim($cus[0]);
                                                                 $custom_value = trim($cus[1]);
                                                                      
-                                                                echo '<br><span class="extra">' . $custom_value . '</span>';
+                                                                echo '<br><span class="extra">' . $custom_key . ': ' . $custom_value . '</span>';
                                                                     
                                                                 
                                                             }
