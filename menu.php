@@ -432,7 +432,7 @@
                                             }
                                             while ($row_sub = $result_sub->fetch_assoc()) {
                                                 echo '<li>';
-                                                echo '<input type="checkbox" name="'.$row_sub['category_ID'].','.$row_sub['category_parent'].','.$row_sub['category_primary'].'" id='.$row_sub['category_ID'].'>' . $row_sub['category_name'];
+                                                echo '<input type="checkbox" name="' . $row_sub['category_ID'] . ',' . $row_sub['category_parent'] . ',' . $row_sub['category_primary'] . '" id="' . $row_sub['category_ID'] . '"><label for="'. $row_sub['category_ID'] . '" style="margin-bottom:unset;cursor:pointer;display:unset;">'. $row_sub['category_name'] . '</label>';
 
                                                 
                                                 // Check if this category has subcategories
@@ -469,13 +469,13 @@
                                     }
                                 ?>
                                 <div class="discount_filter">
-                                    <span>On Discount</span>
-                                    <input type="checkbox" name="discount">
+                                    <span><label for="ondiscount" style="margin-bottom:unset;cursor:pointer;display:unset;">On Discount</label></span>
+                                    <input type="checkbox" name="discount" id="ondiscount">
                                 </div>
                                 <hr>
                                 <div class="availability_filter">
-                                    <span>Availability</span>
-                                    <input type="checkbox" name="availability">
+                                    <span><label for="availability" style="margin-bottom:unset;cursor:pointer;display:unset;">Availability</label></span>
+                                    <input type="checkbox" name="availability" id="availability">
                                 </div>
                                 <hr>
                                 <div class="price_filter">
