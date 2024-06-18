@@ -252,41 +252,39 @@
                 let selectedstatusFilter = 'all';
 
                 function sortTable() {
-                    var table = document.getElementById("dataTable");
-                    var rows = table.rows;
+                    const table = document.getElementById("dataTable");
+                    const rows = table.rows;
 
-                    var dataRows = [];
-                    for (var i = 1; i < rows.length; i++) {
-                        var row = rows[i];
-                        var dateCell = row.cells[4]; // Date column
-                        var dateString = dateCell.textContent.trim(); // Get date string from the table cell
-                        var dateObject = new Date(dateString); // Parse date string into Date object
+                    const dataRows = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        const dateCell = row.cells[4]; // Date column
+                        const dateString = dateCell.textContent.trim(); // Get date string from the table cell
+                        const dateObject = new Date(dateString); // Parse date string into Date object
                         dataRows.push({ row: row, date: dateObject });
                     }
 
                     dataRows.sort(function(a, b) {
-                    var dateA = a.date.getTime();
-                    var dateB = b.date.getTime();
-                    if (selecteddateFilter === '1') {
-                        return dateA - dateB; // Ascending order (oldest to latest)
-                    } else if (selecteddateFilter === '2') {
-                        return dateB - dateA; // Descending order (latest to oldest)
-                    }
-                });
+                        const dateA = a.date.getTime();
+                        const dateB = b.date.getTime();
+                        if (selecteddateFilter === '1') {
+                            return dateA - dateB; // Ascending order (oldest to latest)
+                        } else if (selecteddateFilter === '2') {
+                            return dateB - dateA; // Descending order (latest to oldest)
+                        }
+                    });
 
                     // Reorder table rows based on sorted dataRows
-                    var tbody = table.querySelector('tbody');
+                    const tbody = table.querySelector('tbody');
                     dataRows.forEach(function(dataRow) {
                         tbody.appendChild(dataRow.row);
                     });
+
+                    updateRowsDisplay();
                 }
 
-
-                function showPage(pageNumber) {
+                function updateRowsDisplay() {
                     const perPage = parseInt(perPageSelector.value);
-                    const startIndex = (pageNumber - 1) * perPage;
-                    const endIndex = startIndex + perPage;
-
                     let filteredContainers = Array.from(reviewContainers);
 
                     // Filter items based on search term
@@ -296,7 +294,6 @@
                             return itemName.includes(searchTerm.toLowerCase());
                         });
                     }
-
 
                     // Filter status
                     if (selectedstatusFilter !== 'all') {
@@ -310,14 +307,9 @@
                         });
                     }
 
-                    // Add 'unfiltered' class to the tr elements that do not meet the filter criteria
-                    reviewContainers.forEach(container => {
-                        if (!filteredContainers.includes(container)) {
-                            container.classList.add('unfiltered');
-                        } else {
-                            container.classList.remove('unfiltered');
-                        }
-                    });
+                    const startIndex = (currentPage - 1) * perPage;
+                    const endIndex = startIndex + perPage;
+
                     // Hide all review containers
                     reviewContainers.forEach(container => {
                         container.style.display = 'none';
@@ -331,74 +323,35 @@
                         container.querySelector('.t_no').textContent = i + 1;
                     }
 
-                    // Update active page button
-                    const pageButtons = pagination.querySelectorAll('.page-button');
-                    pageButtons.forEach(button => {
-                        button.classList.remove('active-page');
-                        button.classList.remove('adjacent');
-                        if (parseInt(button.textContent) === pageNumber) {
-                            button.classList.add('active-page');
-                            const index = parseInt(button.textContent);
-                            if (index > 1) {
-                                pageButtons[index - 2].classList.add('adjacent');
-                            }
-                        }
-                    });
-                    displayResultIndexes();
+                    displayResultIndexes(filteredContainers.length, startIndex + 1, Math.min(endIndex, filteredContainers.length));
+                    updatePagination(filteredContainers.length, perPage);
                 }
 
-                function displayResultIndexes() {
-                    const perPage = parseInt(perPageSelector.value);
-                    const filteredContainers = Array.from(reviewContainers).filter(container => !container.classList.contains('unfiltered'));
-                    const startIndex = (currentPage - 1) * perPage + 1;
-                    const endIndex = Math.min(startIndex + perPage - 1, filteredContainers.length);
+                function showPage(pageNumber) {
+                    currentPage = pageNumber;
+                    updateRowsDisplay();
+                }
 
+                function displayResultIndexes(totalFiltered, start, end) {
                     const resultIndexesElement = document.createElement('div');
-                    resultIndexesElement.textContent = `Showing ${startIndex} to ${endIndex} of ${filteredContainers.length} results`;
+                    resultIndexesElement.textContent = `Showing ${start} to ${end} of ${totalFiltered} results`;
 
                     const noResultsPage = document.querySelector('.no_results_page');
                     noResultsPage.innerHTML = ''; // Clear existing content
                     noResultsPage.appendChild(resultIndexesElement);
                 }
 
-                function createPagination() {
-                    let filteredContainers = Array.from(reviewContainers);
-
-                    // Filter items based on search term
-                    if (searchTerm) {
-                        filteredContainers = filteredContainers.filter(container => {
-                            const itemName = container.querySelector('.t_name').textContent.toLowerCase();
-                            return itemName.includes(searchTerm.toLowerCase());
-                        });
-                    }
-
-
-                    if (selectedstatusFilter !== 'all') {
-                        filteredContainers = filteredContainers.filter(container => {
-                            const status = container.querySelector('.t_status').textContent.trim();
-                            if (selectedstatusFilter === '0') {
-                                return status === "0";
-                            } else if (selectedstatusFilter === '1') {
-                                return status === "1";
-                            }
-                        });
-                    }
-
-
-                    const totalReviews = reviewContainers.length;
-                    const perPage = parseInt(perPageSelector.value);
-                    const totalPages = Math.ceil(totalReviews / perPage);
+                function updatePagination(totalFiltered, perPage) {
+                    const totalPages = Math.ceil(totalFiltered / perPage);
                     pagination.innerHTML = '';
 
                     // Previous Button
                     const prevButton = document.createElement('div');
                     prevButton.textContent = 'Previous';
-                    prevButton.classList.add('page-button');
-                    prevButton.classList.add('previous-button');
+                    prevButton.classList.add('page-button', 'previous-button');
                     prevButton.addEventListener('click', function() {
                         if (currentPage > 1) {
-                            currentPage--;
-                            showPage(currentPage);
+                            showPage(currentPage - 1);
                         }
                     });
                     pagination.appendChild(prevButton);
@@ -407,14 +360,12 @@
                     for (let i = 1; i <= totalPages; i++) {
                         const pageButton = document.createElement('div');
                         pageButton.textContent = i;
-                        pageButton.classList.add('page-button');
-                        pageButton.classList.add('page');
+                        pageButton.classList.add('page-button', 'page');
                         if (i === currentPage) {
                             pageButton.classList.add('active-page');
                         }
                         pageButton.addEventListener('click', function() {
-                            currentPage = i;
-                            showPage(currentPage);
+                            showPage(i);
                         });
                         pagination.appendChild(pageButton);
                     }
@@ -422,15 +373,14 @@
                     // Next Button
                     const nextButton = document.createElement('div');
                     nextButton.textContent = 'Next';
-                    nextButton.classList.add('page-button');
-                    nextButton.classList.add('next-button');
+                    nextButton.classList.add('page-button', 'next-button');
                     nextButton.addEventListener('click', function() {
                         if (currentPage < totalPages) {
-                            currentPage++;
-                            showPage(currentPage);
+                            showPage(currentPage + 1);
                         }
                     });
                     pagination.appendChild(nextButton);
+
                 }
 
                 function clearAllFilters() {
@@ -445,15 +395,12 @@
 
                     // Trigger filter update
                     currentPage = 1;
-                    //updateURL();
                     showPage(currentPage);
-                    createPagination();
                 }
 
                 perPageSelector.addEventListener('change', function() {
                     currentPage = 1;
-                    showPage(currentPage);
-                    createPagination();
+                    updateRowsDisplay();
                 });
 
                 dateFilter.addEventListener('change', function() {
@@ -461,14 +408,13 @@
                     sortTable();
                     currentPage = 1;
                     showPage(currentPage);
-                    createPagination();
                 });
 
                 statusFilter.addEventListener('change', function() {
                     selectedstatusFilter = statusFilter.value;
+                    sortTable();
                     currentPage = 1;
                     showPage(currentPage);
-                    createPagination();
                 });
 
                 clearAllButton.addEventListener('click', function() {
@@ -479,15 +425,13 @@
                 searchInput.addEventListener('input', function(event) {
                     searchTerm = event.target.value.trim();
                     currentPage = 1;
-                    showPage(currentPage);
-                    createPagination();
+                    updateRowsDisplay();
                 });
 
                 sortTable();
                 showPage(currentPage);
-                createPagination();
-
             });
+
         </script>
         <div class="container-fluid">
             <div class="col-12 m-auto">
