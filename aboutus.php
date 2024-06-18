@@ -14,7 +14,6 @@
     body {
       min-height: 100vh; /* Set minimum height to viewport height */
       margin: 0; /* Remove default margin */
-      padding-bottom: 50px; /* Adjust bottom padding for footer */
       position: relative; /* Set position relative for footer positioning */
       background-image: url('images/shop.jpg');
       background-size: cover;
@@ -46,7 +45,7 @@
   include 'sidebar.php';
   ?>
   <div class="row">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8 offset-md-2 mt-5">
       <h1 class="text-center mb-4">About Kocha Cafe</h1>
       <h2 class="text-center mb-4">Kocha Cafe was established in 2024 with the aim of providing our valued customers with a delightful culinary experience. We take pride in offering a selection of iconic foods and beverages meticulously crafted by our passionate team.</h2>
       <div class="row">
