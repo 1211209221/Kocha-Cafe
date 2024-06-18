@@ -345,18 +345,25 @@
                                                                 <img src="'.$src.'" class="item_image">
                                                                 </td>';
                                                             echo '<td class="t_item">'.$item_name;
-                                                                    if (!empty($matches[1])) {
-                                                                        foreach ($matches[1] as $match) {
-                                                                            $customs = explode(',', $match);
-                                                                            if (count($customs) >= 2) {
-                                                                                $custom_key = trim($customs[0]);
-                                                                                $custom_value = trim($customs[1]);
-                                                                                if (!empty($custom_key) && !empty($custom_value)) {
-                                                                                    echo '<br><span>- ' .$custom_key.': '. $custom_value . '</span>';
-                                                                                }
-                                                                            }
-                                                                        }
+                                                            if (!empty($matches)) {
+                                                                $pairs = explode('],[', trim($item_custom, '()'));
+
+                                                                foreach ($pairs as $pair) {
+                                                                    // Remove any remaining brackets and trim spaces, then split by comma
+                                                                    $items = explode(',', str_replace(['[', ']'], '', $pair));
+                                                                    
+                                                                    // Check if both key and value are not empty
+                                                                    if (count($items) == 2 && !empty(trim($items[0])) && !empty(trim($items[1]))) {
+                                                                        $custom_key = trim($items[0]);
+                                                                        $custom_value = trim($items[1]);
+                                                                             
+                                                                        echo '<br><span>- ' .$custom_key.': '. $custom_value . '</span>';
+                                                                            
+                                                                        
                                                                     }
+                                                                }
+                                                            }
+                                                                    
                                                                     if(!empty($item_request)){
                                                                         echo '<br><span>- ' . $item_request . '</span>';
                                                                     }

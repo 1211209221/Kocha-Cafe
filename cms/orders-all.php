@@ -146,7 +146,6 @@
             table tr .t_item ul li span{
                 font-weight:400;
                 color: #8a8a8a;
-                padding-left:22px;
             }
             table tr .t_status{
                 width: 8%;
@@ -630,7 +629,7 @@
                                         <?php
                                             $no_count = 0;
 
-                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 ORDER BY tracking_stage ASC";
+                                            $cf_query = "SELECT * FROM customer_orders WHERE trash = 0 ORDER BY order_date DESC";
 
                                             $result = $conn->query($cf_query);
                                             if($result && $result->num_rows > 0){
@@ -666,10 +665,10 @@
                                                             $j = 0;
                                                             if (count($items) != 0){
                                                                 foreach ($items as $item) {
-                                                                    $j++;
+                                                                    ++$j;
+
                                                                     $item = trim($item, "{}");
-                                                                    $details = explode(",", $item);
-                
+                                                                    $details = explode(",", $item);                
                                                                     $item_ID = trim($details[0], "()");
                                                                     $item_name = trim($details[1], "()");
                                                                     $item_price = trim($details[2], "()");
@@ -677,19 +676,26 @@
                                                                     $item_sumprice = trim($details[4], "()");
                                                                     $item_request = trim($details[5], "()");
                                                                     $item_custom = implode(',', array_slice($details, 6));
+                                                                    
                                                                     preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
                                                                     
                                                                     echo '<li>' . $item_qty . ' x  ' . $item_name;
 
-                                                                    if (!empty($matches[1])) {
-                                                                        foreach ($matches[1] as $match) {
-                                                                            $customs = explode(',', $match);
-                                                                            if (count($customs) >= 2) {
-                                                                                $custom_key = trim($customs[0]);
-                                                                                $custom_value = trim($customs[1]);
-                                                                                if (!empty($custom_key) && !empty($custom_value)) {
-                                                                                    echo '<br><span>' . $custom_value . '</span>';
-                                                                                }
+                                                                    if (!empty($matches)) {
+                                                                        $pairs = explode('],[', trim($item_custom, '()'));
+
+                                                                        foreach ($pairs as $pair) {
+                                                                            // Remove any remaining brackets and trim spaces, then split by comma
+                                                                            $cus = explode(',', str_replace(['[', ']'], '', $pair));
+                                                                            
+                                                                            // Check if both key and value are not empty
+                                                                            if (count($cus) == 2 && !empty(trim($cus[0])) && !empty(trim($cus[1]))) {
+                                                                                $custom_key = trim($cus[0]);
+                                                                                $custom_value = trim($cus[1]);
+                                                                                     
+                                                                                echo '<br><span> ' . $custom_key . ': ' . $custom_value . '</span>';
+                                                                                    
+                                                                                
                                                                             }
                                                                         }
                                                                     }
@@ -697,12 +703,14 @@
                                                                         echo '<br><span>' . $item_request . '</span>';
 
                                                                     }
-                                                                    if(count($items)>3 && $j>2){
+                                                                    if($j>=3 && count($items)>3){
                                                                         echo '<br><a class="otheritem" title="View all" href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-ellipsis-h"></i></a>';
                                                                         break;
                                                                     }
                                                                     echo '</li>';
+                                                                    echo '&nbsp';
                                                                 }
+                                                                
                                                             }
                                                         }
                                                     }
