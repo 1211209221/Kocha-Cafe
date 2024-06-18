@@ -45,7 +45,7 @@
             width: 100%;
             height: 350px;
             overflow: hidden;
-            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
             padding: 8px;
             box-sizing: border-box;
@@ -56,6 +56,12 @@
             max-width: 32%;
             text-overflow: ellipsis;
             white-space: nowrap;
+            transition: 0.5s;
+        }
+
+        .post:hover{
+            transform: scale(1.025);
+            cursor: pointer;
         }
 
         .post img {
@@ -100,6 +106,10 @@
             transform: scale(1.035);
             transition: 0.5s;
         }
+        .post a{
+            color: inherit;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -117,47 +127,50 @@
         <div class="row">
 
             <?php
-            // Fetch and display posts
-            $sql = "SELECT blog_ID, blog_title, blog_contents, image, file, date, blog_type FROM blog WHERE trash = 0";
-            $result = $conn->query($sql);
+                // Fetch and display posts
+                $sql = "SELECT blog_ID, blog_title, blog_contents, image, file, date, blog_type FROM blog WHERE trash = 0";
+                $result = $conn->query($sql);
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    ?>
-                    <div class="post">
-                        <img src="<?php echo $row["image"]; ?>" alt="Blog Image">
-                        <h2><?php echo $row["blog_title"]; ?></h2>
-                        <p><?php echo $row["blog_contents"]; ?></p>
-                        <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
                         // Generate unique ID for each post
                         $post_id = $row["blog_ID"];
-
-                        // Add conditional logic for button generation
-                        switch ($row["blog_type"]) {
-                            case "Discount":
-                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>Discount</button></a>";
-                                break;
-                            case "News":
-                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>News</button></a>";
-                                break;
-                            case "Updates":
-                                echo "<a href='post.php?ID=$post_id'><button id='button_$post_id' class='blog-type-button'>Updates</button></a>";
-                                break;
-                            default:
-                                // Handle any other cases here
-                                break;
-                        }
                         ?>
-                    </div>
-                    <?php
+                        <div class="post" class="fade_in">
+                            <a href='post.php?ID=<?php echo $post_id; ?>'>
+                                <img src="<?php echo $row["image"]; ?>" alt="Blog Image">
+                                <h2><?php echo $row["blog_title"]; ?></h2>
+                                <p><?php echo $row["blog_contents"]; ?></p>
+                            </a>
+                            <?php
+                            // Add conditional logic for button generation
+                            switch ($row["blog_type"]) {
+                                case "Discount":
+                                    echo "<button id='button_$post_id' class='blog-type-button'>Discount</button>";
+                                    break;
+                                case "News":
+                                    echo "<button id='button_$post_id' class='blog-type-button'>News</button>";
+                                    break;
+                                case "Updates":
+                                    echo "<button id='button_$post_id' class='blog-type-button'>Updates</button>";
+                                    break;
+                                default:
+                                    // Handle any other cases here
+                                    break;
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    echo "0 results";
                 }
-            } else {
-                echo "0 results";
-            }
+            
             ?>
 
         </div>
     </div>
+    <?php include 'footer.php'; ?>
 </body>
 
 

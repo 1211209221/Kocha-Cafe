@@ -10,6 +10,7 @@
   <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
   <link rel="icon" href="images/logo/logo_icon.png">
+  <script src="gototop.js"></script>
   <style>
     body {
       min-height: 100vh; /* Set minimum height to viewport height */
@@ -43,6 +44,7 @@
   include 'connect.php';
   include 'top.php';
   include 'sidebar.php';
+  include 'gototopbtn.php';
   ?>
   <div class="row">
     <div class="col-md-8 offset-md-2 mt-5">

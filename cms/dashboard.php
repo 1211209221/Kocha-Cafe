@@ -158,6 +158,10 @@
             font-size: 12px;
         }
 
+        .table-responsive{
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
         .table-responsive::-webkit-scrollbar {
             width: 8px;
         }
@@ -304,6 +308,13 @@
         .button_1:hover{
             color: white;
         }
+        select{
+            background-color: white;
+            border: white 1px solid;
+            border-radius: 6px;
+            padding: 2px 5px;
+            font-size: 18px;
+        }
 
         @media screen and (max-width: 1200px) {
            .top_stats{
@@ -399,7 +410,7 @@
     $weeklyIncome = 0;
     $monthlyIncomeSum = 0;
 
-    $recentOrdersQuery = "SELECT * FROM customer_orders WHERE trash = 0 ORDER BY order_date DESC";
+    $recentOrdersQuery = "SELECT * FROM customer_orders WHERE trash = 0 ORDER BY order_date DESC LIMIT 5";
     $recentOrdersResult = $conn->query($recentOrdersQuery);
 
     $customerQuery = "SELECT COUNT(*) as customerCount FROM customer";
@@ -509,7 +520,7 @@
                             <div class="filter_header">
                                 <div class="d-flex flex-row align-items-baseline justify-content-between">
                                     <div>
-                                        <i class="fas fa-chart-line"></i><span id="chartTitle">Monthly Income Chart</span>
+                                        <i class="fas fa-chart-line"></i><span id="chartTitle">Monthly Revenue Chart</span>
                                     </div>
                                     <div>
                                         <i class="fas fa-repeat-alt toggle2" style="cursor: pointer;" onclick="toggleCharts()"></i>
@@ -563,7 +574,7 @@
                             <div class="card mb-4" style="background-color: #51aa7b; color: white;">
                                 <div class="card-header py-2 px-3 bg-transparent">
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize" id="incomeLabel">Total Income</p>
+                                        <p class="text-sm mb-0 text-capitalize" id="incomeLabel">Total Revenue</p>
                                         <h4 id="incomeToday" class="mb-0"><?php echo 'RM' . number_format($todayIncome, 2); ?></h4>
                                         <h4 id="incomeWeek" class="mb-0" style="display: none;"><?php echo 'RM' . number_format($weeklyIncome, 2); ?></h4>
                                         <h4 id="incomeMonth" class="mb-0" style="display: none;"><?php echo 'RM' . number_format($monthlyIncomeSum, 2); ?></h4>
@@ -572,7 +583,7 @@
                                 </div>
                                 <hr class="horizontal my-0 dark">
                                 <div class="card-footer py-1 px-3">
-                                    <p class="mb-0 d-flex align-items-center"><span id="currentIncomeLabel">Today's Income</span> <i class="fas fa-repeat-alt" onclick="cycleIncome()"></i></p>
+                                    <p class="mb-0 d-flex align-items-center"><span id="currentIncomeLabel">Today's Revenue</span> <i class="fas fa-repeat-alt" onclick="cycleIncome()"></i></p>
                                 </div>
                                 <i class="fas fa-sack-dollar stats_icons" style="color: #3a805b;"></i>
                             </div>
@@ -766,14 +777,21 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
+                        <select id="reportType" class="form-select">
+                            <option value="today">Today</option>
+                            <option value="thisWeek">This Week</option>
+                            <option value="thisMonth">This Month</option>
+                            <option value="allTime">All Time</option>
+                        </select>
                         <button class="btn button_1" onclick="generatePDF()">Generate Sales Report</button>
                     </div>
                 </div>
 
                 <script>
                     function generatePDF() {
-                        // Redirect to generate_pdf.php when the button is clicked
-                        window.location.href = 'Kocha_Cafe_Report.php';
+                        var reportType = document.getElementById('reportType').value;
+                        // Redirect to Kocha_Cafe_Report.php with the selected report type
+                        window.location.href = 'Kocha_Cafe_Report.php?reportType=' + reportType;
                     }
                 </script>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -828,7 +846,7 @@
                         const incomeData = {
                             labels: monthLabels,
                             datasets: [{
-                                label: 'Income per Month (RM)',
+                                label: 'Revenue per Month (RM)',
                                 data: monthlyIncome,
                                 backgroundColor: 'rgb(75, 192, 192)',
                                 borderColor: 'rgb(75, 192, 192)',

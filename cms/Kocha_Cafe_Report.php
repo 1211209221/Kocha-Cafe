@@ -1,260 +1,347 @@
 <?php
-include 'connect.php'; 
-require_once('./dompdf/autoload.inc.php');
+include '../connect.php'; 
+require_once('../dompdf/autoload.inc.php');
 use Dompdf\Dompdf;
 
-if (isset($_GET['ID'])) {
-    // Retrieve the value of the ID parameter
-    $order_id = $_GET['ID'];
+// Function to generate PDF
+function generatePDF($htmlContent) {
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($htmlContent);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    
+    // Set headers to force download the PDF
+    header("Content-Type: application/pdf");
+    header("Content-Disposition: inline; filename=Kocha_Cafe_Sales_Report.pdf");
+    header("Cache-Control: private, max-age=0, must-revalidate");
+    header("Pragma: public");
+    
+    // Stream the PDF
+    echo $dompdf->output();
+}
 
-    // Function to generate PDF
-    function generatePDF($htmlContent, $order_id) {
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($htmlContent);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
+// Begin capturing the HTML output
+ob_start(); 
+?>
+<?php
+$reportType = isset($_GET['reportType']) ? $_GET['reportType'] : 'allTime';
 
-        // Set headers to force download the PDF
-        header("Content-Type: application/pdf");
-        header("Content-Disposition: inline; filename=Kocha_Cafe_Report_{$order_id}.pdf");
-        header("Pragma: public");
+// Fetch data from database
+$customerCount = 0;
+$orderCount = 0;
+$totalIncome = 0;
+$todayIncome = 0;
+$weeklyIncome = 0;
+$monthlyIncomeSum = 0;
+$type = "";
+$startDate = "";
+$endDate = "";
+
+$customerQuery = "SELECT COUNT(*) as customerCount FROM customer";
+$customerResult = $conn->query($customerQuery);
+if ($customerResult) {
+    $row = $customerResult->fetch_assoc();
+    $customerCount = $row['customerCount'];
+}
+
+$orderQuery = "SELECT COUNT(*) as orderCount FROM customer_orders";
+$orderResult = $conn->query($orderQuery);
+if ($orderResult) {
+    $row = $orderResult->fetch_assoc();
+    $orderCount = $row['orderCount'];
+}
+
+$incomeQuery = "SELECT order_date, order_contents FROM customer_orders";
+$incomeResult = $conn->query($incomeQuery);
+$monthlyIncome = array_fill(0, 12, 0); // Initialize an array with 12 zeros for monthly income
+
+$todayDate = date('Y-m-d');
+$startOfWeek = date('Y-m-d', strtotime('monday this week'));
+$startOfMonth = date('Y-m-01');
+
+if ($incomeResult) {
+    while ($row = $incomeResult->fetch_assoc()) {
+        $details = explode(",", $row['order_contents']);
+        if (isset($details[4])) {
+            $item_sumprice = trim($details[4], "()");
+            $totalIncome += floatval($item_sumprice);
+            $month = intval(date('m', strtotime($row['order_date'])));
+            $monthlyIncome[$month - 1] += floatval($item_sumprice);
+
+            $orderDate = date('Y-m-d', strtotime($row['order_date']));
+            if ($orderDate == $todayDate) {
+                $todayIncome += floatval($item_sumprice);
+            }
+            if ($orderDate >= $startOfWeek && $orderDate <= $todayDate) {
+                $weeklyIncome += floatval($item_sumprice);
+            }
+            if ($orderDate >= $startOfMonth && $orderDate <= $todayDate) {
+                $monthlyIncomeSum += floatval($item_sumprice);
+            }
+        }
+    }
+} else {
+    echo "Error: " . $conn->error;
+}
+
+// Fetch orders count per month
+$monthlyOrders = array_fill(0, 12, 0); // Initialize an array with 12 zeros
+
+$orderDateQuery = "SELECT MONTH(order_date) as month, COUNT(*) as orderCount FROM customer_orders GROUP BY month";
+$orderDateResult = $conn->query($orderDateQuery);
+if ($orderDateResult) {
+    while ($row = $orderDateResult->fetch_assoc()) {
+        $month = intval($row['month']);
+        $monthlyOrders[$month - 1] = intval($row['orderCount']);
+    }
+}
+
+// Fetch yesterday's and today's orders count
+$yesterdayOrders = 0;
+$todayOrders = 0;
+
+$yesterdayDate = date('Y-m-d', strtotime('-1 day'));
+
+$yesterdayQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE DATE(order_date) = '$yesterdayDate'";
+$todayQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE DATE(order_date) = '$todayDate'";
+
+$yesterdayResult = $conn->query($yesterdayQuery);
+$todayResult = $conn->query($todayQuery);
+
+if ($yesterdayResult) {
+    $row = $yesterdayResult->fetch_assoc();
+    $yesterdayOrders = $row['orderCount'];
+}
+
+if ($todayResult) {
+    $row = $todayResult->fetch_assoc();
+    $todayOrders = $row['orderCount'];
+}
+
+// Fetch weekly orders count
+$weeklyOrders = array_fill(0, 7, 0); // Initialize an array with 7 zeros for weekly orders
+
+$weeklyOrderQuery = "SELECT WEEKDAY(order_date) as weekday, COUNT(*) as orderCount FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$todayDate' GROUP BY weekday";
+$weeklyOrderResult = $conn->query($weeklyOrderQuery);
+if ($weeklyOrderResult) {
+    while ($row = $weeklyOrderResult->fetch_assoc()) {
+        $weekday = intval($row['weekday']);
+        $weeklyOrders[$weekday] = intval($row['orderCount']);
+    }
+}
+
+// Prepare data for the selected report type
+$income = 0;
+$orderCountReport = 0;
+$orders = [];
+
+switch ($reportType) {
+    case 'today':
+        $type = "today's";
+        $income = $todayIncome;
+        $orderCountReport = $todayOrders;
+        $startDate = $endDate = $todayDate;
+
+        $orderQuery = "SELECT * FROM customer_orders WHERE DATE(order_date) = '$todayDate'";
+        $orderResult = $conn->query($orderQuery);
+        if ($orderResult) {
+            while ($row = $orderResult->fetch_assoc()) {
+                $orders[] = $row;
+            }
+        }
+        break;
+
+    case 'thisWeek':
+        $type = "this week's";
+        $income = $weeklyIncome;
+        $orderCountReport = array_sum($weeklyOrders);
+        $startDate = $startOfWeek;
+        $endDate = $todayDate;
+
+        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$todayDate'";
+        $orderResult = $conn->query($orderQuery);
+        if ($orderResult) {
+            while ($row = $orderResult->fetch_assoc()) {
+                $orders[] = $row;
+            }
+        }
+        break;
+
+    case 'thisMonth':
+        $type = "this month's";
+        $income = $monthlyIncomeSum;
+        $orderCountReport = array_sum($monthlyOrders);
+        $startDate = $startOfMonth;
+        $endDate = $todayDate;
+
+        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfMonth' AND order_date <= '$todayDate'";
+        $orderResult = $conn->query($orderQuery);
+        if ($orderResult) {
+            while ($row = $orderResult->fetch_assoc()) {
+                $orders[] = $row;
+            }
+        }
+        break;
+
+    case 'allTime':
+    default:
+        $type = "all-time";
+        $income = $totalIncome;
+        $orderCountReport = $orderCount;
+
+        $orderQuery = "SELECT * FROM customer_orders ORDER BY order_date ASC";
+        $orderResult = $conn->query($orderQuery);
+        if ($orderResult) {
+            while ($row = $orderResult->fetch_assoc()) {
+                $orders[] = $row;
+            }
+        }
+
+        $startDateQuery = "SELECT MIN(order_date) as startDate FROM customer_orders";
+        $endDateQuery = "SELECT MAX(order_date) as endDate FROM customer_orders";
         
-        // Stream the PDF
-        echo $dompdf->output();
-    }
+        $startDateResult = $conn->query($startDateQuery);
+        $endDateResult = $conn->query($endDateQuery);
 
-    // Ensure $order_id is properly escaped to avoid SQL injection
-    $order_id = $conn->real_escape_string($order_id);
+        if ($startDateResult) {
+            $row = $startDateResult->fetch_assoc();
+            $startDate = $row['startDate'];
+        }
 
-    // Fetch order details
-    $sql_get_order = "SELECT * FROM customer_orders WHERE order_ID = '$order_id' AND trash = 0";
-    $result_get_order = $conn->query($sql_get_order);
+        if ($endDateResult) {
+            $row = $endDateResult->fetch_assoc();
+            $endDate = $row['endDate'];
+        }
+        break;
+}
+?>
 
-    if ($result_get_order === false) {
-        echo "Error: " . $conn->error;
-        exit;
-    }
-
-    // Fetch customer details
-    $order_row = $result_get_order->fetch_assoc();
-    $cust_ID = $order_row['cust_ID'];
-    $cust_query = "SELECT cust_username FROM customer WHERE cust_ID = $cust_ID";
-    $cust_result = $conn->query($cust_query);
-    $cust_row = $cust_result->fetch_assoc();
-    $username = $cust_row['cust_username'];
-    $order_date = $order_row['order_date'];
-
-    // Start output buffering for HTML content
-    ob_start();
-    echo '<style>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Report | Admin Panel</title>
+    <link rel="icon" href="../images/logo/logo_icon_2.png">
+</head>
+<body>
+    <style>
         body {
             font-family: Helvetica, Arial, sans-serif;
         }
-        .accordion {
-            background-color: #50a5951f;
-            color: #5a9498;
-            cursor: pointer;
-            padding: 10px;
-            margin: 4px 0;
-            width: 100%;
-            border: none;
-            border-radius: 5px;
-            text-align: left;
-            font-weight: 600;
-            outline: none;
-            font-size: 17px;
-            transition: 0.4s;
-            position: relative;
-        }
-        .order_date {
+        table{
             font-size: 14px;
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            font-weight: 400;
-        }
-        .accordion p {
-            margin: unset;
-            font-weight: 800;
-        }
-        .panel .simple_area {
-            display: flex;
-            background-color: #eeeeee;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .panel .simple_area .small_area {
             width: 100%;
-            display: flex;
+            border: 0;
         }
-        .small_area .o_title {
-            font-weight: 800;
-            font-size: 15px;
+        table tr td{
+            padding: 0 5px;
+            margin: 0;
+            border: 0;
         }
-        .small_area .o_title i {
-            margin-right: 5px;
+        ul li{
+            list-style: none;
         }
-        .small_area .o_content {
-            font-size: 22px;
-            font-weight: 800;
-            color: #364657;
+        ul{
+            padding-left: 0;
+            margin: 7px 10px;
         }
-        .panel .bottom_area {
-            margin-top: 5px;
+        table th {
+            color: #495057;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            border: #dee2e6 1px solid;
         }
-        .left-box .bottom_area {
-            margin-top: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            border: 1px solid darkgrey;
-            padding: 8px;
-            border-radius: 7px;
+        table tr:nth-child(even) {
+            border-top-right-radius: 7px;
+            background-color: #f4f8fa;
         }
-        .bottom_area .paymentprt {
-            width: 100%;
-            margin-right: 5px;
-        }
-        .extra {
-            color: #8a8a8a;
-        }
-        .bottom_area .text {
-            font-weight: 800;
-            color: #364657;
-            font-size: 17px;
-        }
-        .bottom_area .attribute {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 12px;
-            margin-left: 5px;
-        }
-        .bottom_area .attribute .payment_title {
-            font-weight: 800;
-            font-size: 14px;
-            color: #8a8a8a;
-            display: block;
-        }
-        .bottom_area .order_table {
-            box-shadow: none;
-            border-radius: revert;
-            border: 1px solid #eeeeee;
-            width: 100%;
-            font-weight: 400;
-        }
-        table thead .desc, thead .amount {
-            font-size: 17px;
-            color: white;
-            padding: 6px 10px;
-            font-weight: 800;
-            background-color: #4d5464;
-        }
-        tbody tr {
-            background-color: #f4f8fb;
-        }
-        tbody .desc, tbody .amount {
-            padding: 10px;
-            font-size: 16px;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #f4f4f4;
-            padding: 20px;
-            box-sizing: border-box;
-            border-top: 1px solid #ddd;
-            text-align: center;
-        }
-        .main-content {
-            margin-bottom: 60px;
-        }
-    </style>';
-
-    echo '<h1 style="color:#364657;text-transform: uppercase;">INVOICE  <span style="font-size:18px;">FROM Kocha Café</span></h1>';
-    echo '<p>Email  : kochacafe8@gmail.com</p>';
-    echo '<p>Tel    : +6017 412 4250</p>';
-    echo '<p>Address: No. 44, Jalan Desa Melur 4/1, Taman Bandar Connaught, 56000 Cheras, Kuala Lumpur, Malaysia</p>';
-    echo '<hr>';
-    echo '<div class="main-content"><div class="panel">
-            <div>';
-    echo '<p>User <b style="color:#5a9498;font-weight:700;font-size:17px;">'.$username.'</b>, Thank you for your purchase! Your invoice details are below:</p>
-            <div class="simple_area">
-                <div class="small_area">
-                    <span class="o_title">TOTAL COST</span>
-                    <span class="o_content" style="margin-left:50px;">RM '.$order_row['order_total'].'</span>
-                
-                    <span class="o_title" style="margin-left:90px;">ORDERED FROM</span>
-                    <span class="o_content" style="margin-left:22px;">Kocha Café</span>
-                </div>
-            </div>';
-
-    echo '<div class="bottom_area">
-            <div class="orderprt"><p class="text">ORDER DETAILS</p>
-                <div>
-                    <table class="order_table">
-                        <thead class="thead-light">
-                            <tr style="background-color: #e9ecef;">
-                                <th class="desc">Description</th>
-                                <th class="amount">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody border="transparent">';
-
-    $items[] = "";
-    $items = explode("},{", $order_row['order_contents']);
-    $items = array_filter($items, 'strlen');
-    if (count($items) != 0) {
-        foreach ($items as $item) {
-            $item = trim($item, "{}");
-            $details = explode(",", $item);
-
-            $item_ID = trim($details[0], "()");
-            $item_name = trim($details[1], "()");
-            $item_price = trim($details[2], "()");
-            $item_qty = trim($details[3], "()");
-            $item_sumprice = trim($details[4], "()");
-            $item_request = trim($details[5], "()");
-            $item_custom = implode(',', array_slice($details, 6));
-            preg_match_all('/\(\[([^\]]+)\]\)/', $item_custom, $matches);
-
-            echo '<tr class="noborder"><td class="desc">
-                '.$item_qty.'x <span>'.$item_name.'</span>';
-                if (!empty($matches[1])) {
-                    foreach ($matches[1] as $match) {
-                        $customs = explode(',', $match);
-                        if (count($customs) >= 2) {
-                            $custom_key = trim($customs[0]);
-                            $custom_value = trim($customs[1]);
-                            if (!empty($custom_key) && !empty($custom_value)) {
-                                echo '<br><span class="extra">' . $custom_value . '</span>';
-                            }
-                        }
-                    }
-                }
-                if(!empty($item_request)){
-                    echo '<br><span class="extra">' . $item_request . '</span>';
-
-                }
-            echo '</td><td class="amount">RM '.$item_sumprice.'</td></tr>';
-        }
-    }
-
-    echo '<tr style="background-color:#fffcf0;">
-            <td class="desc">Subtotal</td><td class="amount">RM '.$order_row['order_total'].'</td>
-          </tr>
+    </style>
+    <h1 style="color:#364657;text-transform: uppercase;">SALES REPORT  <span style="font-size:18px;">FROM Kocha Café</span></h1>
+    <p>Email  : kochacafe8@gmail.com</p>
+    <p>Tel    : +6017 412 4250</p>
+    <p>Address: No. 44, Jalan Desa Melur 4/1, Taman Bandar Connaught, 56000 Cheras, Kuala Lumpur, Malaysia</p>
+    <hr>
+    <p>Displaying <?php echo $type; ?> sales results for Kocha Café: </p>
+    <div>
+        <p style="font-size: 14px; margin: 0; line-height: 1.4; padding: 0;">Start Date: <?php echo $startDate; ?></p>
+        <p style="font-size: 14px; margin: 0; line-height: 1.4; padding: 0; margin-bottom: 10px;">End Date: <?php echo $endDate; ?></p>
+    </div>
+    <h3 style="margin-bottom: 3px; color:#364657;">Overview</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Total Revenue</td>
+                <td>RM <?php echo number_format($income, 2); ?></td>
+            </tr>
+            <tr>
+                <td>Total Orders</td>
+                <td><?php echo $orderCountReport; ?></td>
+            </tr>
         </tbody>
     </table>
-    </div>
-    </div>
-    </div>
-    </div>';
 
-    echo '<div style="text-align:center;margin-top:15px;">~ ENJOY YOUR MEAL AND HAVE A NICE DAY ^_^ ~</div>';
+    <h3 style="margin-bottom: 3px; margin-top: 25px; color:#364657;">Order Details</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Order Contents</th>
+                <th>Total Price</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                foreach ($orders as $order) {
+                    $order_id = $order['order_ID'];
+                    $date = date('Y-m-d H:i:s', strtotime($order['order_date']));
+                    $total_sumprice = 0;
+                    $order_contents = $order['order_contents'];
+                    $items = explode("},{", $order_contents);
+                    $items = array_filter($items, 'strlen');
 
-    $htmlContent = ob_get_clean(); // Get the buffered content
+                    echo "<tr>";
+                    echo "<td class='t_id'>K_" . $order_id . "</td>";
+                    $cust_query = "SELECT cust_username FROM customer WHERE trash = 0 AND cust_ID = " . $order['cust_ID'];
+                    $query_result = $conn->query($cust_query);
+                    $query_row = $query_result->fetch_assoc();
+                    if ($query_row && !empty($query_row['cust_username'])) {
+                        $username = $query_row['cust_username'];
+                    } else {
+                        $username = "User is disabled.";
+                    }
+                    echo "<td class='t_name'>" . $username . "</td>";
+                    echo "<td class='t_item'><ul>";
 
-    // Generate PDF
-    generatePDF($htmlContent, $order_id);
-}
+                    foreach ($items as $item) {
+                        $item = trim($item, "{}");
+                        $details = explode(",", $item);
+                        $item_name = trim($details[1], "()");
+                        $item_qty = trim($details[3], "()");
+                        $item_sumprice = trim($details[4], "()");
+                        $total_sumprice += floatval($item_sumprice);
+                        echo '<li>' . $item_qty . ' x ' . $item_name . '</li>';
+                    }
+
+                    echo "</ul></td>";
+                    echo "<td class='t_price'>RM " . number_format($total_sumprice, 2) . "</td>";
+                    echo "<td class='t_date'>" . $date . "</td>";
+                }                       
+            ?>
+        </tbody>
+    </table>
+</body>
+</html>
+
+<?php
+$htmlContent = ob_get_clean(); // Get the buffered content
+
+// Generate PDF
+generatePDF($htmlContent);
 ?>
