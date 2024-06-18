@@ -2,8 +2,9 @@
     <div class="buttons">
     <?php
         if(empty($user)){
-            echo '<button class="signup">Sign up</button>
-            <button class="login"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>';
+            echo '<button class="signup" id="signup-btn">Sign up</button>
+            <button class="login" id="login-btn"><i class="far fa-user"></i><i class="fas fa-user"></i>Log in</button>';
+
             
         }
         else{
@@ -100,5 +101,15 @@
         document.getElementById("menuFilters").classList.remove("shiftRight");
         document.getElementById("filter_darken").classList.remove("appear");
         document.body.classList.remove('no-scroll');
-}
+    }
+
+    // Function to handle click on the sign up button
+    document.getElementById('signup-btn').addEventListener('click', function() {
+        window.location.href = 'registration.php'; // Redirect to registration.php
+    });
+
+    // Function to handle click on the log in button
+    document.getElementById('login-btn').addEventListener('click', function() {
+        window.location.href = 'login.php'; // Redirect to login.php
+    });
 </script>

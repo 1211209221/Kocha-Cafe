@@ -52,6 +52,15 @@
         line-height: 1.8;
         color: #555;
     }
+
+    @media (max-width: 992px) {
+        image-container img {
+            width: 100%;
+        }
+        .blog_container{
+            width: 90%;
+        }
+    }
     </style>
 
 </head>
