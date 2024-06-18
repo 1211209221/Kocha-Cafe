@@ -27,10 +27,12 @@ if (isset($_POST['submit'])) {
         echo '<script>';
         echo 'window.location.href = "blogs-add.php";';
         echo '</script>';
+
+        // ob_end_flush(); // Flush and end the output buffer
+        // exit();
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
-    
 }
 
 // Handle image upload via AJAX
@@ -88,7 +90,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             echo '<div class="toast_container">
                     <div id="custom_toast" class="custom_toast true fade_in">
                         <div class="d-flex align-items-center message">
-                            <i class="fas fa-check-circle"></i> Blog successfully added!
+                            <i class="fas fa-check-circle"></i> Blog successfully!
                         </div>
                         <div class="timer"></div>
                     </div>
@@ -198,6 +200,9 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             margin-top: 55px;
             position: relative;
         }
+        .admin_page{
+            margin-bottom: 120px;
+        }
         .admin_page .button_1 {
             padding: 4px 20px;
             width: fit-content;
@@ -214,6 +219,29 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         .ql-toolbar {
             border-top-right-radius: 10px;
             border-top-left-radius: 10px;
+        }
+        .back_button {
+            padding: 4px 18px;
+            width: fit-content;
+            background-color: #5a9498;
+            border: #5a9498 1px solid;
+            color: white;
+            border-radius: 7px;
+            font-weight: 800;
+            font-size: 17px;
+            outline: none;
+            transition: 0.15s;
+            box-shadow: 0px 17px 17px -20px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            position: relative;
+            top: 70px;
+            left:-23px;
+        }
+        .back_button:hover {
+            background-color: #36676A;
+            transform: scale(1.05) !important;
+            text-decoration: none;
+            color: white !important;
         }
     </style>
 </head>
@@ -249,6 +277,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
                     <input type="submit" class="button_1" name="submit" value="Add Blog">
                 </div>
             </form>
+            <a href="blogs-all.php" class="back_button">Back To List</a>
         </div>
     </div>
 
