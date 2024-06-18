@@ -458,10 +458,9 @@
 
                 dateFilter.addEventListener('change', function() {
                     selecteddateFilter = dateFilter.value;
-                    
+                    sortTable();
                     currentPage = 1;
                     showPage(currentPage);
-                    sortTable();
                     createPagination();
                 });
 
@@ -483,9 +482,9 @@
                     showPage(currentPage);
                     createPagination();
                 });
-                
-                showPage(currentPage);
+
                 sortTable();
+                showPage(currentPage);
                 createPagination();
 
             });
