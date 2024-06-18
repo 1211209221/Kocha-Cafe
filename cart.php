@@ -1281,7 +1281,7 @@
                 var now = moment.tz("Asia/Kuala_Lumpur");
 
                 // Define the operating hours
-                var openingTime = moment.tz("Asia/Kuala_Lumpur").set({ hour: 2, minute: 30 });
+                var openingTime = moment.tz("Asia/Kuala_Lumpur").set({ hour: 8, minute: 30 });
                 var closingTime = moment.tz("Asia/Kuala_Lumpur").set({ hour: 21, minute: 0 });
 
                 // Check if the current time is outside the operating hours
