@@ -264,18 +264,25 @@ if (isset($_GET['ID'])) {
 
                                                 echo '<tr class="noborder"><td class="desc">
                                                     '.$item_qty.'x <span>'.$item_name.'</span>';
-                                                    if (!empty($matches[1])) {
-                                                        foreach ($matches[1] as $match) {
-                                                            $customs = explode(',', $match);
-                                                            if (count($customs) >= 2) {
-                                                                $custom_key = trim($customs[0]);
-                                                                $custom_value = trim($customs[1]);
-                                                                if (!empty($custom_key) && !empty($custom_value)) {
-                                                                    echo '<br><span class="extra">' . $custom_value . '</span>';
-                                                                }
+                                                    if (!empty($matches)) {
+                                                        $pairs = explode('],[', trim($item_custom, '()'));
+
+                                                        foreach ($pairs as $pair) {
+                                                            // Remove any remaining brackets and trim spaces, then split by comma
+                                                            $cus = explode(',', str_replace(['[', ']'], '', $pair));
+                                                            
+                                                            // Check if both key and value are not empty
+                                                            if (count($cus) == 2 && !empty(trim($cus[0])) && !empty(trim($cus[1]))) {
+                                                                $custom_key = trim($cus[0]);
+                                                                $custom_value = trim($cus[1]);
+                                                                     
+                                                                echo '<br><span class="extra">' . $custom_key . ': ' . $custom_value . '</span>';
+                                                                    
+                                                                
                                                             }
                                                         }
                                                     }
+                                                    
                                                     if(!empty($item_request)){
                                                         echo '<br><span class="extra">' . $item_request . '</span>';
             

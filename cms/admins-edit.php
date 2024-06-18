@@ -281,7 +281,7 @@
                         <div class='item_detail_container'>
                             <label for="admin_level">Admin Level</label>
                             <?php
-                            if($admin['admin_level']==1){
+                            if($admin['admin_level']==1 || $admin['admin_ID'] == $row['admin_ID']){
                                 echo '<select name="admin_level" id="admin_level" style="width:100%;" title="Unable to edit">';
                                 echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' disabled>Admin</option>
                                 <option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' disabled>Superadmin</option>';
@@ -301,7 +301,7 @@
                             <?php
                             if($admin['admin_level']==1){
                                 //nothing
-                            }else{
+                            }else if($admin['admin_ID'] != $row['admin_ID']){
                                 echo '<input type="submit" name="delete" class="delete" value="Remove" onclick=\'return confirmAction("remove this admin");\'>';
                             }
                                     

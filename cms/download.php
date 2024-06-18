@@ -22,9 +22,20 @@ if (!empty($fileId)) {
         $fileType = $row['filetype'];
         $fileContent = $row['file_content'];
 
-        // Set appropriate headers for file download
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        if ($fileType == 'application/pdf') {
+            // Display PDF in a new tab
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . $fileName . '"');
+        }else if (strpos($fileType, 'image/') === 0) {
+            // Display image in a new tab
+            header('Content-Type: ' . $fileType);
+            header('Content-Disposition: inline; filename="' . $fileName . '"');
+        }
+         else {
+            // Download other file types
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        }
         header('Content-Length: ' . $fileSize);
 
         // Output file content

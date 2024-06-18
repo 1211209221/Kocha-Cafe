@@ -402,7 +402,7 @@
                         <div class="d-flex align-items-center justify-content-center">
                             <?php
                                 if($admin['admin_level']==2){
-                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction(\'delete the selected menu admin(s)\')">
+                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction(\'remove the selected menu admin(s)\')">
                             <a href="admins-add.php"><div class="add_button">New Admin</div></a>';
                                 }
                             ?>

@@ -165,11 +165,15 @@
 
                     if ($conn->query($sql_cart) === TRUE) {
                         $_SESSION['saveCart_success'] = true;
-                        header("Location: cart.php");
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
                         exit();
                     } else {
                         $_SESSION['saveCart_error'] = "Error: " . $sql_cart . "<br>" . $conn->error;
-                        header("Location: cart.php");
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
                         exit();
                     }
                 }else if(isset($_POST['submit_order'])) {
@@ -377,7 +381,9 @@
                     }else{
                         $string = '';
                         $_SESSION['submitOrderEmpty_error'] = true;
-                        header("Location: cart.php");
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
                         exit();
                     }
 

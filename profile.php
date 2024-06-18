@@ -1993,9 +1993,9 @@
                                             while ($row_payment = $result_get_payment->fetch_assoc()) {
                                                         echo '<div class="panel">
                                                         <div>';
-                                                        if($row['tracking_stage']==2){
-                                                            echo '<span id="receive-container-' . $oid . '"></span>';
-                                                        }
+                                                        
+                                                        echo '<span id="receive-container-' . $oid . '"></span>';
+                                                        
                                                         echo '<p>Thank you for your purchase! Your payment details are below:</p>
                                                             <div class="simple_area">
                                                                 <div class="small_area">
@@ -2062,18 +2062,25 @@
 
                                                                                         echo '<tr class="noborder"><td class="desc">
                                                                                             '.$item_qty.'x <span>'.$item_name.'</span>';
-                                                                                            if (!empty($matches[1])) {
-                                                                                                foreach ($matches[1] as $match) {
-                                                                                                    $customs = explode(',', $match);
-                                                                                                    if (count($customs) >= 2) {
-                                                                                                        $custom_key = trim($customs[0]);
-                                                                                                        $custom_value = trim($customs[1]);
-                                                                                                        if (!empty($custom_key) && !empty($custom_value)) {
-                                                                                                            echo '<br><span class="extra">' . $custom_value . '</span>';
-                                                                                                        }
+                                                                                            if (!empty($matches)) {
+                                                                                                $pairs = explode('],[', trim($item_custom, '()'));
+                        
+                                                                                                foreach ($pairs as $pair) {
+                                                                                                    // Remove any remaining brackets and trim spaces, then split by comma
+                                                                                                    $cus = explode(',', str_replace(['[', ']'], '', $pair));
+                                                                                                    
+                                                                                                    // Check if both key and value are not empty
+                                                                                                    if (count($cus) == 2 && !empty(trim($cus[0])) && !empty(trim($cus[1]))) {
+                                                                                                        $custom_key = trim($cus[0]);
+                                                                                                        $custom_value = trim($cus[1]);
+                                                                                                             
+                                                                                                        echo '<br><span class="extra">' . $custom_value . '</span>';
+                                                                                                            
+                                                                                                        
                                                                                                     }
                                                                                                 }
                                                                                             }
+                                                                                            
                                                                                             if(!empty($item_request)){
                                                                                                 echo '<br><span class="extra">' . $item_request . '</span>';
                         
@@ -2130,8 +2137,8 @@
                                                 receive ="";
                                             } else if (status == 2) {
                                                 statusHtml += '<span class="sta-deliver status"><i class="fas fa-truck-loading"></i> Delivering</span>';
-                                                receive += '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order:  </span><input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive' + orderID + '\').style.display=\'flex\'"><hr>';
-                                            }
+                                                receive = '<span style="font-size:16px;font-weight:400;">* <b>CLICK</b> if you receive the order: </span>' +
+                                                '<input type="button" title="Click" value="Receive Order" onclick="document.getElementById(\'confirmreceive' + orderID + '\').style.display=\'flex\'"><hr>';                                            }
                                         });
 
                                         // Update the status span inside the button
@@ -2139,8 +2146,14 @@
                                         const receiveContainer = document.getElementById("receive-container-" + orderID);
                                         if (statusContainer) {
                                             statusContainer.innerHTML = statusHtml;
+                                        } else {
+                                            console.error("Status container not found for order ID: " + orderID);
+                                        }
+
+                                        if (receiveContainer) {
                                             receiveContainer.innerHTML = receive;
-                                            
+                                        } else {
+                                            console.error("Receive container not found for order ID: " + orderID);
                                         }
                                     }
                                 };
@@ -2173,7 +2186,7 @@
                             <p>View your past order(s) and payment details.</p>
                             <?php
                                 //check got current order
-                                $querys = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID ORDER BY order_date DESC";
+                                $querys = "SELECT * FROM customer_orders WHERE trash = 0 AND cust_ID = $cust_ID AND tracking_stage =3 ORDER BY order_date DESC";
                                 $results = $conn->query($querys);
                                 if($results && $results->num_rows == 0){
                                     echo '<div>
@@ -2265,18 +2278,25 @@
 
                                                                                         echo '<tr class="noborder"><td class="desc">
                                                                                             '.$item_qty.'x <span>'.$item_name.'</span>';
-                                                                                            if (!empty($matches[1])) {
-                                                                                                foreach ($matches[1] as $match) {
-                                                                                                    $customs = explode(',', $match);
-                                                                                                    if (count($customs) >= 2) {
-                                                                                                        $custom_key = trim($customs[0]);
-                                                                                                        $custom_value = trim($customs[1]);
-                                                                                                        if (!empty($custom_key) && !empty($custom_value)) {
-                                                                                                            echo '<br><span class="extra">' . $custom_value . '</span>';
-                                                                                                        }
+                                                                                            if (!empty($matches)) {
+                                                                                                $pairs = explode('],[', trim($item_custom, '()'));
+                        
+                                                                                                foreach ($pairs as $pair) {
+                                                                                                    // Remove any remaining brackets and trim spaces, then split by comma
+                                                                                                    $cust = explode(',', str_replace(['[', ']'], '', $pair));
+                                                                                                    
+                                                                                                    // Check if both key and value are not empty
+                                                                                                    if (count($cust) == 2 && !empty(trim($cust[0])) && !empty(trim($cusy[1]))) {
+                                                                                                        $custom_key = trim($cust[0]);
+                                                                                                        $custom_value = trim($cust[1]);
+                                                                                                             
+                                                                                                        echo '<br><span class="extra">' . $custom_value . '</span>';
+                                                                                                            
+                                                                                                        
                                                                                                     }
                                                                                                 }
                                                                                             }
+                                                                                            
                                                                                             if(!empty($item_request)){
                                                                                                 echo '<br><span class="extra">' . $item_request . '</span>';
                         
