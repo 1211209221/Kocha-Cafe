@@ -201,6 +201,10 @@
         </div>
     </div>
     <script>
+        function confirmAction(message) {
+                        return confirm("Are you sure you want to " + message + "?");
+                    }
+    
                   function togglePasswordVisibility(passwordFieldId, icon) {
                         const passwordField = document.getElementById(passwordFieldId);
                         

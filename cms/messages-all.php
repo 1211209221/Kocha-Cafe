@@ -248,7 +248,7 @@
                 const clearAllButton = document.querySelector('.filter_header .clear');
                 let currentPage = 1;
                 let searchTerm = '';
-                let selecteddateFilter = '1';
+                let selecteddateFilter = '2';
                 let selectedstatusFilter = 'all';
 
                 function sortTable() {
@@ -436,8 +436,8 @@
                 function clearAllFilters() {
                     // Clear search term
                     searchTerm = '';
-                    dateFilter.value = '1';
-                    selecteddateFilter = '1';
+                    dateFilter.value = '2';
+                    selecteddateFilter = '2';
                     statusFilter.value = 'all';
                     selectedstatusFilter = 'all';
 
@@ -513,8 +513,8 @@
                             <div class="filter_type">
                                 <label for="dateFilter">Sort by Date</label>
                                 <select id="dateFilter">
-                                    <option value="1">Oldest</option>
                                     <option value="2">Latest</option>
+                                    <option value="1">Oldest</option>
                                 </select>
                             </div>
                             <div class="filter_type">
