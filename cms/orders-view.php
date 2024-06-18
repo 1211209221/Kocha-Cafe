@@ -286,6 +286,16 @@
                             </div>
                             <hr style="width:100%;">
                         <div class='item_detail_container'>
+                            <label for="readstatus">Tracking Status</label>
+                            <select name="readstatus" id="readstatus" style="width:100%;">
+                                <option value="0" <?php if ($row['tracking_stage'] == 0) echo "selected"; ?>>Queueing</option>
+                                <option value="1" <?php if ($row['tracking_stage'] == 1) echo "selected"; ?>>Preparing</option>
+                                <option value="2" <?php if ($row['tracking_stage'] == 2) echo "selected"; ?>>Delivering</option>
+                                <option title="Can't choose" value="3" <?php if ($row['tracking_stage'] == 3) echo "selected"; ?> disabled>Received</option>
+                            </select>
+                        </div>
+                            <hr style="width:100%;">
+                        <div class='item_detail_container'>
                             <div name="delivery" id="delivery" style="width:100%;border-radius: 7px;font-size: 18px;padding: 10px;display:flex;flex-wrap:wrap;justify-content: space-between;">
                             <table class="table table-centered table-nowrap mb-0 rounded" id="dataTable">
                                     <thead class="thead-light">
@@ -388,16 +398,7 @@
                                 </table>
                             </div>
                         </div>
-                        <hr style="width:100%;">
-                        <div class='item_detail_container'>
-                            <label for="readstatus">Tracking Status</label>
-                            <select name="readstatus" id="readstatus" style="width:100%;">
-                                <option value="0" <?php if ($row['tracking_stage'] == 0) echo "selected"; ?>>Queueing</option>
-                                <option value="1" <?php if ($row['tracking_stage'] == 1) echo "selected"; ?>>Preparing</option>
-                                <option value="2" <?php if ($row['tracking_stage'] == 2) echo "selected"; ?>>Delivering</option>
-                                <option title="Can't choose" value="3" <?php if ($row['tracking_stage'] == 3) echo "selected"; ?> disabled>Received</option>
-                            </select>
-                        </div>
+                        
                         <div class='submit_buttons'>
                             <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('save the change');">
                             <?php
