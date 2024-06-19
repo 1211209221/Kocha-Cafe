@@ -99,4 +99,5 @@ if (isset($_GET['ID'])) {
 } else {
     echo "Invalid request.";
 }
+    include 'footer.php';
 ?>
