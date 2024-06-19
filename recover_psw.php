@@ -119,7 +119,7 @@
                                 <a href='http://localhost/Kocha-Cafe/reset_psw.php?token=$token&email=$email'>Reset Password</a>
                                 <br><br>
                                 <p>With regards,</p>
-                                <b>Kocha Cafe Esussy</b>
+                                <b>Kocha Cafe</b>
                             </body>
                           </html>";                    
             if(!$mail->send()){

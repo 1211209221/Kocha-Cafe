@@ -158,10 +158,6 @@
             font-size: 12px;
         }
 
-        .table-responsive{
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
         .table-responsive::-webkit-scrollbar {
             width: 8px;
         }
@@ -314,8 +310,11 @@
             border-radius: 6px;
             padding: 2px 5px;
             font-size: 18px;
+            box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.1);
         }
-
+        .page_title{
+            white-space: nowrap;
+        }
         @media screen and (max-width: 1200px) {
            .top_stats{
                 flex-direction: column-reverse;
@@ -513,7 +512,9 @@
                 <div class="breadcrumbs">
                     <a>Admin</a> > <a>Home</a> > <a class="active">Dashboard</a>
                 </div>
-                <div class="page_title">Site Analytics</div>
+                <div class="d-flex">
+                    <div class="page_title">Site Analytics</div>
+                </div>
                 <div class="d-flex top_stats">
                     <div class="col-12 chartContainer">
                         <div class="menu">
@@ -692,7 +693,7 @@
                 <div class="page_title mt-4">Recent Orders</div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);">
                             <table class="table" id="recentOrderTable">
                                 <thead class="thead-light">
                                     <tr>
@@ -774,19 +775,16 @@
                             </table>
                         </div>
                     </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-12">
+                    <div class="col-md-12 d-flex justify-content-end mt-3 mb-4">
                         <select id="reportType" class="form-select">
                             <option value="today">Today</option>
                             <option value="thisWeek">This Week</option>
                             <option value="thisMonth">This Month</option>
                             <option value="allTime">All Time</option>
                         </select>
-                        <button class="btn button_1" onclick="generatePDF()">Generate Sales Report</button>
+                        <button class="btn button_1 ml-2" onclick="generatePDF()">Generate Sales Report</button>
                     </div>
                 </div>
-
                 <script>
                     function generatePDF() {
                         var reportType = document.getElementById('reportType').value;

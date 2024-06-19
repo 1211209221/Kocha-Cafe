@@ -129,7 +129,7 @@
                         $mail->Body = "<p>Dear user, </p> <h3>Your verify OTP code is $otp <br></h3>
                         <br><br>
                         <p>With regards,</p>
-                        <b>Kocha Cafe Esussy</b>";
+                        <b>Kocha Cafe</b>";
 
                         if (!$mail->send()) {
                             ?>

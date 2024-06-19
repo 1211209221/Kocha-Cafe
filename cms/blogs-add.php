@@ -13,14 +13,18 @@ if (isset($_POST['submit'])) {
 
     // Handle image upload
     $image = '';
-    if (isset($_POST['imagePath'])) {
-        $image = $_POST['imagePath'];
-    }
+    $filename = $_FILES["image"]["name"];
+    $tempname = $_FILES["image"]["tmp_name"];
+    $data = file_get_contents($tempname);
+    $mime_type = mime_content_type($tempname);
+    $image_data = "data:$mime_type;base64," . base64_encode($data);
+
+
 
     $blog_type = isset($_POST['blog_type']) ? $_POST['blog_type'] : '';
 
-    $query = "INSERT INTO blog (blog_title, blog_contents, file, date, blog_type, image) 
-              VALUES ('$subject', '$content', '$file', '$date', '$blog_type', '$image')";
+    $query = "INSERT INTO blog (blog_title, blog_contents, date, blog_type, image) 
+              VALUES ('$subject', '$content', '$date', '$blog_type', '$image_data')";
 
     if (mysqli_query($conn, $query)) {
         $_SESSION['addBlog_success'] = true;
@@ -28,42 +32,12 @@ if (isset($_POST['submit'])) {
         echo 'window.location.href = "blogs-add.php";';
         echo '</script>';
 
-        // ob_end_flush(); // Flush and end the output buffer
-        // exit();
+        ob_end_flush(); // Flush and end the output buffer
+        exit();
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
 }
-
-// Handle image upload via AJAX
-if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-    $targetDir = "uploads/";
-    $targetFile = $targetDir . basename($_FILES['image']['name']);
-    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-    // Generate a unique filename to avoid conflicts
-    $newFileName = uniqid() . '.' . $imageFileType;
-    $targetPath = $targetDir . $newFileName;
-
-    // Move the uploaded file to the target directory
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-        // Return the path to the uploaded image
-        $response = array(
-            'success' => true,
-            'imageUrl' => $targetPath // You can modify this to store relative or absolute URL as needed
-        );
-        echo json_encode($response);
-        exit();
-    } else {
-        $response = array(
-            'success' => false,
-            'message' => 'Failed to move uploaded file.'
-        );
-        echo json_encode($response);
-        exit();
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -250,7 +224,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
     <div class="container-fluid admin_page">
         <div class="form-container item_details">
             <div class="breadcrumbs">
-                <a>Admin</a> &gt; <a>Menu</a> &gt; <a href="items-all.php">Item List</a> &gt; <a class="active">Big Breakfast</a>
+                <a>Admin</a> &gt; <a>Blog</a> &gt; <a href="blogs-all.php">Blog List</a> &gt; <a class="active">New Blog</a>
             </div>
             <div class="page_title">New Blog<i class="fas fa-pen"></i></div>
             <form method="POST" action="" enctype="multipart/form-data">
@@ -308,28 +282,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         quill.on('text-change', function () {
             var html = quill.root.innerHTML;
             document.getElementById('content').value = html;
-        });
-
-        document.getElementById('image').addEventListener('change', function (e) {
-            var file = e.target.files[0];
-            var formData = new FormData();
-            formData.append('image', file);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'blogs-add.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        document.getElementById('imagePath').value = response.imageUrl;
-                    } else {
-                        alert('Image upload failed: ' + response.message);
-                    }
-                } else {
-                    alert('Request failed. Status: ' + xhr.status);
-                }
-            };
-            xhr.send(formData);
         });
     </script>
 </body>
