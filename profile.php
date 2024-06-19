@@ -804,7 +804,7 @@
             }
             .bottom_area .paymentprt{
                 width: 100%;
-                margin-right: none;
+                margin-right: unset;
             }
             .bottom_area .orderprt{
                 width: 100%;
@@ -832,6 +832,9 @@
             }
             .small_area .o_content{
                 font-size: 18px;
+            }
+            .bottom_area .order_table{
+                width: 100%;
             }
         }
         </style>
@@ -2286,7 +2289,7 @@
                                                                                                     $cust = explode(',', str_replace(['[', ']'], '', $pair));
                                                                                                     
                                                                                                     // Check if both key and value are not empty
-                                                                                                    if (count($cust) == 2 && !empty(trim($cust[0])) && !empty(trim($cusy[1]))) {
+                                                                                                    if (count($cust) == 2 && !empty(trim($cust[0])) && !empty(trim($cust[1]))) {
                                                                                                         $custom_key = trim($cust[0]);
                                                                                                         $custom_value = trim($cust[1]);
                                                                                                              
