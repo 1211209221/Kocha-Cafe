@@ -60,7 +60,9 @@
                     //validate
                     if(strlen($admin_password) < 8){
                         $_SESSION['update_match'] = 'notmeetrequirement';
-                        header("Location: admins-edit.php?ID=$admin_ID");
+                        echo "<script type='text/javascript'>
+                            window.location.href = 'admins-edit.php?ID=$admin_ID';
+                        </script>";
                         exit();
                     }
                     $admin_password = password_hash($admin_password, PASSWORD_DEFAULT);

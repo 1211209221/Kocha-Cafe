@@ -54,7 +54,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <li class="m-auto col-md-4"><a href="aboutus.php" class="underline-animation <?php echo ($current_page == 'aboutus.php') ? 'active-menu' : ''; ?>">About Us</a></li>
                     <li class="m-auto col-md-4"><a href="menu.php" class="underline-animation <?php echo ($current_page == 'menu.php' || $current_page == 'item.php') ? 'active-menu' : ''; ?>">Menu</a></li>
                     <li class="m-auto col-md-4"><a href="contactus.php" class="underline-animation <?php echo ($current_page == 'contactus.php') ? 'active-menu' : ''; ?>">Contact Us</a></li>
-                    <li class="m-auto col-md-4"><a href="blog.php" class="underline-animation <?php echo ($current_page == 'blog.php') ? 'active-menu' : ''; ?>">Blog</a></li>
+                    <li class="m-auto col-md-4"><a href="blog.php" class="underline-animation <?php echo ($current_page == 'blog.php' || $current_page == 'post.php') ? 'active-menu' : ''; ?>">Blog</a></li>
                 </ul>
             </div>
             

@@ -329,6 +329,9 @@
                 flex: 0 0 100%;
                 max-width: 100%;
             }
+            .container-wrapping{
+                justify-content: space-between;
+            }
 
             .row {
                 gap: 0%;
@@ -577,7 +580,7 @@ setInterval(updateDisplay, 0);
         </div>
         <div class="all_items">
             <div class="search_container">
-                    <div class="d-flex justify-content-between" style="width: 100%; white-space: nowrap;">
+                    <div class="d-flex container-wrapping" style="width: 100%; white-space: nowrap;">
                         <div style="position: relative;">
                             <i class="fas fa-search" style="position: absolute; left: 8px; top: 8px;"></i>
                             <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search blog...">

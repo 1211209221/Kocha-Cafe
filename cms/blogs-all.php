@@ -47,7 +47,7 @@
 
         .post {
             width: 350px;
-            height: 350px;
+            height: 360px;
             overflow: hidden;
             box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
@@ -632,7 +632,7 @@
                         }
                         echo "'>";
                         echo "<div><img src='" . $row["image"] . "' alt='Blog Image'></div>"; // Adjusted image size
-                        echo "<h2 style='justify-content: space-between;' class='mb-0'><span>" . $row["blog_title"] . "</span><span><a href='blogs-edit.php?id=" . $row["blog_ID"] . "'><i class='fas fa-pen icon_button1'></i></a></span></h2>";
+                        echo "<h2 style='justify-content: space-between;' class='mb-0'><span style='margin-top: 5px;'>" . $row["blog_title"] . "</span><span><a href='blogs-edit.php?id=" . $row["blog_ID"] . "'><i class='fas fa-pen icon_button1'></i></a></span></h2>";
                         echo "<p class='mb-0' style='color: #95bfbe; font-weight: 900;'>" . $row["date"] . "</p>";
                         echo "<div class='blog-contents'><p>" . $row["blog_contents"] . "</p></div>";
                         echo "<button class='blog_type_button'>" . $row["blog_type"] . "</button>"; // Converted blog type to button
