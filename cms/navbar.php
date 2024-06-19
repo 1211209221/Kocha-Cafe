@@ -9,7 +9,7 @@ session_start();
         $updatestatus = "UPDATE admin SET admin_active = 1 WHERE admin_ID = '$admin_ID'";
         if ($conn->query($updatestatus) === TRUE){
             //nothing
-            $admin_name = $admin['admin_name'];
+            $admin_name = $admin['admin_username'];
         }
         else{
             header("Location:admin.php");

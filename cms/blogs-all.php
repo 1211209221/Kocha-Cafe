@@ -385,6 +385,12 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
+        .no_items{
+            width: 100%;
+            justify-content: center;
+            height: 200px;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -633,7 +639,7 @@
                         echo "</div>"; // Closing individual post container
                     }
                 } else {
-                    echo "0 results";
+                    echo '<div class="no_items" style="display: flex;"><i class="far fa-ghost"></i>No blogs...</div>';
                 }
 
 

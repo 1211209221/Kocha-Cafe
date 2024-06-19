@@ -461,8 +461,11 @@
                                                     }
                                                     else{
                                                         echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
-                                                        echo "</i></a><a class='trash-icon'><i class='fas fa-trash'></i></a>
-                                                            <input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
+                                                        echo "</i></a>";
+                                                        if($row['admin_ID'] != 1){
+                                                            echo "<a class='trash-icon'><i class='fas fa-trash'></i></a>";
+                                                        }
+                                                        echo"<input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
                                                             <input type='hidden' class='trash-item-input' name='trash_item[]' value='0' style='display:block;'>
                                                             </div>";
                                                     }
