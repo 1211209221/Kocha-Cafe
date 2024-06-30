@@ -178,7 +178,8 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background: #0cb6ab;  
+  background-image: url('login-bg.jpg'); /* Corrected syntax for background image */
+  background-size: cover; /* Ensures the image covers the entire background */
 }
 
 .wrap-login100 {

@@ -1,7 +1,6 @@
 
 <?php
     session_start();
-    var_dump($_SESSION);
     include('connect.php');
 
     // Pass the OTP expiration time to JavaScript
@@ -30,63 +29,109 @@
     }
 ?>
 
-<script>
-    // Pass the remaining time to JavaScript
-    var remainingTime = <?php echo $remaining_time; ?>;
-    var remainingResendTime = <?php echo $remaining_resend_time; ?>;
-</script>
-
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <link rel="icon" href="register/logo_icon.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="Favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
     <title>Verification</title>
+    <style>
+        body {
+            background-image: url('images/otp.jpg'); /* Corrected syntax for background image */
+            background-size: cover; /* Ensures the image covers the entire background */
+        }
+        .card {
+            font-family: 'Afacad' !important;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+            font-family: 'Afacad' !important;
+            background-color: #ffffff; /* White background for header */
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        .btn-primary {
+            height: 100%;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            font-size: 16px; /* Adjusted font size */
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff5784, #0290a5);
+            background-size: 200% auto;
+            transition: background-position 0.5s ease;
+        }
+        .btn-primary:hover { 
+            background-position: right center;
+        }
+        .card-header img {
+            max-height: 60px; /* Adjusted height for the logo */
+            margin-bottom: 30px; /* Space between the logo and text */
+        }
+        .login-form {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
-    <div class="container">
-        <a class="navbar-brand" href="#">Verification Account</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
 
 <main class="login-form">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Verification Account</div>
-                    <div class="card-body">
+                <div class="card mt-5">
+                    <div class="card-header text-center">
+                        <img src="logo_1.png" alt="Logo"> 
+                        Verification Account
+                    </div>
+                    <div class="card-body text-center">
                         <form action="#" method="POST">
                             <div class="form-group row">
                                 <label for="otp" class="col-md-4 col-form-label text-md-right">OTP Code</label>
                                 <div class="col-md-6">
-                                    <input type="text" id="otp" class="form-control" name="otp_code" required autofocus>
+                                    <input type="text" id="otp" class="form-control text-center" name="otp_code" required autofocus>
                                 </div>
                             </div>
-
-                            <div class="col-md-6 offset-md-4">
-                                <input type="submit" value="Verify" name="verify">
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <input type="submit" value="Verify" name="verify" class="btn btn-primary btn-block">
+                                </div>
                             </div>
                         </form>
                         <form action="#" method="POST">
-                            <div class="col-md-6 offset-md-4 d-flex">
-                                <input type="submit" value="Resend OTP" name="resend_otp" id="resendButton">
-                                <p id="resendCountdown" class="my-0 ml-1" style="line-height: 1.7;"></p>
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4 d-flex">
+                                    <input type="submit" value="Resend OTP" name="resend_otp" id="resendButton" class="btn-primary btn-block">
+                                    <p id="resendCountdown" class="my-0 ml-1" ></p>
+                                </div>
                             </div>
                         </form>
-                        <div class="col-md-6 offset-md-4 mt-3">
-                            <p id="countdown"></p>
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4 mt-3">
+                                <p id="countdown"></p>
+                            </div>
                         </div>
                     </div>
                 </div>

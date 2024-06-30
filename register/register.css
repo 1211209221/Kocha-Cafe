@@ -18,7 +18,8 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: linear-gradient(135deg, #007e6f, #4bb7b1);
+  background-image: url('register-bg.jpg'); /* Corrected syntax for background image */
+  background-size: cover; /* Ensures the image covers the entire background */
 }
 
 .container {
