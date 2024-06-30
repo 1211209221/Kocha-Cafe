@@ -6,8 +6,8 @@
     // Pass the OTP expiration time to JavaScript
     $otp_time = isset($_SESSION['otp_time']) ? $_SESSION['otp_time'] : time();
     $current_time = time();
-    $remaining_time = max(0, 180 - ($current_time - $otp_time));
-    $remaining_resend_time = max(0, 60 - ($current_time - $otp_time));
+    $remaining_time = max(0, 95 - ($current_time - $otp_time));
+    $remaining_resend_time = max(0, 35 - ($current_time - $otp_time));
 
     if(!empty($_SESSION)){
         $email = $_SESSION['mail'];
@@ -36,13 +36,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'>
+    <link rel="icon" href="register/logo_icon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
     <title>Verification</title>
     <style>
+        html{
+            height: 100%;
+        }
         body {
-            background-image: url('images/otp.jpg'); /* Corrected syntax for background image */
-            background-size: cover; /* Ensures the image covers the entire background */
+            background-image: url('images/otp.jpg');
+            background-size: cover;
+            height: 100%;
         }
         .card {
             font-family: 'Afacad' !important;
@@ -52,6 +57,8 @@
         .card-header {
             border-top-left-radius: 10px !important;
             border-top-right-radius: 10px !important;
+            padding-top: 40px;
+            padding-bottom: 25px;
             font-family: 'Afacad' !important;
             background-color: #ffffff; /* White background for header */
             border-bottom: none;
@@ -84,13 +91,57 @@
             background-position: right center;
         }
         .card-header img {
-            max-height: 60px; /* Adjusted height for the logo */
-            margin-bottom: 30px; /* Space between the logo and text */
+            max-height: 60px;
+            bottom: -7px;
+            position: relative;
         }
         .login-form {
             height: 100%;
             display: flex;
             align-items: center;
+        }
+        input[type="text"]{
+            background-color: #EDEDED !important;
+            border: #EDEDED 1px solid !important;
+            margin: 3px;
+            width: 100%;
+            border-radius: 6px;
+            padding: 22px 10px;
+            font-size: 22px;
+            outline: none !important;
+        }
+        input[name="verify"]{
+            margin: 3px;
+            width: 100%;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 18px;
+        }
+        input:disabled {
+            color: #c3c3c3 !important;
+            cursor: auto;
+            pointer-events: none;
+        }
+        input.resendButton{
+            background-color: transparent;
+            color: #666666;
+            border: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        input:focus{
+            border-color: #EDEDED !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .container-verification{
+            width: 400px;
+        }
+
+        @media (max-width: 768px){
+            .container-verification{
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -100,38 +151,35 @@
 <main class="login-form">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card mt-5">
+            <div class="container-verification">
+                <div class="card">
                     <div class="card-header text-center">
                         <img src="logo_1.png" alt="Logo"> 
-                        Verification Account
+                        Account Verification
                     </div>
                     <div class="card-body text-center">
                         <form action="#" method="POST">
-                            <div class="form-group row">
-                                <label for="otp" class="col-md-4 col-form-label text-md-right">OTP Code</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="otp" class="form-control text-center" name="otp_code" required autofocus>
+                            <div class="form-group row justify-content-center mb-1">
+                                <div class="col-md-11">
+                                    <input type="text" id="otp" class="form-control text-center" name="otp_code" placeholder="OTP code" required>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-md-6 offset-md-4">
+                            <div class="form-group row justify-content-center mb-2">
+                                <div class="col-md-11">
                                     <input type="submit" value="Verify" name="verify" class="btn btn-primary btn-block">
                                 </div>
                             </div>
                         </form>
                         <form action="#" method="POST">
-                            <div class="form-group row">
-                                <div class="col-md-6 offset-md-4 d-flex">
-                                    <input type="submit" value="Resend OTP" name="resend_otp" id="resendButton" class="btn-primary btn-block">
+                            <div class="form-group row justify-content-center">
+                                <div class="col-md-11 d-flex justify-content-center">
+                                    <input type="submit" value="Resend OTP" name="resend_otp" id="resendButton" class="resendButton">
                                     <p id="resendCountdown" class="my-0 ml-1" ></p>
                                 </div>
                             </div>
                         </form>
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4 mt-3">
-                                <p id="countdown"></p>
-                            </div>
+                        <div class="form-group row justify-content-center mt-4 mb-1">
+                            <p id="countdown"></p>
                         </div>
                     </div>
                 </div>
@@ -156,7 +204,7 @@
                 countdownElement.textContent = `${message} ${minutes}m ${seconds}s`;
                 requestAnimationFrame(updateCountdown);
             } else {
-                countdownElement.textContent = ""; // Remove any text when countdown ends
+                countdownElement.textContent = ""; // Clear countdown text
             }
         }
 
@@ -167,7 +215,7 @@
     window.onload = function() {
         // Remaining time for main OTP countdown
         var remainingTime = <?php echo $remaining_time; ?>;
-        startCountdown(remainingTime, 'countdown', 'Time left:');
+        startCountdown(remainingTime, 'countdown', 'Code expires in:');
 
         var remainingResendTime = <?php echo $remaining_resend_time; ?>;
         startCountdown(remainingResendTime, 'resendCountdown', ':');
@@ -177,6 +225,7 @@
             document.getElementById('resendButton').disabled = true;
             setTimeout(function() {
                 document.getElementById('resendButton').disabled = false;
+                document.getElementById('resendCountdown').textContent = ""; // Clear countdown text
             }, remainingResendTime * 1000);
         }
     };
@@ -227,10 +276,10 @@
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
 
-        $mail->Username = 'kochacafe1@gmail.com';
-        $mail->Password = 'nstarhdtdgrzznze';
+        $mail->Username = 'kochacafe8@gmail.com';
+        $mail->Password = 'bktz mine wgfr ayis';
 
-        $mail->setFrom('kochacafe1@gmail.com', 'OTP Verification');
+        $mail->setFrom('kochacafe8@gmail.com', 'OTP Verification');
         $mail->addAddress($email);
 
         $mail->isHTML(true);

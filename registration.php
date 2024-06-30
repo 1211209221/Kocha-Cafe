@@ -14,7 +14,6 @@
             align-items: center;
             margin-top: 20px;
         }
-
         .title img {
             height: 60px;
             margin-bottom: 10px;
@@ -38,6 +37,10 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
             color: #721c24;
+        }
+        body {
+            background-image: url('register/register-bg.jpg');
+            background-size: cover;
         }
     </style>
 </head>
@@ -119,10 +122,10 @@
                         $mail->SMTPAuth = true;
                         $mail->SMTPSecure = 'tls';
 
-                        $mail->Username = 'kochacafe1@gmail.com';
-                        $mail->Password = 'nstarhdtdgrzznze';
+                        $mail->Username = 'kochacafe8@gmail.com';
+                        $mail->Password = 'bktz mine wgfr ayis';
 
-                        $mail->setFrom('kochacafe1@gmail.com', 'OTP Verification');
+                        $mail->setFrom('kochacafe8@gmail.com', 'OTP Verification');
                         $mail->addAddress($_POST["email"]);
 
                         $mail->isHTML(true);

@@ -73,10 +73,10 @@ form .input-box span.details {
   font-size: 16px;
   border-radius: 5px;
   padding-left: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #EDEDED;
   border-bottom-width: 2px;
   transition: all 0.3s ease;
-  background-color: lightgray;
+  background-color: #EDEDED;
 }
 
 .user-details .input-box input:focus,
