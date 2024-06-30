@@ -164,7 +164,7 @@
                                 <div class="breadcrumbs">
                                     <a>Admin</a> > <a>Menu</a> > <a href="items-all.php">Item List</a> > <a class="active">Add New</a>
                                 </div>
-                                <div class='image_container'><img src='../images/placeholder_image.png' class='item_image_diplay'>
+                                <div class='image_container'><img src='../images/placeholder_image.png' id='item_image_diplay' class='item_image_diplay'>
                                     <input type="file" name="image" class="upload_image" id="upload_image" required accept="image/png, image/gif, image/jpeg" />
                                     <label class="upload_image_label" for="upload_image"><i class="fas fa-camera"></i></label>
                                 </div>
@@ -378,5 +378,17 @@
 
             $conn->close();
         ?>
+        <script>
+            document.getElementById('upload_image').addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    document.getElementById('item_image_diplay').setAttribute('src', e.target.result);
+                }
+
+                reader.readAsDataURL(file);
+            });
+        </script>
     </body>
 </html>

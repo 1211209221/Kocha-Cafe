@@ -343,10 +343,10 @@
                                                 $mime_type = $row2["mime_type"];
                                                 $base64 = base64_encode($image_data);
                                                 $src = "data:$mime_type;base64,$base64";
-                                                echo "<img src='".$src."' class='item_image_diplay'>";
+                                                echo "<img src='".$src."' id='item_image_diplay' class='item_image_diplay'>";
                                             }
                                         }else{
-                                            echo "<img src='../images/placeholder_image.png' class='item_image_diplay'>";
+                                            echo "<img src='../images/placeholder_image.png' id='item_image_diplay' class='item_image_diplay'>";
                                         }
 
                                     ?>
@@ -942,5 +942,17 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById('upload_image').addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    document.getElementById('item_image_diplay').setAttribute('src', e.target.result);
+                }
+
+                reader.readAsDataURL(file);
+            });
+        </script>
     </body>
 </html>
