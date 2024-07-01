@@ -35,6 +35,52 @@
         img{
             object-fit: cover;
         }
+
+        .content{
+            margin-left: 0px;
+        }
+
+        @media (max-width: 992px){
+            .content h1, .content h2{
+                font-size: 60px;
+            }
+            .main-content{
+                height: 70vh;
+            }
+            .content{
+                padding-top: 140px;
+            }
+        }
+
+        @media (max-width: 768px){
+            .content h1, .content h2{
+                font-size: 45px;
+            }
+            .main-content{
+                height: 60vh;
+            }
+            .content{
+                padding-top: 120px;
+            }
+        }
+
+        @media (max-width: 575px){
+            .content h1, .content h2{
+                font-size: 35px;
+            }
+            .main-content{
+                height: 40vh;
+            }
+            .content{
+                padding-top: 50px;
+            }
+        }
+
+        @media (max-width: 480px){
+            .content h1, .content h2{
+                margin-bottom: 0;
+            }
+        }
     </style>
 <body>
 
@@ -46,7 +92,7 @@
     ; ?>
     <div class="main-content">
         <div class="content">
-            <h1>WELCOME TO KOCHA Café</h1>
+            <h1>WELCOME TO KOCHA CAFE</h1>
             <h2>Let's discover more</h2>
             <a id="btn1" href="menu.php"><button>Order Now</button></a>
         </div>
@@ -90,19 +136,10 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
-
     <div class="container">
         <div class="banner">
             <h1>Best <span class="change-content"></span></h1>
             <h2>Only in Kocha Cafe</h2>
-            <a id="btn2" href="menu.php"><button>View Full Menu</button></a>
         </div>
     </div>
 
