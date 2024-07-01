@@ -733,7 +733,7 @@
                                         while ($row = $recentOrdersResult->fetch_assoc()) {
                                             $order_id = $row['order_ID'];
                                             $date = date('Y-m-d H:i:s', strtotime($row['order_date']));
-                                            $total_sumprice = 0;
+                                            $total_sumprice = $row['order_total'];
                                             $order_contents = $row['order_contents'];
                                             $items = explode("},{", $order_contents);
                                             $items = array_filter($items, 'strlen');
@@ -757,8 +757,6 @@
                                                 $details = explode(",", $item);
                                                 $item_name = trim($details[1], "()");
                                                 $item_qty = trim($details[3], "()");
-                                                $item_sumprice = trim($details[4], "()");
-                                                $total_sumprice += floatval($item_sumprice);
                                                 echo '<li>' . $item_qty . ' x ' . $item_name . '</li>';
                                             }
 
