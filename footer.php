@@ -47,10 +47,10 @@
                     <div class="col-md-3 col-5 mx-auto">
                         <h4>Categories</h4>
                         <ul class="m-0 categories">
-                            <li class="m-auto"><a href="#">About Us</a></li>
+                            <li class="m-auto"><a href="aboutus.php">About Us</a></li>
                             <li class="m-auto"><a href="item.php">Menu</a></li>
                             <li class="m-auto"><a href="contactus.php">Contact Us</a></li>
-                            <li class="m-auto"><a href="#">Blog</a></li>
+                            <li class="m-auto"><a href="blog.php">Blog</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 col-7  mx-auto">
