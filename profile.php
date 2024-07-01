@@ -2015,6 +2015,7 @@
                                                         $paymentID = $row_payment['payment_ID'];
                                                         $payment_cardnum = $row_payment['payment_cardnum'];
                                                         $point_redeem = ($row_payment['payment_subtotal'] - $row_payment['payment_total'])/0.1;
+                                                        $point_redeem = round($point_redeem);
                                                         $pointconvert = $point_redeem * 0.1;
 
                                                         echo '<div class="bottom_area">
@@ -2231,6 +2232,7 @@
                                                         $paymentID = $rows_payment['payment_ID'];
                                                         $payment_cardnum = $rows_payment['payment_cardnum'];
                                                         $point_redeem = ($rows_payment['payment_subtotal'] - $rows_payment['payment_total'])/0.1;
+                                                        $point_redeem = round($point_redeem);
                                                         $pointconvert = $point_redeem * 0.1;
 
                                                         echo '<div class="bottom_area">

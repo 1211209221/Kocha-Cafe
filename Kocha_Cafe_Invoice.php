@@ -212,7 +212,8 @@ if (isset($_GET['ID'])) {
                 $nID = "K_".$ID;
                 $cardnum = $row['payment_cardnum'];
                 $point_redeem = ($row['payment_subtotal'] - $row['payment_total'])/0.1;
-                $pointconvert = round($point_redeem * 0.1);
+                $point_redeem = round($point_redeem);
+                $pointconvert = $point_redeem * 0.1;
 
                 echo '<div class="bottom_area">
                         <div class="paymentprt"><p class="text">PAYMENT DETAILS</p>
