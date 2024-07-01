@@ -426,7 +426,7 @@
         $orderCount = $row['orderCount'];
     }
 
-    $incomeQuery = "SELECT order_date, order_contents FROM customer_orders";
+    $incomeQuery = "SELECT order_date, order_contents, order_total FROM customer_orders";
     $incomeResult = $conn->query($incomeQuery);
     $monthlyIncome = array_fill(0, 12, 0); // Initialize an array with 12 zeros for monthly income
     
@@ -434,11 +434,35 @@
     $startOfWeek = date('Y-m-d', strtotime('monday this week'));
     $startOfMonth = date('Y-m-01');
     
+    // if ($incomeResult) {
+    //     while ($row = $incomeResult->fetch_assoc()) {
+    //         $details = explode(",", $row['order_contents']);
+    //         if (isset($details[4])) {
+    //             $item_sumprice = trim($details[4], "()");
+    //             $totalIncome += floatval($item_sumprice);
+    //             $month = intval(date('m', strtotime($row['order_date'])));
+    //             $monthlyIncome[$month - 1] += floatval($item_sumprice);
+
+    //             $orderDate = date('Y-m-d', strtotime($row['order_date']));
+    //             if ($orderDate == $todayDate) {
+    //                 $todayIncome += floatval($item_sumprice);
+    //             }
+    //             if ($orderDate >= $startOfWeek && $orderDate <= $todayDate) {
+    //                 $weeklyIncome += floatval($item_sumprice);
+    //             }
+    //             if ($orderDate >= $startOfMonth && $orderDate <= $todayDate) {
+    //                 $monthlyIncomeSum += floatval($item_sumprice);
+    //             }
+    //         }
+    //     }
+    // } else {
+    //     echo "Error: " . $conn->error;
+    // }
+
     if ($incomeResult) {
         while ($row = $incomeResult->fetch_assoc()) {
-            $details = explode(",", $row['order_contents']);
-            if (isset($details[4])) {
-                $item_sumprice = trim($details[4], "()");
+            $item_sumprice = $row['order_total'];
+            if (isset( $item_sumprice)) {
                 $totalIncome += floatval($item_sumprice);
                 $month = intval(date('m', strtotime($row['order_date'])));
                 $monthlyIncome[$month - 1] += floatval($item_sumprice);

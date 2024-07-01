@@ -2024,7 +2024,7 @@
                                                                     </div>
                                                                     <div class="attribute">
                                                                         <span class="payment_title">Payment Method</span>
-                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
+                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card</span>
                                                                     </div>
                                                                     <div class="attribute">
                                                                         <span class="payment_title">Delivery Location</span>
@@ -2240,7 +2240,7 @@
                                                                     </div>
                                                                     <div class="attribute">
                                                                         <span class="payment_title">Payment Method</span>
-                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card ('.$payment_cardnum.')</span>
+                                                                        <span class="payment_det"><i class="fas fa-credit-card"></i> Credit/ Debit Card</span>
                                                                     </div>
                                                                     <div class="attribute">
                                                                         <span class="payment_title">Delivery Location</span>
