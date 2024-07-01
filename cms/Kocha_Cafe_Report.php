@@ -323,7 +323,7 @@ switch ($reportType) {
                 foreach ($orders as $order) {
                     $order_id = $order['order_ID'];
                     $date = date('Y-m-d H:i:s', strtotime($order['order_date']));
-                    $total_sumprice = 0;
+                    $total_sumprice = $order['order_total'];
                     $order_contents = $order['order_contents'];
                     $items = explode("},{", $order_contents);
                     $items = array_filter($items, 'strlen');
@@ -347,7 +347,6 @@ switch ($reportType) {
                         $item_name = trim($details[1], "()");
                         $item_qty = trim($details[3], "()");
                         $item_sumprice = trim($details[4], "()");
-                        $total_sumprice += floatval($item_sumprice);
                         echo '<li>' . $item_qty . ' x ' . $item_name . '</li>';
                     }
 
