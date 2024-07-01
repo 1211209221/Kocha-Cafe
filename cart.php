@@ -1493,7 +1493,7 @@
                                                     </div>
                                                     <div class="payment_details credit_card active">
                                                         <span>Card Holder</span>
-                                                        <input type="text" name="holder_name" id="holder_name" placeholder="Name Surname" onkeypress="return event.keyCode != 13;" required>
+                                                        <input type="text" name="holder_name" id="holder_name" placeholder="Name Surname" onkeypress="return event.keyCode != 13;" required style="text-transform: capitalize;">
                                                         <div class="address-error" style="justify-content: left;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
                                                         <span>Card Number</span>
                                                         <input type="text" name="card_number" id="card_number" placeholder="1111 1111 1111 1111" maxlength="19" oninput="formatCardNumber(this)" onkeypress="return event.keyCode != 13;" required>

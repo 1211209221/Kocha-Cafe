@@ -17,7 +17,7 @@
             include '../connect.php';
             include '../gototopbtn.php';
             include 'navbar.php';
-
+            
             //session_start();
 
 
@@ -88,19 +88,27 @@
                         $edit_set = 1;
                         // Check if file was uploaded without errors
                         if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
-                            if ($_FILES["image"]["size"] <= $maxFileSize) {
-                                $filename = $_FILES["image"]["name"];
-                                $tempname = $_FILES["image"]["tmp_name"];
-                                $mime_type = mime_content_type($tempname);
-                                $data = file_get_contents($tempname);
+                            $fileName = $_FILES['image']['name'];
+                            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                                // Insert image data into database
-                                $stmt = $conn->prepare("UPDATE menu_images SET filename=?, mime_type=?, data=? WHERE image_ID=?");
-                                $stmt->bind_param("sssi", $filename, $mime_type, $data, $item_ID);
-                                $stmt->execute();
+                            if ($fileExt == 'jpg' || $fileExt == 'jpeg' || $fileExt == 'png') {
+                                if ($_FILES["image"]["size"] <= $maxFileSize) {
+                                    $filename = $_FILES["image"]["name"];
+                                    $tempname = $_FILES["image"]["tmp_name"];
+                                    $mime_type = mime_content_type($tempname);
+                                    $data = file_get_contents($tempname);
+
+                                    // Insert image data into database
+                                    $stmt = $conn->prepare("UPDATE menu_images SET filename=?, mime_type=?, data=? WHERE image_ID=?");
+                                    $stmt->bind_param("sssi", $filename, $mime_type, $data, $item_ID);
+                                    $stmt->execute();
+                                } else {
+                                    // File is too large
+                                    $_SESSION['editItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
+                                    $edit_set = 0;
+                                }
                             } else {
-                                // File is too large
-                                $_SESSION['editItem_imageSize_error'] = "File size exceeds the maximum limit of 1MB.";
+                                $_SESSION['editItem_imageType_error'] = true;
                                 $edit_set = 0;
                             }
                         } elseif (isset($_FILES["image"]) && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
@@ -279,6 +287,19 @@
                 unset($_SESSION['submitReviews_success']);
             }
 
+            if (isset($_SESSION['editItem_imageType_error'])) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast false fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-times-circle"></i>Invalid image type! Must be png/jpeg...
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['editItem_imageType_error']);
+            }
+
             function ratingToStars($rating) {
                 // Separate integer and decimal parts of the rating
                 $integer = floor($rating);
@@ -350,7 +371,7 @@
                                         }
 
                                     ?>
-                                    <input type="file" name="image" class="upload_image" id="upload_image" accept="image/png, image/gif, image/jpeg" />
+                                    <input type="file" name="image" class="upload_image" id="upload_image" accept="image/png, image/gif, image/jpeg" onchange="validateFileType()"/>
                                     <label class="upload_image_label" for="upload_image" <?php if($admin['admin_level'] == 1) {echo ' style="pointer-events: none;"';} ?>><i class="fas fa-camera"></i></label>
                                     <?php
                                         // SQL query to select the cust_wishlist column
