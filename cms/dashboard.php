@@ -430,34 +430,11 @@
     $incomeResult = $conn->query($incomeQuery);
     $monthlyIncome = array_fill(0, 12, 0); // Initialize an array with 12 zeros for monthly income
     
-    $todayDate = date('Y-m-d');
-    $startOfWeek = date('Y-m-d', strtotime('monday this week'));
-    $startOfMonth = date('Y-m-01');
-    
-    // if ($incomeResult) {
-    //     while ($row = $incomeResult->fetch_assoc()) {
-    //         $details = explode(",", $row['order_contents']);
-    //         if (isset($details[4])) {
-    //             $item_sumprice = trim($details[4], "()");
-    //             $totalIncome += floatval($item_sumprice);
-    //             $month = intval(date('m', strtotime($row['order_date'])));
-    //             $monthlyIncome[$month - 1] += floatval($item_sumprice);
-
-    //             $orderDate = date('Y-m-d', strtotime($row['order_date']));
-    //             if ($orderDate == $todayDate) {
-    //                 $todayIncome += floatval($item_sumprice);
-    //             }
-    //             if ($orderDate >= $startOfWeek && $orderDate <= $todayDate) {
-    //                 $weeklyIncome += floatval($item_sumprice);
-    //             }
-    //             if ($orderDate >= $startOfMonth && $orderDate <= $todayDate) {
-    //                 $monthlyIncomeSum += floatval($item_sumprice);
-    //             }
-    //         }
-    //     }
-    // } else {
-    //     echo "Error: " . $conn->error;
-    // }
+    $todayDate = date('Y-m-d'); // Today's date
+    $startOfWeek = date('Y-m-d', strtotime('monday this week')); // Start of the week (Monday)
+    $endOfWeek = date('Y-m-d', strtotime('sunday this week')); // End of the week (Sunday)
+    $startOfMonth = date('Y-m-01'); // Start of the month (first day)
+    $endOfMonth = date('Y-m-t'); // End of the month (last day)
 
     if ($incomeResult) {
         while ($row = $incomeResult->fetch_assoc()) {
@@ -471,10 +448,10 @@
                 if ($orderDate == $todayDate) {
                     $todayIncome += floatval($item_sumprice);
                 }
-                if ($orderDate >= $startOfWeek && $orderDate <= $todayDate) {
+                if ($orderDate >= $startOfWeek && $orderDate <= $endOfWeek) {
                     $weeklyIncome += floatval($item_sumprice);
                 }
-                if ($orderDate >= $startOfMonth && $orderDate <= $todayDate) {
+                if ($orderDate >= $startOfMonth && $orderDate <= $endOfMonth) {
                     $monthlyIncomeSum += floatval($item_sumprice);
                 }
             }
@@ -483,17 +460,29 @@
         echo "Error: " . $conn->error;
     }
 
-    // Fetch orders count per month
-    $monthlyOrders = array_fill(0, 12, 0); // Initialize an array with 12 zeros
-    
-    $orderDateQuery = "SELECT MONTH(order_date) as month, COUNT(*) as orderCount FROM customer_orders GROUP BY month";
-    $orderDateResult = $conn->query($orderDateQuery);
-    if ($orderDateResult) {
-        while ($row = $orderDateResult->fetch_assoc()) {
-            $month = intval($row['month']);
+    $monthlyOrders = array_fill(0, 12, 0);
+
+    // Loop through each month from January (1) to December (12)
+    for ($month = 1; $month <= 12; $month++) {
+        // Calculate the start and end dates for the month
+        $startOfMonth = date('Y-m-01', strtotime(date('Y') . "-$month-01"));
+        $endOfMonth = date('Y-m-t', strtotime(date('Y') . "-$month-01"));
+        
+        // Query to count orders for the specific month
+        $monthlyOrderQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE order_date >= '$startOfMonth' AND order_date <= '$endOfMonth'";
+        $monthlyOrderResult = $conn->query($monthlyOrderQuery);
+        
+        if ($monthlyOrderResult) {
+            $row = $monthlyOrderResult->fetch_assoc();
             $monthlyOrders[$month - 1] = intval($row['orderCount']);
         }
     }
+
+    // Calculate the current month index
+    $currentMonthIndex = intval(date('n')) - 1; // 'n' returns the month number without leading zeros
+
+    // Get the number of orders for the current month
+    $currentMonthOrders = $monthlyOrders[$currentMonthIndex];
 
     // Fetch yesterday's and today's orders count
     $yesterdayOrders = 0;
@@ -517,15 +506,24 @@
         $todayOrders = $row['orderCount'];
     }
 
-    // Fetch weekly orders count
-    $weeklyOrders = array_fill(0, 7, 0); // Initialize an array with 7 zeros for weekly orders
-    
-    $weeklyOrderQuery = "SELECT WEEKDAY(order_date) as weekday, COUNT(*) as orderCount FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$todayDate' GROUP BY weekday";
-    $weeklyOrderResult = $conn->query($weeklyOrderQuery);
-    if ($weeklyOrderResult) {
-        while ($row = $weeklyOrderResult->fetch_assoc()) {
-            $weekday = intval($row['weekday']);
-            $weeklyOrders[$weekday] = intval($row['orderCount']);
+    // Define the start of the week (assuming week starts on Monday)
+    $startOfWeek = date('Y-m-d', strtotime('monday this week'));
+    $endOfWeek = date('Y-m-d', strtotime('sunday this week'));
+
+    // Initialize an array with 7 zeros for weekly orders (Monday to Sunday)
+    $weeklyOrders = array_fill(0, 7, 0);
+
+    for ($i = 0; $i < 7; $i++) {
+        // Calculate the date for each day of the week
+        $date = date('Y-m-d', strtotime("$startOfWeek +$i days"));
+        
+        // Query to count orders for each specific day
+        $dailyOrderQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE DATE(order_date) = '$date'";
+        $dailyOrderResult = $conn->query($dailyOrderQuery);
+        
+        if ($dailyOrderResult) {
+            $row = $dailyOrderResult->fetch_assoc();
+            $weeklyOrders[$i] = intval($row['orderCount']);
         }
     }
 ?>
@@ -583,7 +581,7 @@
                                         <p class="text-sm mb-0 text-capitalize" id="orderLabel">Total Orders</p>
                                         <h4 id="orderCountToday" class="mb-0"><?php echo $todayOrders; ?></h4>
                                         <h4 id="orderCountWeek" class="mb-0" style="display: none;"><?php echo array_sum($weeklyOrders); ?></h4>
-                                        <h4 id="orderCountMonth" class="mb-0" style="display: none;"><?php echo array_sum($monthlyOrders); ?></h4>
+                                        <h4 id="orderCountMonth" class="mb-0" style="display: none;"><?php echo $currentMonthOrders ?></h4>
                                         <h4 id="orderCountAllTime" class="mb-0" style="display: none;"><?php echo $orderCount; ?></h4>
                                     </div>
                                 </div>
@@ -810,10 +808,10 @@
                     </div>
                 </div>
                 <script>
-                    function generatePDF() {
+                   function generatePDF() {
                         var reportType = document.getElementById('reportType').value;
-                        // Redirect to Kocha_Cafe_Report.php with the selected report type
-                        window.location.href = 'Kocha_Cafe_Report.php?reportType=' + reportType;
+                        // Open Kocha_Cafe_Report.php in a new window with the selected report type
+                        window.open('Kocha_Cafe_Report.php?reportType=' + reportType, '_blank');
                     }
                 </script>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -51,19 +51,20 @@ if ($orderResult) {
     $orderCount = $row['orderCount'];
 }
 
-$incomeQuery = "SELECT order_date, order_contents FROM customer_orders";
+$incomeQuery = "SELECT order_date, order_contents, order_total FROM customer_orders";
 $incomeResult = $conn->query($incomeQuery);
 $monthlyIncome = array_fill(0, 12, 0); // Initialize an array with 12 zeros for monthly income
 
-$todayDate = date('Y-m-d');
-$startOfWeek = date('Y-m-d', strtotime('monday this week'));
-$startOfMonth = date('Y-m-01');
+$todayDate = date('Y-m-d'); // Today's date
+$startOfWeek = date('Y-m-d', strtotime('monday this week')); // Start of the week (Monday)
+$endOfWeek = date('Y-m-d', strtotime('sunday this week')); // End of the week (Sunday)
+$startOfMonth = date('Y-m-01'); // Start of the month (first day)
+$endOfMonth = date('Y-m-t'); // End of the month (last day)
 
 if ($incomeResult) {
     while ($row = $incomeResult->fetch_assoc()) {
-        $details = explode(",", $row['order_contents']);
-        if (isset($details[4])) {
-            $item_sumprice = trim($details[4], "()");
+        $item_sumprice = $row['order_total'];
+        if (isset( $item_sumprice)) {
             $totalIncome += floatval($item_sumprice);
             $month = intval(date('m', strtotime($row['order_date'])));
             $monthlyIncome[$month - 1] += floatval($item_sumprice);
@@ -72,10 +73,10 @@ if ($incomeResult) {
             if ($orderDate == $todayDate) {
                 $todayIncome += floatval($item_sumprice);
             }
-            if ($orderDate >= $startOfWeek && $orderDate <= $todayDate) {
+            if ($orderDate >= $startOfWeek && $orderDate <= $endOfWeek) {
                 $weeklyIncome += floatval($item_sumprice);
             }
-            if ($orderDate >= $startOfMonth && $orderDate <= $todayDate) {
+            if ($orderDate >= $startOfMonth && $orderDate <= $endOfMonth) {
                 $monthlyIncomeSum += floatval($item_sumprice);
             }
         }
@@ -84,17 +85,29 @@ if ($incomeResult) {
     echo "Error: " . $conn->error;
 }
 
-// Fetch orders count per month
-$monthlyOrders = array_fill(0, 12, 0); // Initialize an array with 12 zeros
+$monthlyOrders = array_fill(0, 12, 0);
 
-$orderDateQuery = "SELECT MONTH(order_date) as month, COUNT(*) as orderCount FROM customer_orders GROUP BY month";
-$orderDateResult = $conn->query($orderDateQuery);
-if ($orderDateResult) {
-    while ($row = $orderDateResult->fetch_assoc()) {
-        $month = intval($row['month']);
+// Loop through each month from January (1) to December (12)
+for ($month = 1; $month <= 12; $month++) {
+    // Calculate the start and end dates for the month
+    $startOfMonth = date('Y-m-01'); // Start of the month (first day)
+    $endOfMonth = date('Y-m-t'); // End of the month (last day)
+    
+    // Query to count orders for the specific month
+    $monthlyOrderQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE order_date >= '$startOfMonth' AND order_date <= '$endOfMonth'";
+    $monthlyOrderResult = $conn->query($monthlyOrderQuery);
+    
+    if ($monthlyOrderResult) {
+        $row = $monthlyOrderResult->fetch_assoc();
         $monthlyOrders[$month - 1] = intval($row['orderCount']);
     }
 }
+
+// Calculate the current month index
+$currentMonthIndex = intval(date('n')) - 1; // 'n' returns the month number without leading zeros
+
+// Get the number of orders for the current month
+$currentMonthOrders = $monthlyOrders[$currentMonthIndex];
 
 // Fetch yesterday's and today's orders count
 $yesterdayOrders = 0;
@@ -118,15 +131,24 @@ if ($todayResult) {
     $todayOrders = $row['orderCount'];
 }
 
-// Fetch weekly orders count
-$weeklyOrders = array_fill(0, 7, 0); // Initialize an array with 7 zeros for weekly orders
+// Define the start of the week (assuming week starts on Monday)
+$startOfWeek = date('Y-m-d', strtotime('monday this week'));
+$endOfWeek = date('Y-m-d', strtotime('sunday this week'));
 
-$weeklyOrderQuery = "SELECT WEEKDAY(order_date) as weekday, COUNT(*) as orderCount FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$todayDate' GROUP BY weekday";
-$weeklyOrderResult = $conn->query($weeklyOrderQuery);
-if ($weeklyOrderResult) {
-    while ($row = $weeklyOrderResult->fetch_assoc()) {
-        $weekday = intval($row['weekday']);
-        $weeklyOrders[$weekday] = intval($row['orderCount']);
+// Initialize an array with 7 zeros for weekly orders (Monday to Sunday)
+$weeklyOrders = array_fill(0, 7, 0);
+
+for ($i = 0; $i < 7; $i++) {
+    // Calculate the date for each day of the week
+    $date = date('Y-m-d', strtotime("$startOfWeek +$i days"));
+    
+    // Query to count orders for each specific day
+    $dailyOrderQuery = "SELECT COUNT(*) as orderCount FROM customer_orders WHERE DATE(order_date) = '$date'";
+    $dailyOrderResult = $conn->query($dailyOrderQuery);
+    
+    if ($dailyOrderResult) {
+        $row = $dailyOrderResult->fetch_assoc();
+        $weeklyOrders[$i] = intval($row['orderCount']);
     }
 }
 
@@ -156,9 +178,9 @@ switch ($reportType) {
         $income = $weeklyIncome;
         $orderCountReport = array_sum($weeklyOrders);
         $startDate = $startOfWeek;
-        $endDate = $todayDate;
+        $endDate = $endOfWeek;
 
-        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$todayDate'";
+        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfWeek' AND order_date <= '$endOfWeek'";
         $orderResult = $conn->query($orderQuery);
         if ($orderResult) {
             while ($row = $orderResult->fetch_assoc()) {
@@ -170,11 +192,11 @@ switch ($reportType) {
     case 'thisMonth':
         $type = "this month's";
         $income = $monthlyIncomeSum;
-        $orderCountReport = array_sum($monthlyOrders);
+        $orderCountReport = $currentMonthOrders;
         $startDate = $startOfMonth;
-        $endDate = $todayDate;
+        $endDate = $endOfMonth;
 
-        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfMonth' AND order_date <= '$todayDate'";
+        $orderQuery = "SELECT * FROM customer_orders WHERE order_date >= '$startOfMonth' AND order_date <= '$endOfMonth'";
         $orderResult = $conn->query($orderQuery);
         if ($orderResult) {
             while ($row = $orderResult->fetch_assoc()) {
