@@ -710,7 +710,7 @@
                 ?>
             document.addEventListener("DOMContentLoaded", function() {
                 //for payment form
-                const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points, #selectlocation");
+                const formElements1 = document.querySelectorAll("#holder_name, #card_number, #expiry_date, #CVV, #redeem_points, #selectlocation, #subttl");
                 const formElements2 = document.querySelectorAll("#pn");
                 formElements1.forEach(element => {
                     element.addEventListener("input", function () {
@@ -774,6 +774,7 @@
                 let card_number = document.getElementById("card_number").value;
                 const CVV = document.getElementById("CVV").value;
                 let redeem_points = document.getElementById("redeem_points").value;
+                let subttl = parseFloat(document.querySelector('.subtotal').textContent.replace('RM ', ''));
                 const selectlocation = document.getElementById("selectlocation");
                 const maxPoints = <?php echo $point; ?>;
                 var letters = /^[a-zA-Z-' ]*$/;
@@ -829,9 +830,15 @@
                 
                 if(redeem_points.trim()>maxPoints){
                     errorDisplay1(document.getElementById("redeem_points"), "*Exceeded points.*");
+                    valid = false;
                 }
                 else if(redeem_points.trim()>50){
                     errorDisplay1(document.getElementById("redeem_points"), "*The maximum point you use is 50*");
+                    valid = false;
+                }
+                else if(parseFloat(redeem_points.trim()) * 0.1 > subttl){
+                    errorDisplay1(document.getElementById("redeem_points"), "*Redeem value exceed subtotal*");
+                    valid = false;
                 }
                 else{
                     clearError1(document.getElementById("redeem_points"));
@@ -839,6 +846,7 @@
 
                 if(selectlocation.value === ""){
                     errorDisplay1(document.getElementById("selectlocation"), "*Please select a location.");
+                    valid = false;
                 }
                 else{
                     clearError1(document.getElementById("selectlocation"));
@@ -1075,6 +1083,7 @@
 
                     // Calculate the total price
                     let totalPrice = subtotal - points;
+                    totalPrice = Math.max(totalPrice, 0);
 
                     // Update the total price displayed on the page
                     totalPriceElement.textContent = "RM " + totalPrice.toFixed(2);
@@ -1561,7 +1570,7 @@
                                                     <div class="order_summary_details">
                                                         <div class="d-flex justify-content-between">
                                                             <span>Subtotal</span>
-                                                            <div class="subtotal">RM 0.00</div>
+                                                            <div id="subttl" class="subtotal">RM 0.00</div>
                                                             <input type="hidden" id="sub" name="sub">
                                                         </div>
                                                         
