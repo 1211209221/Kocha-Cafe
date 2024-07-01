@@ -757,6 +757,7 @@
             color: #585858;
         } 
         .bottom_area .order_table{
+            width:100%;
             box-shadow:none;
             border-radius:revert;
             border:1px solid #eeeeee;
@@ -2014,7 +2015,7 @@
                                                         $paymentID = $row_payment['payment_ID'];
                                                         $payment_cardnum = $row_payment['payment_cardnum'];
                                                         $point_redeem = ($row_payment['payment_subtotal'] - $row_payment['payment_total'])/0.1;
-                                                        $pointconvert = round($point_redeem * 0.1);
+                                                        $pointconvert = $point_redeem * 0.1;
 
                                                         echo '<div class="bottom_area">
                                                                 <div class="paymentprt"><p class="text">Payment Details</p>
@@ -2098,7 +2099,7 @@
                                                                                 <td class="desc">Subtotal</td><td class="amount">RM '.$row_payment['payment_subtotal'].'</td>
                                                                             </tr>
                                                                             <tr class="noborder">
-                                                                                <td class="desc">Point Redeemed</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                                <td class="desc">Point Used</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
                                                                             </tr>
                                                                             <tr class="noborder" style="background-color: #fffae4;">
                                                                                 <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$row_payment['payment_total'].'</td>
@@ -2230,7 +2231,7 @@
                                                         $paymentID = $rows_payment['payment_ID'];
                                                         $payment_cardnum = $rows_payment['payment_cardnum'];
                                                         $point_redeem = ($rows_payment['payment_subtotal'] - $rows_payment['payment_total'])/0.1;
-                                                        $pointconvert = round($point_redeem * 0.1);
+                                                        $pointconvert = $point_redeem * 0.1;
 
                                                         echo '<div class="bottom_area">
                                                                 <div class="paymentprt"><p class="text">Payment Details</p>
@@ -2314,7 +2315,7 @@
                                                                                 <td class="desc">Subtotal</td><td class="amount">RM '.$rows_payment['payment_subtotal'].'</td>
                                                                             </tr>
                                                                             <tr class="noborder">
-                                                                                <td class="desc">Point Redeemed</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
+                                                                                <td class="desc">Point Used</td><td class="amount">-RM '.number_format($pointconvert, 2).' ('.$point_redeem.')</td>
                                                                             </tr>
                                                                             <tr class="noborder" style="background-color: #fffae4;">
                                                                                 <td class="desc">TOTAL (INCL.TAX)</td><td class="amount">RM '.$rows_payment['payment_total'].'</td>
