@@ -346,7 +346,6 @@ switch ($reportType) {
                         $details = explode(",", $item);
                         $item_name = trim($details[1], "()");
                         $item_qty = trim($details[3], "()");
-                        $item_sumprice = trim($details[4], "()");
                         echo '<li>' . $item_qty . ' x ' . $item_name . '</li>';
                     }
 
