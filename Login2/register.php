@@ -34,14 +34,14 @@
                     $mail->SMTPAuth=true;
                     $mail->SMTPSecure='tls';
     
-                    $mail->Username = 'kochacafe1@gmail.com';
-                    $mail->Password = 'nstarhdtdgrzznze';
+                    $mail->Username = 'kochacafe8@gmail.com';
+                    $mail->Password = 'bktz mine wgfr ayis';
     
-                    $mail->setFrom('kochacafe1@gmail.com', 'OTP Verification');
+                    $mail->setFrom('kochacafe8@gmail.com', 'Kocha Cafe');
                     $mail->addAddress($_POST["email"]);
     
                     $mail->isHTML(true);
-                    $mail->Subject="Your verify code";
+                    $mail->Subject="Your verification code";
                     $mail->Body="<p>Dear user, </p> <h3>Your verify OTP code is $otp <br></h3>
                     <br><br>
                     <p>With regrads,</p>

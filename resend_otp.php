@@ -18,10 +18,10 @@ if (isset($_POST)) {
     $mail->SMTPAuth = true;
     $mail->SMTPSecure = 'tls';
 
-    $mail->Username = 'kochacafe1@gmail.com';
-    $mail->Password = 'nstarhdtdgrzznze';
+    $mail->Username = 'kochacafe8@gmail.com';
+    $mail->Password = 'bktz mine wgfr ayis';
 
-    $mail->setFrom('kochacafe1@gmail.com', 'OTP Verification');
+    $mail->setFrom('kochacafe8@gmail.com', 'Kocha Cafe');
     $mail->addAddress($email);
 
     $mail->isHTML(true);

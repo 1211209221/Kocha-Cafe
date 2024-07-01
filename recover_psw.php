@@ -174,11 +174,11 @@
             $mail->SMTPSecure='tls';
 
             // h-hotel account
-            $mail->Username = 'kochacafe1@gmail.com';
-            $mail->Password = 'nstarhdtdgrzznze';
+            $mail->Username = 'kochacafe8@gmail.com';
+            $mail->Password = 'bktz mine wgfr ayis';
 
             // send by h-hotel email
-            $mail->setFrom('kochacafe1@gmail.com', 'Password Reset');
+            $mail->setFrom('kochacafe8@gmail.com', 'Kocha Cafe');
             // get email from input
             $mail->addAddress($_POST["email"]);
             //$mail->addReplyTo('lamkaizhe16@gmail.com');

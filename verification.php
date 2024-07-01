@@ -279,7 +279,7 @@
         $mail->Username = 'kochacafe8@gmail.com';
         $mail->Password = 'bktz mine wgfr ayis';
 
-        $mail->setFrom('kochacafe8@gmail.com', 'OTP Verification');
+        $mail->setFrom('kochacafe8@gmail.com', 'Kocha Cafe');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
