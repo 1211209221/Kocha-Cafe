@@ -303,7 +303,7 @@
                         </div>
                         <div class='submit_buttons'>
                             <?php
-                                if ($admin['admin_ID'] == 1) {
+                                if ($admin['admin_ID'] == 1 || $admin['admin_ID'] == $row['admin_ID'] || $admin['admin_level'] == 2) {
                                     echo '<input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction(\'save the changes\');">';
                                 }
                             ?>
