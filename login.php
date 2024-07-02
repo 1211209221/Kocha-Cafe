@@ -30,6 +30,8 @@ if (isset($_SESSION["user"])) {
    exit(); // terminate script execution after redirect
 }
 
+$disabled_account = false;
+
 // Initialize variables for input errors
 $email_error = $password_error = "";
 
@@ -59,9 +61,14 @@ if (isset($_POST["login"])) {
         $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
         if ($user) {
             if (password_verify($_POST["password"], $user["cust_pass"])) {
-                $_SESSION["user"] = $user["cust_ID"];
-                header("Location: index.php");
-                exit(); // terminate script execution after redirect
+                if ($user['trash'] == 1) {
+                    $disabled_account = true;
+                }
+                else{
+                    $_SESSION["user"] = $user["cust_ID"];
+                    header("Location: index.php");
+                    exit(); // terminate script execution after redirect
+                }
             } else {
                 $password_error = "Password does not match";
             }
@@ -189,6 +196,16 @@ if (isset($_POST["login"])) {
         }
     }
 </script>
+<?php if ($disabled_account): ?>
+    <script type="text/javascript">
+        alert("Your account has been disabled. Please contact our customer service if there's a mistake.");
+        window.location.href = "login.php";
+    </script>
+    <?php
+    exit();
+    ?>
+<?php endif; ?>
+
 
 </body>
 </html>
