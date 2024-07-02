@@ -250,12 +250,12 @@
                             <div class="page_title">Edit Admin<i class="fas fa-pen"></i></div>
                             <div class='item_detail_container'>
                                 <label for="admin_name">Name</label>
-                                <input type="text" name="admin_name" id="admin_name" placeholder="Admin Name" value="<?php echo $row['admin_name']; ?>" required>
+                                <input type="text" name="admin_name" id="admin_name" placeholder="Admin Name" value="<?php echo $row['admin_name']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "disabled" : ""); ?> required>
                             </div>
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_phone">Phone Number</label>
-                            <input type="tel" name="admin_phone" id="admin_phone" placeholder="+60123456789" value="<?php echo $row['admin_phno']; ?>" required>
+                            <input type="tel" name="admin_phone" id="admin_phone" placeholder="+60123456789" value="<?php echo $row['admin_phno']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "disabled" : ""); ?> required>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
@@ -266,7 +266,7 @@
                         <div class='item_detail_container'>
                             <label for="admin_username">Username</label>
                             <?php
-                            if($admin['admin_level']==1){
+                            if($admin['admin_ID']!=$row['admin_ID']){
                                 echo '<input type="text" title="Read-only" name="admin_username" id="admin_username" placeholder="adminxxx123" value="'.$row['admin_username'].'" readonly>';
                             }else{
                                 echo '<input type="text" name="admin_username" id="admin_username" placeholder="adminxxx123" value="'.$row['admin_username'].'" required>';
@@ -275,35 +275,42 @@
                             ?>
                         </div>
                         <div class="address-error" id="user-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
-                        <div class='item_detail_container' style="position:relative;">
-                            <label for="admin_password">New Password</label>
-                            <input style="padding-right:30px;" type="password" name="admin_password" id="admin_password" ><i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility('admin_password', this)"></i>
-                        </div>
+                        <?php
+                            if($admin['admin_ID'] == $row['admin_ID']){
+                                echo '<div class="item_detail_container" style="position:relative;">
+                                        <label for="admin_password">New Password</label>
+                                        <input style="padding-right:30px;" type="password" name="admin_password" id="admin_password">
+                                        <i class="fas fa-eye-slash" style="position:absolute;right: 10px;top: 10px;font-size: 12px; cursor:pointer;" onclick="togglePasswordVisibility(\'admin_password\', this)"></i>
+                                      </div>';
+                            }
+                        ?>
                         <div class="address-error" id="pass-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_level">Admin Level</label>
                             <?php
                             if($admin['admin_level']==1 || $admin['admin_ID'] == $row['admin_ID']){
-                                echo '<select name="admin_level" id="admin_level" style="width:100%;" title="Unable to edit">';
-                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' disabled>Admin</option>
-                                <option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' disabled>Superadmin</option>';
-                            }
-                            
-                            else{
-                                echo '<select name="admin_level" id="admin_level" style="width:100%;">';
-                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' >Admin</option>
-                                <option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' >Superadmin</option>';
+                                echo '<select name="admin_level" id="admin_level" style="width:100%;" title="Unable to edit" ' . ($row['admin_level'] == "2" ? "disabled" : "") . ' onchange="confirmChange(this)">';
+                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' disabled>Admin</option>';
+                                echo '<option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' disabled>Superadmin</option>';
+                            } else {
+                                echo '<select name="admin_level" id="admin_level" style="width:100%;" ' . ($row['admin_level'] == "2" ? "disabled" : "") . ' onchange="confirmChange(this)">';
+                                echo '<option value="1" ' . ($row['admin_level'] == "1" ? "selected" : "") . ' >Admin</option>';
+                                echo '<option value="2" ' . ($row['admin_level'] == "2" ? "selected" : "") . ' >Superadmin</option>';
                             }
                                     
                             ?>
                             </select>
                         </div>
                         <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick='return confirmAction("save the changes");'>
+                            <?php
+                                if ($admin['admin_ID'] == 1) {
+                                    echo '<input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction(\'save the changes\');">';
+                                }
+                            ?>
                             <?php
                             if($admin['admin_level']==1){
                                 //nothing
-                            }else if($admin['admin_ID'] != $row['admin_ID']){
+                            }else if($admin['admin_ID'] == 1 && $row['admin_ID'] != 1){
                                 echo '<input type="submit" name="delete" class="delete" value="Remove" onclick=\'return confirmAction("remove this admin");\'>';
                             }
                                     
@@ -441,6 +448,16 @@
             errorElement.innerText = "";
             errorElement.classList.add('hidden');
             input.classList.remove('error-color');
+        }
+
+        function confirmChange(selectElement) {
+            if (selectElement.value == "2") {
+                var confirmChange = confirm("Are you sure you want to change the level to Superadmin? Once you save, this action CANNOT be reverted.");
+                if (!confirmChange) {
+                    // Revert to the previous value if the user cancels the confirmation
+                    selectElement.value = 1;
+                }
+            }
         }
     </script>
                 <?php

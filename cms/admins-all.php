@@ -401,10 +401,10 @@
                         <form method='post' name='trash_form' class='trash-form' id='trash_form'>
                         <div class="d-flex align-items-center justify-content-center">
                             <?php
-                                if($admin['admin_level']==2){
-                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction(\'remove the selected menu admin(s)\')">
-                            <a href="admins-add.php"><div class="add_button">New Admin</div></a>';
+                                if($admin['admin_ID']==1){
+                                    echo '<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Remove Admins" onclick="return confirmAction(\'remove the selected menu admin(s)\')">';
                                 }
+                                echo '<a href="admins-add.php"><div class="add_button">New Admin</div></a>';
                             ?>
                             
                         </div>
@@ -462,7 +462,7 @@
                                                     else{
                                                         echo '<td class="t_action act1"><div><a href="admins-edit.php?ID=' . $row['admin_ID'] . '"><i class="fas fa-pen"></i></a><a style="position: relative;">';
                                                         echo "</i></a>";
-                                                        if($row['admin_ID'] != 1){
+                                                        if($row['admin_ID'] != 1 && $admin['admin_ID'] == 1){
                                                             echo "<a class='trash-icon'><i class='fas fa-trash'></i></a>";
                                                         }
                                                         echo"<input type='hidden' name='admin_ID[]' value='".$row['admin_ID']."'>
