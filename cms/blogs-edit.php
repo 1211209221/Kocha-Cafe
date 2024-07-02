@@ -223,7 +223,7 @@
                                 <i class='fas fa-camera'></i>
                             </label>
                         </div>
-                        <input type='file' name='image' class='upload_image' id='image' accept='image/jpeg, image/png' style='position: absolute; bottom: 0;'>
+                        <input type='file' name='image' class='upload_image' id='image' accept='image/jpeg, image/png' style='position: absolute; bottom: 0;' onchange = 'validateFileType();'>
                     </div>";
                 ?>
 
@@ -303,14 +303,10 @@
         var toolbarOptions = [
             ['bold', 'italic', 'underline', 'strike'], // Bold, Italic, Underline, Strikethrough
             [{ 'color': [] }, { 'background': [] }], // Text Color, Background Color
-            [{ 'align': [] }], // Text Alignment
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Headers
             [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Ordered and Unordered list
-            ['blockquote', 'code-block'], // Blockquote, Code block
             ['clean'], // Remove Formatting
             [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript, Superscript
-            [{ 'size': ['small', false, 'large', 'huge'] }], // Text Size
-            [{ 'indent': '-1' }, { 'indent': '+1' }] // Indent, Outdent
         ];
 
         var quill = new Quill('#form-control', {
@@ -357,6 +353,20 @@
                     document.getElementById('content').value = html;
                 });
         });
+
+        function validateFileType() {
+            var fileInput = document.getElementById("image");
+            var fileName = fileInput.value;
+            var idxDot = fileName.lastIndexOf(".") + 1;
+            var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+            if (extFile == "jpg" || extFile == "jpeg" || extFile == "png") {
+                // Valid file type, proceed with your logic here
+                console.log("File is valid.");
+            } else {
+                alert("Only jpg/png files are allowed!");
+                fileInput.value = ""; // Clear the file input
+            }
+        }
     </script>
 
 </body>

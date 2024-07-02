@@ -237,7 +237,7 @@ if (isset($_POST['submit'])) {
                 <label for="date">Date</label><br>
                 <input type="datetime-local" id="date" name="date" value="<?php echo $date ?>" readonly required><br><br>
                 <label for="image">Image</label><br>
-                <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif" required><br><br>
+                <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif" required onchange = 'validateFileType();'><br><br>
                 <img id="blog-image" src="" alt="Blog Image">
                 <input type="hidden" id="imagePath" name="imagePath">
                 <label for="blog_type">Blog Type</label><br>
@@ -261,15 +261,10 @@ if (isset($_POST['submit'])) {
         var toolbarOptions = [
             ['bold', 'italic', 'underline', 'strike'], // Bold, Italic, Underline, Strikethrough
             [{ 'color': [] }, { 'background': [] }], // Text Color, Background Color
-            [{ 'align': [] }], // Text Alignment
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Headers
             [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Ordered and Unordered list
-            ['blockquote', 'code-block'], // Blockquote, Code block
-            ['link', 'image', 'video'], // Insert Link, Image, Video
             ['clean'], // Remove Formatting
             [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript, Superscript
-            [{ 'size': ['small', false, 'large', 'huge'] }], // Text Size
-            [{ 'indent': '-1' }, { 'indent': '+1' }]
         ];
 
         var quill = new Quill('#editor', {
@@ -283,6 +278,20 @@ if (isset($_POST['submit'])) {
             var html = quill.root.innerHTML;
             document.getElementById('content').value = html;
         });
+
+        function validateFileType() {
+            var fileInput = document.getElementById("image");
+            var fileName = fileInput.value;
+            var idxDot = fileName.lastIndexOf(".") + 1;
+            var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+            if (extFile == "jpg" || extFile == "jpeg" || extFile == "png") {
+                // Valid file type, proceed with your logic here
+                console.log("File is valid.");
+            } else {
+                alert("Only jpg/png files are allowed!");
+                fileInput.value = ""; // Clear the file input
+            }
+        }
     </script>
 </body>
 

@@ -33,6 +33,18 @@
 
                 $maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
 
+                $fileName = $_FILES["image"]["name"];
+                $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+                // Validate file type
+                if (!in_array($fileExt, ['jpg', 'jpeg', 'png'])) {
+                    $_SESSION['addItem_imageType_error'] = true;
+                    echo '<script>';
+                    echo 'window.location.href = "items-add.php";';
+                    echo '</script>';
+                    exit();
+                }
+
                 // Check if file was uploaded without errors
                 if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
                     if ($_FILES["image"]["size"] <= $maxFileSize) {
@@ -152,6 +164,19 @@
                         </div>';
 
                 unset($_SESSION['addItem_imageSize_error']);
+            }
+
+            if (isset($_SESSION['addItem_imageType_error'])) {
+                echo '<div class="toast_container">
+                        <div id="custom_toast" class="custom_toast false fade_in">
+                            <div class="d-flex align-items-center message">
+                                <i class="fas fa-times-circle"></i>Invalid image type! Must be png/jpeg...
+                            </div>
+                            <div class="timer"></div>
+                        </div>
+                    </div>';
+
+                unset($_SESSION['addItem_imageType_error']);
             }
 
 

@@ -112,11 +112,15 @@
 
                 if ($conn->query($sql) === TRUE) {
                     $_SESSION['delmsg_success'] = true;
-                    header("Location: messages-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "messages-all.php";';
+                    echo '</script>';
                     exit();
                 } else {
                     $_SESSION['delmsg_error'] = "Error: " . $sql . "<br>" . $conn->error;
-                    header("Location: messages-all.php");
+                    echo '<script>';
+                    echo 'window.location.href = "messages-all.php";';
+                    echo '</script>';
                     exit();
                 }
             }

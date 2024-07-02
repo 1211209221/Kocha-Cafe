@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container-login100">
             <div class="wrap-login100">
                 <form class="login100-form validate-form" method="POST" action="">
-                    <span class="login100-form-title p-b-26">
+                    <span class="login100-form-title">
                         <img src="adminlogin/css/logo_1.png" alt="" style="width: 150px; height: auto;">
                     </span>
                     <span class="login100-form-title p-b-48">

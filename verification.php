@@ -204,7 +204,12 @@
                 countdownElement.textContent = `${message} ${minutes}m ${seconds}s`;
                 requestAnimationFrame(updateCountdown);
             } else {
-                countdownElement.textContent = ""; // Clear countdown text
+                if(elementId == 'countdown'){
+                    countdownElement.textContent = "OTP Code has expired"; // Clear countdown text
+                }
+                else{
+                     countdownElement.textContent = "";
+                }
             }
         }
 
@@ -246,8 +251,7 @@
         $otp_time = $_SESSION['otp_time'];
         $current_time = time();
 
-        // Check if OTP has expired (3 minutes = 180 seconds)
-        if (($current_time - $otp_time) > 180) {
+        if (($current_time - $otp_time) > 95) {
             echo "<script>alert('OTP code has expired');</script>";
         } elseif ($otp != $otp_code) {
             echo "<script>alert('Invalid OTP code');</script>";
