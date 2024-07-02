@@ -198,7 +198,7 @@ if (isset($_POST["login"])) {
 </script>
 <?php if ($disabled_account): ?>
     <script type="text/javascript">
-        alert("Your account has been disabled. Please contact our customer service if there's a mistake.");
+        alert("This account has been disabled. Please call +6017 412 4250 to contact customer service if there has been a mistake.");
         window.location.href = "login.php";
     </script>
     <?php
