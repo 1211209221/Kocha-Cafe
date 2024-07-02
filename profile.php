@@ -1782,7 +1782,7 @@
                                 </div>
                                 <div id="tooltip">
                                     <i class="far fa-question-circle"></i>
-                                    <span class="tooltip-content">1 pt = 1 sen (RM 0.01), you can earn:<br>~ 5 pts every up to RM 20 <br>~ 10 pts every up to RM 50<br>~ 50 pts every up to RM 80<br>purchase.</span>
+                                    <span class="tooltip-content">1 pt = 10 sen (RM 0.10), you can earn:<br>~ 5 pts every up to RM 20 <br>~ 10 pts every up to RM 50<br>~ 50 pts every up to RM 80<br>purchase.</span>
                                 </div>
                                 
                             </div>
