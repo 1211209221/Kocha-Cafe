@@ -84,6 +84,10 @@
                     $admin_level = $_POST['admin_level'];
                 }
 
+                if($admin['admin_ID'] == 1){
+                    $admin_level = 2;
+                }
+
                 //compare username and email first
                 $check_username_query = "SELECT * FROM admin WHERE admin_ID != $admin_ID";
                 $result = $conn->query($check_username_query);
