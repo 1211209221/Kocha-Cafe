@@ -857,7 +857,7 @@
                         <span class="address-error" id="un-error"></span>
                   
                         <label for="pn"><b><i class="fas fa-phone-alt"></i> Phone Number</b></label>
-                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone_without_country_code;?>" required></div>
+                        <div style="display:flex;"><span style="text-align: center;border: 1px solid #ccc;padding: 5px; margin-left: 8px;">+60</span><input type="tel" id="pn" name="pn" value="<?php echo $phone_without_country_code;?>" maxlength="10" required></div>
                         <span class="address-error"></span>
                           
                         <button type="submit" id="updateprofile" name="update-profile" class="edit-profile-btn" style="outline: none;">Update</button>
