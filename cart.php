@@ -177,6 +177,101 @@
                         exit();
                     }
                 }else if(isset($_POST['submit_order'])) {
+                    function validateExpiryDate($expiry_date) {
+                        $parts = explode('/', $expiry_date);
+                        if (count($parts) === 2) {
+                            $month = intval($parts[0]);
+                            $year = intval($parts[1]);
+                            $currentDate = new DateTime();
+                            $currentYear = intval($currentDate->format('y')); // Last two digits of the current year
+                            $currentFullYear = intval($currentDate->format('Y'));
+                            $currentMonth = intval($currentDate->format('m'));
+                            $maxFutureYear = ($currentFullYear + 5) % 100;
+                    
+                            $fullYear = ($year >= $currentYear) ? (intval($currentFullYear / 100) * 100 + $year) : (intval($currentFullYear / 100) * 100 + 100 + $year);
+                    
+                            if ($month < 1 || $month > 12 || $fullYear < $currentFullYear || $fullYear > $currentFullYear + 5) {
+                                return false;
+                            } elseif ($year === $currentYear && $month < $currentMonth) {
+                                return false;
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                    //validate
+                    $holder_name = $_POST['holder_name'];
+                    $card_number = $_POST['card_number'];
+                    $CVV = $_POST['CVV'];
+                    $redeem_points = $_POST['redeem_points'];
+                    $subtotal = $_POST['sub']; 
+
+                    //get point
+                    $getpoint = "SELECT cust_points FROM customer WHERE cust_ID = $cust_ID AND trash = 0";
+                    $ptresult = $conn->query($getpoint);
+                    $ptrow = $ptresult->fetch_assoc();
+                    
+                    if($ptrow['cust_points']){
+                        //add session
+                        $point = $ptrow['cust_points'];
+                    }
+                    else{
+                        $point = 0;
+                    }
+                    $maxPoints = $point; 
+
+                    $letters = "/^[a-zA-Z-' ]*$/";
+
+                    $holder_name = trim($holder_name);
+                    $card_number = trim($card_number);
+                    $CVV = trim($CVV);
+                    $redeem_points = trim($redeem_points);
+                    $redeem_points = preg_replace('/\D/', '', $redeem_points);
+
+                    $valid= true;
+
+                    // Validate card number
+                    if (empty($card_number) || strlen($card_number) != 19 || !in_array($card_number[0], ['2', '3', '4', '5', '6'])) {
+                        $valid= false;
+                    }
+
+                    // Validate holder name
+                    if (empty($holder_name) || !preg_match($letters, $holder_name)) {
+                        $valid= false;
+                    }
+
+                    // Validate CVV and expiry date
+                    $expiry_date = trim($_POST['expiry_date']);
+                    if (empty($CVV) && empty($expiry_date)) {
+                        $valid= false;
+                    } elseif (empty($CVV)) {
+                        $valid= false;
+                    } elseif (empty($expiry_date)) {
+                        $valid= false;
+                    } elseif (!validateExpiryDate($expiry_date)) {
+                        $valid= false;
+                    }
+
+                    // Validate redeem points
+                    if (empty($redeem_points)) {
+                        $redeem_points = "0";
+                    }
+                    if ($redeem_points > $maxPoints) {
+                        $valid= false;
+                    } elseif ($redeem_points > 50) {
+                        $valid= false;
+                    } elseif (floatval($redeem_points) * 0.1 > $subtotal) {
+                        $valid= false;
+                    }
+
+                    if($valid == false){
+                        $_SESSION['validateError_error'] = true;
+                        echo '<script>';
+                        echo 'window.location.href = "cart.php";';
+                        echo '</script>';
+                        exit();
+                    }
+
                     // Retrieve form data
                     if(!empty($_POST['item_ID'])){
                         $item_IDs = $_POST['item_ID'];
@@ -533,6 +628,19 @@
                     
                 }
             }
+            if (isset($_SESSION['validateError_error']) && $_SESSION['validateError_error'] === true) {
+                echo '<div class="toast_container">
+                            <div id="custom_toast" class="custom_toast false fade_in">
+                                <div class="d-flex align-items-center message">
+                                    <i class="fas fa-times-circle"></i>Please fill the correct fields.
+                                </div>
+                                <div class="timer"></div>
+                            </div>
+                        </div>';
+
+                unset($_SESSION['validateError_error']);
+            }
+
             if (isset($_SESSION['update_pro_success']) && $_SESSION['update_pro_success'] === true) {
                 echo '<div class="toast_container">
                         <div id="custom_toast" class="custom_toast true fade_in">
@@ -789,6 +897,9 @@
                 else if(card_number.trim().length!=19){
                     errorDisplay(document.getElementById("card_number"), "*Please fill in 16 digits.*");
                     valid = false;
+                }else if (!["2", "3", "4", "5", "6"].includes(card_number.trim()[0])) {
+                    errorDisplay(document.getElementById("card_number"), "*Card number must start with 2, 3, 4, 5, or 6.*");
+                    valid = false;
                 }
                 else {
                     clearError(document.getElementById("card_number"));
@@ -820,13 +931,18 @@
                     valid = false;
                 }
                 else if(!limitExpiryDate(expiry_date)){
-                    errorDisplay1(document.getElementById("expiry_date"), "*Invalid expiry date. Use MM/YY format.");
+                    errorDisplay1(document.getElementById("expiry_date"), "*Invalid expiry date. ");
                     valid = false;
                 }
                 else{
                     clearError1(document.getElementById("expiry_date"));
                 }
 
+                
+                if (redeem_points.trim() === "") {
+                    document.getElementById("redeem_points").value = "0";
+                    redeem_points = "0";  
+                }
                 
                 if(redeem_points.trim()>maxPoints){
                     errorDisplay1(document.getElementById("redeem_points"), "*Exceeded points.*");
@@ -836,7 +952,7 @@
                     errorDisplay1(document.getElementById("redeem_points"), "*The maximum point you use is 50*");
                     valid = false;
                 }
-                else if(parseFloat(redeem_points.trim()) * 0.1 > subttl){
+                else if(parseFloat(redeem_points.trim() * 0.1) > subttl){
                     errorDisplay1(document.getElementById("redeem_points"), "*Redeem value exceed subtotal*");
                     valid = false;
                 }
@@ -904,8 +1020,11 @@
                     const year = parseInt(parts[1]);
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the current year
-                    if (isNaN(month) || isNaN(year) || month < 1 || month > 12 || year < currentYear || year > currentYear + 20) {
-                        
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const maxFutureYear = currentYear + 5;
+                    if (isNaN(month) || isNaN(year) || month < 1 || month > 12 || year < currentYear || year > maxFutureYear) {
+                        valid = false;
+                    }else if (year === currentYear && month < currentMonth) {
                         valid = false;
                     } else {
                         valid = true;
@@ -1554,11 +1673,12 @@
                                                             <div>
                                                                 <i class="fas fa-usd-circle"></i><span>Redeem Points</span>
                                                             </div>
-                                                            <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" value="0" onkeypress="return event.keyCode != 13;">
+                                                            <input type="number" name="redeem_points" id="redeem_points" placeholder="" min="0" max="'.$row_payment['cust_points'].'" value="0" onkeypress="return event.keyCode != 13; required">
                                                         </div>
                                                         <div class="address-error" style="margin-top:3px;font-size: 12px;color: #dc3545;background-color: #f8f9fa;padding: 0px 4px;border-radius: 3px;margin-bottom: 2px;"></div>
-                                                            <div class="description">Conversion rate is RM 0.10 per every 1 point. You currently have '.$row_payment['cust_points'].' points.</div>                                                    </div>
-                                                </div> 
+                                                            <div class="description">Conversion rate is RM 0.10 per every 1 point. You currently have '.$row_payment['cust_points'].' points.</div>
+                                                        </div>
+                                                    </div> 
                                                 <div class="order_summary_container">
                                                     <div class="justify-content-between d-flex align-items-center">
                                                         <div class="order_summary_header">
