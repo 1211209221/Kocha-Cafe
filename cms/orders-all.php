@@ -546,7 +546,7 @@
                         <div class="d-flex align-items-center justify-content-center">
                             <?php
                                 if($admin['admin_level'] == 2){
-                                    echo'<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction("delete the selected order(s)")">';
+                                    // echo'<input type="submit" name="submit_trash_items" class="delete_button" id="submit_trash_items" value="Delete Order" onclick="return confirmAction("delete the selected order(s)")">';
                                 }
                             ?>
                         </div>
@@ -670,7 +670,7 @@
                                                     }
                                                     echo '<td class="t_action act1"><div>';
                                                     if ($admin['admin_level'] == 2) {
-                                                        echo '<a class="trash-icon"><i class="fas fa-trash"></i></a>';
+                                                        // echo '<a class="trash-icon"><i class="fas fa-trash"></i></a>';
                                                     }
                                                     echo '<a href="orders-view.php?ID=' . $row['order_ID'] . '"><i class="fas fa-chevron-circle-right"></i></a><a style="position: relative;"></a>
                                                         <input type="hidden" name="order_ID[]" value="' . $row['order_ID'] . '">

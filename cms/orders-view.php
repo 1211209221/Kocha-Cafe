@@ -287,7 +287,7 @@
                             <hr style="width:100%;">
                         <div class='item_detail_container'>
                             <label for="readstatus">Tracking Status</label>
-                            <select name="readstatus" id="readstatus" style="width:100%;">
+                            <select name="readstatus" id="readstatus" style="width:100%;" <?php if ($row['tracking_stage'] == 3) echo 'disabled'; ?>>
                                 <option value="0" <?php if ($row['tracking_stage'] == 0) echo "selected"; ?>>Queueing</option>
                                 <option value="1" <?php if ($row['tracking_stage'] == 1) echo "selected"; ?>>Preparing</option>
                                 <option value="2" <?php if ($row['tracking_stage'] == 2) echo "selected"; ?>>Delivering</option>
@@ -402,9 +402,9 @@
                         <div class='submit_buttons'>
                             <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('save the change');">
                             <?php
-                                if ($admin['admin_level'] == 2) {
-                                    echo '<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction(\'delete this order\');">';
-                                }                                
+                                // if ($admin['admin_level'] == 2) {
+                                //     echo '<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction(\'delete this order\');">';
+                                // }                                
                             ?>
                         </div>
                     </div>
