@@ -250,12 +250,12 @@
                             <div class="page_title">Edit Admin<i class="fas fa-pen"></i></div>
                             <div class='item_detail_container'>
                                 <label for="admin_name">Name</label>
-                                <input type="text" name="admin_name" id="admin_name" placeholder="Admin Name" value="<?php echo $row['admin_name']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "disabled" : ""); ?> required>
+                                <input type="text" name="admin_name" id="admin_name" placeholder="Admin Name" value="<?php echo $row['admin_name']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "readonly" : ""); ?> required>
                             </div>
                             <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
                             <label for="admin_phone">Phone Number</label>
-                            <input type="tel" name="admin_phone" id="admin_phone" placeholder="+60123456789" value="<?php echo $row['admin_phno']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "disabled" : ""); ?> required>
+                            <input type="tel" name="admin_phone" id="admin_phone" placeholder="+60123456789" value="<?php echo $row['admin_phno']; ?>" <?php echo ($admin["admin_ID"] != $row["admin_ID"] ? "readonly" : ""); ?> required>
                         </div>
                         <div class="address-error" style="margin-left:185px;margin-bottom:5px;font-size:12px;color:red;"></div>
                         <div class='item_detail_container'>
