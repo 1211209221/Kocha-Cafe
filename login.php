@@ -32,6 +32,7 @@ if (isset($_SESSION["user"])) {
 
 // Initialize variables for input errors
 $email_error = $password_error = "";
+$disabled_account = false;
 
 if (isset($_POST["login"])) {
     // Validate email
@@ -58,7 +59,9 @@ if (isset($_POST["login"])) {
         $result = mysqli_query($conn, $sql);
         $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
         if ($user) {
-            if (password_verify($_POST["password"], $user["cust_pass"])) {
+            if ($user['trash'] == 1) {
+                $disabled_account = true;
+            } elseif (password_verify($_POST["password"], $user["cust_pass"])) {
                 $_SESSION["user"] = $user["cust_ID"];
                 header("Location: index.php");
                 exit(); // terminate script execution after redirect
@@ -69,12 +72,6 @@ if (isset($_POST["login"])) {
             $email_error = "Email does not exist";
         }
     }
-}else{
-    echo '<style>
-        .alert.alert-danger {
-            display:none !important;
-        }
-    </style>';
 }
 ?>
 
@@ -122,7 +119,7 @@ if (isset($_POST["login"])) {
                 <div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
                     <input class="input100" type="text" name="email" required oninput="hideError('email_error')" placeholder="Type your email">
                     <span class="focus-input100" data-placeholder="Email"></span>
-                    <?php if(isset($email_error) && empty($_POST["login"])) { echo "<div id='email_error' class='alert alert-danger'>$email_error</div>"; } ?>
+                    <?php if(isset($email_error)) { echo "<div id='email_error' class='alert alert-danger'>$email_error</div>"; } ?>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Enter password">
@@ -131,7 +128,7 @@ if (isset($_POST["login"])) {
                     </span>
                     <input class="input100" type="password" name="password" required oninput="hideError('password_error')" placeholder="Type your password">
                     <span class="focus-input100" data-placeholder="Password"></span>
-                    <?php if(isset($password_error) && empty($_POST["login"])) { echo "<div id='password_error' class='alert alert-danger'>$password_error</div>"; } ?>
+                    <?php if(isset($password_error)) { echo "<div id='password_error' class='alert alert-danger'>$password_error</div>"; } ?>
                 </div>
                 <div class="text-center">
                     <a class="txt1" href="recover_psw.php">
@@ -188,6 +185,10 @@ if (isset($_POST["login"])) {
             errorElement.style.display = "none";
         }
     }
+
+    <?php if ($disabled_account): ?>
+    alert("Your account has been disabled. Please contact our customer service if there's a mistake.");
+    <?php endif; ?>
 </script>
 
 </body>
