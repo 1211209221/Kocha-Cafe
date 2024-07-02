@@ -399,14 +399,20 @@
                             </div>
                         </div>
                         
-                        <div class='submit_buttons'>
-                            <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction('save the change');">
-                            <?php
-                                // if ($admin['admin_level'] == 2) {
-                                //     echo '<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction(\'delete this order\');">';
-                                // }                                
-                            ?>
-                        </div>
+                        <?php
+                            if ($row['tracking_stage'] != 3){
+                                echo "<div class='submit_buttons'>";
+                                echo ' <input type="submit" id="edit-submit" name="edit_submit" class="edit_submit" value="Save" onclick="return confirmAction("save the change");">';
+                                echo "</div>";
+
+                            }
+
+                        ?>
+                        <?php
+                            // if ($admin['admin_level'] == 2) {
+                            //     echo '<input type="submit" name="delete" class="delete" value="Delete" onclick="return confirmAction(\'delete this order\');">';
+                            // }                                
+                        ?>
                     </div>
                     <a href="orders-all.php" class="back_button2">Back To List</a>
                 </div>

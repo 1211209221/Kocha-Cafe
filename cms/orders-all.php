@@ -534,7 +534,7 @@
                     <div class="search_container">
                         <div class="item_search">
                             <i class="fas fa-search"></i>
-                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search order ID...">
+                            <input type="text" class="search_bar" name="keywordSearch" id="keywordSearch" placeholder="Search by username...">
                             <select id="perPage">
                                 <option value="5">5</option>
                                 <option value="10" selected>10</option>
